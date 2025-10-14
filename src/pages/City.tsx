@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -115,8 +116,46 @@ const City = () => {
     );
   }
 
+  const pageTitle = `Цветы ${city.name} | Доставка букетов в ${city.name} — FloRustic`;
+  const pageDescription = `Доставка свежих цветов и букетов в ${city.name}. Большой выбор композиций для любого случая. Быстрая доставка по городу ${city.name}. Заказать букет онлайн с доставкой на дом.`;
+  const pageUrl = `https://florustic.ru/city/${city.slug}`;
+
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={`цветы ${city.name}, букеты ${city.name}, доставка цветов ${city.name}, купить букет ${city.name}, заказать цветы ${city.name}, свежие цветы ${city.name}`} />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:site_name" content="FloRustic" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        
+        <link rel="canonical" href={pageUrl} />
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Store",
+            "name": `FloRustic — Цветы в ${city.name}`,
+            "description": pageDescription,
+            "url": pageUrl,
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": city.name,
+              "addressCountry": "RU"
+            },
+            "priceRange": "₽₽"
+          })}
+        </script>
+      </Helmet>
+      
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="text-center mb-12">

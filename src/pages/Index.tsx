@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -62,8 +63,46 @@ const Index = () => {
     addToCart(product);
   };
 
+  const citiesList = cities.map(c => c.name).join(', ');
+  const pageTitle = 'FloRustic — Доставка свежих цветов и букетов по России';
+  const pageDescription = `Доставка свежих цветов и букетов в ${citiesList || 'города России'}. Широкий выбор композиций для любого случая. Заказать букет онлайн с быстрой доставкой на дом.`;
+
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content="доставка цветов, букеты с доставкой, заказать цветы онлайн, купить букет, свежие цветы, цветы на дом" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content="https://florustic.ru" />
+        <meta property="og:site_name" content="FloRustic" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        
+        <link rel="canonical" href="https://florustic.ru" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "FloRustic",
+            "description": pageDescription,
+            "url": "https://florustic.ru",
+            "logo": "https://florustic.ru/logo.png",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "Customer Service",
+              "availableLanguage": "Russian"
+            }
+          })}
+        </script>
+      </Helmet>
+      
       <Header cartCount={totalItems} />
       
       <section className="relative bg-gradient-to-br from-accent/20 to-background py-24 md:py-32">

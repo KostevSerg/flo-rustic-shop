@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -46,8 +47,38 @@ const Catalog = () => {
     });
   };
 
+  const pageTitle = 'Каталог букетов | FloRustic — Доставка цветов';
+  const pageDescription = 'Полный каталог свежих букетов и цветочных композиций. Выберите идеальный букет для любого случая. Доставка по всей России.';
+
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content="каталог цветов, букеты цены, купить букет, цветочные композиции, розы, тюльпаны, лилии" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content="https://florustic.ru/catalog" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        
+        <link rel="canonical" href="https://florustic.ru/catalog" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": pageTitle,
+            "description": pageDescription,
+            "url": "https://florustic.ru/catalog"
+          })}
+        </script>
+      </Helmet>
+      
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <h1 className="text-5xl font-bold text-center mb-4">Каталог</h1>
