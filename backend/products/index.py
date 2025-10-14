@@ -43,25 +43,45 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if method == 'GET':
             query_params = event.get('queryStringParameters') or {}
             city_name = query_params.get('city')
+            category = query_params.get('category')
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 if city_name:
-                    cur.execute('''
-                        SELECT p.id, p.name, p.description, p.image_url, p.category,
-                               COALESCE(pcp.price, p.base_price) as price
-                        FROM products p
-                        LEFT JOIN cities c ON c.name = %s AND c.is_active = true
-                        LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
-                        WHERE p.is_active = true
-                        ORDER BY p.created_at DESC
-                    ''', (city_name,))
+                    if category:
+                        cur.execute('''
+                            SELECT p.id, p.name, p.description, p.image_url, p.category,
+                                   COALESCE(pcp.price, p.base_price) as price
+                            FROM products p
+                            LEFT JOIN cities c ON c.name = %s AND c.is_active = true
+                            LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
+                            WHERE p.is_active = true AND p.category = %s
+                            ORDER BY p.created_at DESC
+                        ''', (city_name, category))
+                    else:
+                        cur.execute('''
+                            SELECT p.id, p.name, p.description, p.image_url, p.category,
+                                   COALESCE(pcp.price, p.base_price) as price
+                            FROM products p
+                            LEFT JOIN cities c ON c.name = %s AND c.is_active = true
+                            LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
+                            WHERE p.is_active = true
+                            ORDER BY p.created_at DESC
+                        ''', (city_name,))
                 else:
-                    cur.execute('''
-                        SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category
-                        FROM products p
-                        WHERE p.is_active = true
-                        ORDER BY p.created_at DESC
-                    ''')
+                    if category:
+                        cur.execute('''
+                            SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category
+                            FROM products p
+                            WHERE p.is_active = true AND p.category = %s
+                            ORDER BY p.created_at DESC
+                        ''', (category,))
+                    else:
+                        cur.execute('''
+                            SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category
+                            FROM products p
+                            WHERE p.is_active = true
+                            ORDER BY p.created_at DESC
+                        ''')
                 
                 products = [dict(row) for row in cur.fetchall()]
                 
