@@ -8,9 +8,19 @@ interface HeaderProps {
   cartCount: number;
 }
 
+const createSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/ё/g, 'e')
+    .replace(/[^\u0430-\u044f\u0410-\u042fa-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+};
+
 const Header = ({ cartCount }: HeaderProps) => {
   const { selectedCity, setCity } = useCity();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const citySlug = createSlug(selectedCity);
 
   return (
     <header className="bg-white border-b border-border sticky top-0 z-50">
@@ -32,7 +42,7 @@ const Header = ({ cartCount }: HeaderProps) => {
           </button>
 
           <nav className="hidden lg:flex items-center space-x-8">
-            <Link to="/catalog" className="hover:text-primary transition">
+            <Link to={`/city/${citySlug}`} className="hover:text-primary transition">
               Каталог
             </Link>
             <Link to="/delivery" className="hover:text-primary transition">
@@ -76,7 +86,7 @@ const Header = ({ cartCount }: HeaderProps) => {
 
         {isMenuOpen && (
           <nav className="lg:hidden pb-4 space-y-3 animate-fade-in">
-            <Link to="/catalog" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
+            <Link to={`/city/${citySlug}`} className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
               Каталог
             </Link>
             <Link to="/delivery" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>

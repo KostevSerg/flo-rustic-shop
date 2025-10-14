@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import { useSiteTexts } from '@/contexts/SiteTextsContext';
+import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -10,9 +11,20 @@ import ReviewsSection from '@/components/ReviewsSection';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
+const createSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/ё/g, 'e')
+    .replace(/[^\u0430-\u044f\u0410-\u042fa-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+};
+
 const Index = () => {
   const { addToCart, totalItems } = useCart();
   const { getText } = useSiteTexts();
+  const { selectedCity } = useCity();
+  const citySlug = createSlug(selectedCity);
 
   const popularProducts = [
     {
@@ -93,7 +105,7 @@ const Index = () => {
               {getText('home', 'hero_subtitle', 'Свежие букеты с доставкой по городу. Создаем композиции с душой и вниманием к деталям.')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
-              <Link to="/catalog">
+              <Link to={`/city/${citySlug}`}>
                 <Button size="lg" className="bg-primary text-primary-foreground hover:opacity-90 text-lg px-8">
                   Смотреть каталог
                 </Button>
@@ -122,7 +134,7 @@ const Index = () => {
             ))}
           </div>
           <div className="text-center">
-            <Link to="/catalog">
+            <Link to={`/city/${citySlug}`}>
               <Button size="lg" variant="outline" className="text-lg px-8">
                 Весь каталог
                 <Icon name="ArrowRight" size={20} className="ml-2" />
