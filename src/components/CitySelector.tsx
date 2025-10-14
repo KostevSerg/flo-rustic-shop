@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
@@ -13,7 +14,18 @@ interface CitySelectorProps {
   onChange: (city: string, cityId: number) => void;
 }
 
+const createSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/ё/g, 'e')
+    .replace(/[^\u0430-\u044f\u0410-\u042fa-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+};
+
 const CitySelector = ({ value, onChange }: CitySelectorProps) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [cities, setCities] = useState<Record<string, City[]>>({});
   const [loading, setLoading] = useState(true);
@@ -50,6 +62,11 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
     onChange(cityName, cityId);
     setIsOpen(false);
     setSearchQuery('');
+    
+    const slug = createSlug(cityName);
+    if (!location.pathname.startsWith('/admin')) {
+      navigate(`/city/${slug}`);
+    }
   };
 
   return (

@@ -12,8 +12,17 @@ import Icon from '@/components/ui/icon';
 interface City {
   id: number;
   name: string;
-  slug: string;
+  region: string;
 }
+
+const createSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/ё/g, 'e')
+    .replace(/[^\u0430-\u044f\u0410-\u042fa-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+};
 
 const Index = () => {
   const { addToCart, totalItems } = useCart();
@@ -24,9 +33,15 @@ const Index = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/bb2b7d69-0c7e-4fa4-a4dc-fe6f20b98c33');
+        const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459');
         const data = await response.json();
-        setCities(data.cities || []);
+        
+        const allCities: City[] = [];
+        Object.values(data.cities || {}).forEach((regionCities: any) => {
+          allCities.push(...regionCities);
+        });
+        
+        setCities(allCities);
       } catch (error) {
         console.error('Failed to fetch cities:', error);
       } finally {
@@ -172,10 +187,10 @@ const Index = () => {
             </div>
           ) : cities.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
-              {cities.map(city => (
+              {cities.slice(0, 12).map(city => (
                 <Link 
                   key={city.id} 
-                  to={`/city/${city.slug}`}
+                  to={`/city/${createSlug(city.name)}`}
                   className="group"
                 >
                   <div className="bg-card border rounded-lg p-6 text-center hover:border-primary hover:shadow-lg transition-all duration-300">

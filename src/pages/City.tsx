@@ -20,15 +20,24 @@ interface Product {
 interface City {
   id: number;
   name: string;
-  slug: string;
+  region: string;
 }
+
+const createSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/ё/g, 'e')
+    .replace(/[^\u0430-\u044f\u0410-\u042fa-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+};
 
 const City = () => {
   const { citySlug } = useParams<{ citySlug: string }>();
   const navigate = useNavigate();
   const { addToCart, totalItems } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
-  const [city, setCity] = useState<City | null>(null);
+  const [cityName, setCityName] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -40,11 +49,17 @@ const City = () => {
       setError('');
       
       try {
-        const citiesUrl = 'https://functions.poehali.dev/bb2b7d69-0c7e-4fa4-a4dc-fe6f20b98c33';
-        const citiesResponse = await fetch(citiesUrl);
+        const citiesResponse = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459');
         const citiesData = await citiesResponse.json();
         
-        const foundCity = citiesData.cities.find((c: City) => c.slug === citySlug);
+        let foundCityName = '';
+        const allCities: City[] = [];
+        
+        Object.values(citiesData.cities || {}).forEach((regionCities: any) => {
+          allCities.push(...regionCities);
+        });
+        
+        const foundCity = allCities.find((c: City) => createSlug(c.name) === citySlug);
         
         if (!foundCity) {
           setError('Город не найден');
@@ -52,9 +67,10 @@ const City = () => {
           return;
         }
         
-        setCity(foundCity);
+        foundCityName = foundCity.name;
+        setCityName(foundCityName);
         
-        const productsUrl = `https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531?city=${encodeURIComponent(foundCity.name)}`;
+        const productsUrl = `https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531?city=${encodeURIComponent(foundCityName)}`;
         const productsResponse = await fetch(productsUrl);
         const productsData = await productsResponse.json();
         
@@ -94,7 +110,7 @@ const City = () => {
     );
   }
 
-  if (error || !city) {
+  if (error || !cityName) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header cartCount={totalItems} />
@@ -116,9 +132,9 @@ const City = () => {
     );
   }
 
-  const pageTitle = `Цветы ${city.name} | Доставка букетов в ${city.name} — FloRustic`;
-  const pageDescription = `Доставка свежих цветов и букетов в ${city.name}. Большой выбор композиций для любого случая. Быстрая доставка по городу ${city.name}. Заказать букет онлайн с доставкой на дом.`;
-  const pageUrl = `https://florustic.ru/city/${city.slug}`;
+  const pageTitle = `Цветы ${cityName} | Доставка букетов в ${cityName} — FloRustic`;
+  const pageDescription = `Доставка свежих цветов и букетов в ${cityName}. Большой выбор композиций для любого случая. Быстрая доставка по городу ${cityName}. Заказать букет онлайн с доставкой на дом.`;
+  const pageUrl = `https://florustic.ru/city/${citySlug}`;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -143,12 +159,12 @@ const City = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Store",
-            "name": `FloRustic — Цветы в ${city.name}`,
+            "name": `FloRustic — Цветы в ${cityName}`,
             "description": pageDescription,
             "url": pageUrl,
             "address": {
               "@type": "PostalAddress",
-              "addressLocality": city.name,
+              "addressLocality": cityName,
               "addressCountry": "RU"
             },
             "priceRange": "₽₽"
@@ -168,10 +184,10 @@ const City = () => {
             Назад
           </Button>
           <h1 className="text-5xl font-bold mb-4">
-            Цветы в {city.name}
+            Цветы в {cityName}
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Доставка свежих букетов по городу {city.name}. Выберите идеальный букет для любого случая
+            Доставка свежих букетов по городу {cityName}. Выберите идеальный букет для любого случая
           </p>
         </div>
 
@@ -179,7 +195,7 @@ const City = () => {
           <div className="text-center py-12">
             <Icon name="Package" size={64} className="mx-auto mb-4 text-muted-foreground" />
             <p className="text-muted-foreground">
-              В данный момент товары для города {city.name} не добавлены
+              В данный момент товары для города {cityName} не добавлены
             </p>
           </div>
         ) : (
