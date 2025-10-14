@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import API_ENDPOINTS from '@/config/api';
 
 interface Product {
   id: number;
@@ -49,7 +50,7 @@ const City = () => {
       setError('');
       
       try {
-        const citiesResponse = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459');
+        const citiesResponse = await fetch(API_ENDPOINTS.cities);
         const citiesData = await citiesResponse.json();
         
         let foundCityName = '';
@@ -70,7 +71,7 @@ const City = () => {
         foundCityName = foundCity.name;
         setCityName(foundCityName);
         
-        const productsUrl = `https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531?city=${encodeURIComponent(foundCityName)}`;
+        const productsUrl = `${API_ENDPOINTS.products}?city=${encodeURIComponent(foundCityName)}`;
         const productsResponse = await fetch(productsUrl);
         const productsData = await productsResponse.json();
         

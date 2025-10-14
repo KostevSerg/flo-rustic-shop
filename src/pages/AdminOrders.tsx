@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import { useCart } from '@/contexts/CartContext';
+import API_ENDPOINTS from '@/config/api';
 
 interface OrderItem {
   id: number;
@@ -62,8 +63,8 @@ const AdminOrders = () => {
     setLoading(true);
     try {
       const url = filterStatus === 'all' 
-        ? 'https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae'
-        : `https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae?status=${filterStatus}`;
+        ? API_ENDPOINTS.orders
+        : `${API_ENDPOINTS.orders}?status=${filterStatus}`;
       
       const response = await fetch(url);
       const data = await response.json();
@@ -85,7 +86,7 @@ const AdminOrders = () => {
 
   const handleUpdateStatus = async (orderId: number, newStatus: string) => {
     try {
-      const response = await fetch('https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae', {
+      const response = await fetch(API_ENDPOINTS.orders, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: orderId, status: newStatus })
@@ -113,7 +114,7 @@ const AdminOrders = () => {
 
   const handleUpdateNotes = async (orderId: number, notes: string) => {
     try {
-      const response = await fetch('https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae', {
+      const response = await fetch(API_ENDPOINTS.orders, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: orderId, notes })
@@ -140,7 +141,7 @@ const AdminOrders = () => {
     if (!confirm(`Удалить заказ ${orderNumber}?`)) return;
 
     try {
-      const response = await fetch(`https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae?id=${orderId}`, {
+      const response = await fetch(`${API_ENDPOINTS.orders}?id=${orderId}`, {
         method: 'DELETE'
       });
 

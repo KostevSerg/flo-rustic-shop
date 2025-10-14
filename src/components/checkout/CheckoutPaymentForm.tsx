@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Icon from '@/components/ui/icon';
+import API_ENDPOINTS from '@/config/api';
 
 interface CheckoutPaymentFormProps {
   paymentMethod: string;
@@ -12,7 +13,7 @@ const CheckoutPaymentForm = ({ paymentMethod, onChange }: CheckoutPaymentFormPro
   useEffect(() => {
     const fetchPaymentInfo = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/9659db56-006e-4dec-892b-23c00b3eefeb');
+        const response = await fetch(API_ENDPOINTS.siteTexts);
         const data = await response.json();
         const paymentInfo = data.texts?.find((t: any) => t.page === 'checkout' && t.key === 'payment_info');
         if (paymentInfo) {

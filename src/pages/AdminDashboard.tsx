@@ -8,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import { useCart } from '@/contexts/CartContext';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
+import API_ENDPOINTS from '@/config/api';
 
 interface Stats {
   totalOrders: number;
@@ -34,9 +35,9 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       const [ordersRes, productsRes, citiesRes] = await Promise.all([
-        fetch('https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae'),
-        fetch('https://functions.poehali.dev/f8e976f7-c5dd-4c3e-a95f-ed84f6d5a50a'),
-        fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459')
+        fetch(API_ENDPOINTS.orders),
+        fetch(API_ENDPOINTS.products),
+        fetch(API_ENDPOINTS.cities)
       ]);
 
       const orders = await ordersRes.json();

@@ -1,3 +1,7 @@
 {
-  "orders": "https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae"
+  "site-texts": "https://functions.poehali.dev/9659db56-006e-4dec-892b-23c00b3eefeb",
+  "orders": "https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae",
+  "products": "https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531",
+  "cities": "https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459",
+  "send-order": "https://functions.poehali.dev/97825be8-1815-431a-99ba-3b3ed7c3f8a5"
 }

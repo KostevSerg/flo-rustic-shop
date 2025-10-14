@@ -12,7 +12,7 @@ def decimal_default(obj):
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Manage cities, city contacts, reviews, and settlements
+    Business: Manage cities, city contacts, reviews, and settlements data
     Args: event with httpMethod, body, queryStringParameters (action: contacts/reviews/settlements)
           context with request_id attribute
     Returns: HTTP response with cities, contacts, reviews, or settlements data

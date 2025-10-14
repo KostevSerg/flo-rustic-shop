@@ -8,6 +8,7 @@ import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import API_ENDPOINTS from '@/config/api';
 
 interface SiteText {
   id: number;
@@ -37,7 +38,7 @@ const AdminTexts = () => {
   const fetchTexts = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/9659db56-006e-4dec-892b-23c00b3eefeb');
+      const response = await fetch(API_ENDPOINTS.siteTexts);
       const data = await response.json();
       setTexts(data.texts || []);
     } catch (error) {
@@ -65,7 +66,7 @@ const AdminTexts = () => {
   const saveEdit = async (id: number) => {
     setSaving(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/9659db56-006e-4dec-892b-23c00b3eefeb', {
+      const response = await fetch(API_ENDPOINTS.siteTexts, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

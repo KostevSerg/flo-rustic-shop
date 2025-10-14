@@ -13,6 +13,7 @@ import CheckoutDeliveryForm from '@/components/checkout/CheckoutDeliveryForm';
 import CheckoutPaymentForm from '@/components/checkout/CheckoutPaymentForm';
 import CheckoutAdditionalForm from '@/components/checkout/CheckoutAdditionalForm';
 import CheckoutOrderSummary from '@/components/checkout/CheckoutOrderSummary';
+import API_ENDPOINTS from '@/config/api';
 
 interface Settlement {
   id: number;
@@ -53,7 +54,7 @@ const Checkout = () => {
   const fetchSettlements = async () => {
     setLoadingSettlements(true);
     try {
-      const citiesResponse = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459');
+      const citiesResponse = await fetch(API_ENDPOINTS.cities);
       const citiesData = await citiesResponse.json();
       
       let cityId = null;
@@ -66,7 +67,7 @@ const Checkout = () => {
       if (foundCity) {
         cityId = foundCity.id;
         
-        const settlementsResponse = await fetch(`https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=settlements&city_id=${cityId}`);
+        const settlementsResponse = await fetch(`${API_ENDPOINTS.cities}?action=settlements&city_id=${cityId}`);
         const settlementsData = await settlementsResponse.json();
         setSettlements(settlementsData.settlements || []);
       }
@@ -130,7 +131,7 @@ const Checkout = () => {
     };
 
     try {
-      const response = await fetch('https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae', {
+      const response = await fetch(API_ENDPOINTS.orders, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +147,7 @@ const Checkout = () => {
       const orderId = result.id;
 
       if (formData.paymentMethod === 'online') {
-        const paymentResponse = await fetch('https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae?action=create_payment', {
+        const paymentResponse = await fetch(`${API_ENDPOINTS.orders}?action=create_payment`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

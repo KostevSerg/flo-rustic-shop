@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import API_ENDPOINTS from '@/config/api';
+import API_ENDPOINTS from '@/config/api';
 
 interface City {
   id: number;
@@ -34,7 +36,7 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459');
+        const response = await fetch(API_ENDPOINTS.cities);
         const data = await response.json();
         setCities(data.cities || {});
       } catch (error) {

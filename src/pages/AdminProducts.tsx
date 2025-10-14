@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import { useCart } from '@/contexts/CartContext';
+import API_ENDPOINTS from '@/config/api';
 
 interface Product {
   id: number;
@@ -44,7 +45,7 @@ const AdminProducts = () => {
   const loadProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531');
+      const response = await fetch(API_ENDPOINTS.products);
       const data = await response.json();
       setProducts(data.products || []);
     } catch (error) {
@@ -60,7 +61,7 @@ const AdminProducts = () => {
 
   const loadCities = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459');
+      const response = await fetch(API_ENDPOINTS.cities);
       const data = await response.json();
       setCities(data.cities || {});
     } catch (error) {
@@ -81,7 +82,7 @@ const AdminProducts = () => {
     }
 
     try {
-      const response = await fetch('https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531', {
+      const response = await fetch(API_ENDPOINTS.products, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -114,7 +115,7 @@ const AdminProducts = () => {
     if (!confirm(`Удалить товар "${productName}"?`)) return;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531', {
+      const response = await fetch(API_ENDPOINTS.products, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: productId })
@@ -141,7 +142,7 @@ const AdminProducts = () => {
     if (!selectedProduct || !price) return;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531', {
+      const response = await fetch(API_ENDPOINTS.products, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

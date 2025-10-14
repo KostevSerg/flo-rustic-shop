@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import { useCity } from '@/contexts/CityContext';
+import API_ENDPOINTS from '@/config/api';
 
 interface CityContact {
   phone: string;
@@ -18,7 +19,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchCityContact = async () => {
       try {
-        const response = await fetch(`https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=contacts&city=${encodeURIComponent(selectedCity)}`);
+        const response = await fetch(`${API_ENDPOINTS.cities}?action=contacts&city=${encodeURIComponent(selectedCity)}`);
         const data = await response.json();
         if (data.contact) {
           setCityContact({
@@ -36,6 +37,7 @@ const Footer = () => {
       fetchCityContact();
     }
   }, [selectedCity]);
+  
   return (
     <footer className="bg-primary text-primary-foreground mt-auto">
       <div className="container mx-auto px-4 py-12">

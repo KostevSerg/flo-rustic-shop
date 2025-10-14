@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import { useCart } from '@/contexts/CartContext';
+import API_ENDPOINTS from '@/config/api';
 
 interface City {
   id: number;
@@ -28,7 +29,7 @@ const Admin = () => {
   const loadCities = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459');
+      const response = await fetch(API_ENDPOINTS.cities);
       const data = await response.json();
       setCities(data.cities || {});
     } catch (error) {
@@ -55,7 +56,7 @@ const Admin = () => {
     }
 
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459', {
+      const response = await fetch(API_ENDPOINTS.cities, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newCity)
@@ -84,7 +85,7 @@ const Admin = () => {
     if (!confirm(`Удалить город ${cityName}?`)) return;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459', {
+      const response = await fetch(API_ENDPOINTS.cities, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: cityId })
@@ -131,7 +132,7 @@ const Admin = () => {
     }
 
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459', {
+      const response = await fetch(API_ENDPOINTS.cities, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

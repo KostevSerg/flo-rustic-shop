@@ -9,6 +9,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useCart } from '@/contexts/CartContext';
 import AdminAuth from '@/components/AdminAuth';
+import API_ENDPOINTS from '@/config/api';
 
 interface Settlement {
   id: number;
@@ -51,7 +52,7 @@ const AdminCitySettlements = () => {
   const fetchSettlements = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=settlements&city_id=${cityId}`);
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=settlements&city_id=${cityId}`);
       const data = await response.json();
       setSettlements(data.settlements || []);
     } catch (error) {
@@ -79,7 +80,7 @@ const AdminCitySettlements = () => {
     }
 
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=settlements', {
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=settlements`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -122,7 +123,7 @@ const AdminCitySettlements = () => {
     }
 
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=settlements', {
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=settlements`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -160,7 +161,7 @@ const AdminCitySettlements = () => {
     }
 
     try {
-      const response = await fetch(`https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=settlements&id=${settlementId}`, {
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=settlements&id=${settlementId}`, {
         method: 'DELETE'
       });
 

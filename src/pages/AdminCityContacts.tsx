@@ -8,6 +8,7 @@ import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import API_ENDPOINTS from '@/config/api';
 
 interface CityContact {
   id: number;
@@ -40,7 +41,7 @@ const AdminCityContacts = () => {
   const fetchContacts = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=contacts');
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=contacts`);
       const data = await response.json();
       setContacts(data.contacts || []);
     } catch (error) {
@@ -70,7 +71,7 @@ const AdminCityContacts = () => {
 
     setSaving(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=contacts', {
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=contacts`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

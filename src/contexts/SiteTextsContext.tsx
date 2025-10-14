@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import API_ENDPOINTS from '@/config/api';
 
 interface SiteText {
   id: number;
@@ -23,7 +24,7 @@ export const SiteTextsProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchTexts = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/9659db56-006e-4dec-892b-23c00b3eefeb');
+      const response = await fetch(API_ENDPOINTS.siteTexts);
       const data = await response.json();
       
       const textsMap: Record<string, Record<string, string>> = {};

@@ -4,6 +4,7 @@ import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import API_ENDPOINTS from '@/config/api';
 
 interface Review {
   id: number;
@@ -36,7 +37,7 @@ const AdminReviews = () => {
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=reviews&all=true');
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=reviews&all=true`);
       const data = await response.json();
       setReviews(data.reviews || []);
     } catch (error) {
@@ -53,7 +54,7 @@ const AdminReviews = () => {
 
   const handleApprove = async (reviewId: number, currentStatus: boolean) => {
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=reviews', {
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=reviews`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -88,7 +89,7 @@ const AdminReviews = () => {
     }
 
     try {
-      const response = await fetch(`https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=reviews&id=${reviewId}`, {
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=reviews&id=${reviewId}`, {
         method: 'DELETE'
       });
 

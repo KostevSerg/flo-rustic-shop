@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import { useCity } from '@/contexts/CityContext';
+import API_ENDPOINTS from '@/config/api';
 
 interface Review {
   id: number;
@@ -43,7 +44,7 @@ const ReviewsSection = () => {
 
   const fetchReviews = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=reviews');
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=reviews`);
       const data = await response.json();
       setReviews(data.reviews || []);
     } catch (error) {
@@ -68,7 +69,7 @@ const ReviewsSection = () => {
     setSubmitting(true);
 
     try {
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=reviews', {
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
