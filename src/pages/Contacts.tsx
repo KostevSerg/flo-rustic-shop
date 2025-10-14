@@ -18,6 +18,9 @@ const Contacts = () => {
   const { selectedCity } = useCity();
   const { getText } = useSiteTexts();
   const [cityContact, setCityContact] = useState<CityContact | null>(null);
+  const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
 
   useEffect(() => {
     const fetchCityContact = async () => {
@@ -40,6 +43,34 @@ const Contacts = () => {
       fetchCityContact();
     }
   }, [selectedCity]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch(API_ENDPOINTS.sendContactEmail, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', phone: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -97,36 +128,56 @@ const Contacts = () => {
 
             <div className="bg-accent/20 p-8 rounded-lg">
               <h2 className="text-2xl font-bold mb-4">Напишите нам</h2>
-              <form className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">Ваше имя</label>
                   <input 
                     type="text" 
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Иван Иванов"
+                    required
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Телефон</label>
                   <input 
                     type="tel" 
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="+7 (999) 123-45-67"
+                    required
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Сообщение</label>
                   <textarea 
                     rows={4}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Ваше сообщение..."
+                    required
                   />
                 </div>
+                {submitStatus === 'success' && (
+                  <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg">
+                    Сообщение успешно отправлено!
+                  </div>
+                )}
+                {submitStatus === 'error' && (
+                  <div className="bg-red-100 text-red-800 px-4 py-2 rounded-lg">
+                    Ошибка отправки. Попробуйте позже.
+                  </div>
+                )}
                 <button 
                   type="submit"
-                  className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:opacity-90 transition"
+                  disabled={isSubmitting}
+                  className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
                 >
-                  Отправить
+                  {isSubmitting ? 'Отправка...' : 'Отправить'}
                 </button>
               </form>
             </div>
