@@ -6,10 +6,10 @@ from psycopg2.extras import RealDictCursor
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Manage cities list and city contacts (get cities, add city, get/update contacts)
-    Args: event with httpMethod, body, queryStringParameters (action=contacts for contact operations)
+    Business: Manage cities, city contacts, and reviews (action=contacts for contacts, action=reviews for reviews)
+    Args: event with httpMethod, body, queryStringParameters (action parameter determines operation)
           context with request_id attribute
-    Returns: HTTP response with cities data or contacts data
+    Returns: HTTP response with cities data, contacts data, or reviews data
     '''
     method: str = event.get('httpMethod', 'GET')
     params = event.get('queryStringParameters') or {}
@@ -43,7 +43,27 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     try:
         if method == 'GET':
-            if action == 'contacts':
+            if action == 'reviews':
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('''
+                        SELECT id, name, city, rating, comment, created_at 
+                        FROM reviews 
+                        WHERE is_approved = TRUE 
+                        ORDER BY created_at DESC
+                    ''')
+                    rows = cur.fetchall()
+                    reviews = [dict(row) for row in rows]
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'reviews': reviews}, ensure_ascii=False, default=str)
+                    }
+            elif action == 'contacts':
                 city_name = params.get('city')
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     if city_name:
@@ -123,52 +143,103 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
         
         elif method == 'POST':
-            body_data = json.loads(event.get('body', '{}'))
-            name = body_data.get('name', '').strip()
-            region = body_data.get('region', '').strip()
-            
-            if not name or not region:
-                return {
-                    'statusCode': 400,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'isBase64Encoded': False,
-                    'body': json.dumps({'error': 'Name and region are required'})
-                }
-            
-            with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                cur.execute(
-                    'INSERT INTO cities (name, region) VALUES (%s, %s) RETURNING id, name, region',
-                    (name, region)
-                )
-                new_city = cur.fetchone()
-                city_id = new_city['id']
+            if action == 'reviews':
+                body_data = json.loads(event.get('body', '{}'))
+                name = body_data.get('name', '').strip()
+                city = body_data.get('city', '').strip()
+                email = body_data.get('email', '').strip() or None
+                phone = body_data.get('phone', '').strip() or None
+                rating = body_data.get('rating')
+                comment = body_data.get('comment', '').strip()
                 
-                cur.execute('''
-                    INSERT INTO city_contacts (city_id, phone, email, address, working_hours, delivery_info)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                ''', (
-                    city_id,
-                    '+7 (999) 123-45-67',
-                    'info@florustic.ru',
-                    f'г. {name}, ул. Цветочная, 15',
-                    'Круглосуточно',
-                    'Бесплатная доставка в пределах центра'
-                ))
+                if not name or not city or not rating or not comment:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Name, city, rating and comment are required'})
+                    }
                 
-                conn.commit()
+                if not isinstance(rating, int) or rating < 1 or rating > 5:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Rating must be between 1 and 5'})
+                    }
                 
-                return {
-                    'statusCode': 201,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'isBase64Encoded': False,
-                    'body': json.dumps({'city': dict(new_city)}, ensure_ascii=False)
-                }
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('''
+                        INSERT INTO reviews (name, city, email, phone, rating, comment, is_approved)
+                        VALUES (%s, %s, %s, %s, %s, %s, FALSE)
+                        RETURNING id
+                    ''', (name, city, email, phone, rating, comment))
+                    
+                    result = cur.fetchone()
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 201,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'message': 'Review submitted for approval', 'id': result['id']})
+                    }
+            else:
+                body_data = json.loads(event.get('body', '{}'))
+                name = body_data.get('name', '').strip()
+                region = body_data.get('region', '').strip()
+                
+                if not name or not region:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Name and region are required'})
+                    }
+                
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute(
+                        'INSERT INTO cities (name, region) VALUES (%s, %s) RETURNING id, name, region',
+                        (name, region)
+                    )
+                    new_city = cur.fetchone()
+                    city_id = new_city['id']
+                    
+                    cur.execute('''
+                        INSERT INTO city_contacts (city_id, phone, email, address, working_hours, delivery_info)
+                        VALUES (%s, %s, %s, %s, %s, %s)
+                    ''', (
+                        city_id,
+                        '+7 (999) 123-45-67',
+                        'info@florustic.ru',
+                        f'г. {name}, ул. Цветочная, 15',
+                        'Круглосуточно',
+                        'Бесплатная доставка в пределах центра'
+                    ))
+                    
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 201,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'city': dict(new_city)}, ensure_ascii=False)
+                    }
         
         elif method == 'PUT':
             if action == 'contacts':

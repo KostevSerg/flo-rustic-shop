@@ -6,51 +6,13 @@ import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import ReviewsSection from '@/components/ReviewsSection';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
-
-interface City {
-  id: number;
-  name: string;
-  region: string;
-}
-
-const createSlug = (name: string): string => {
-  return name
-    .toLowerCase()
-    .replace(/ё/g, 'e')
-    .replace(/[^\u0430-\u044f\u0410-\u042fa-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-');
-};
 
 const Index = () => {
   const { addToCart, totalItems } = useCart();
   const { getText } = useSiteTexts();
-  const [cities, setCities] = useState<City[]>([]);
-  const [loadingCities, setLoadingCities] = useState(true);
-
-  useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459');
-        const data = await response.json();
-        
-        const allCities: City[] = [];
-        Object.values(data.cities || {}).forEach((regionCities: any) => {
-          allCities.push(...regionCities);
-        });
-        
-        setCities(allCities);
-      } catch (error) {
-        console.error('Failed to fetch cities:', error);
-      } finally {
-        setLoadingCities(false);
-      }
-    };
-
-    fetchCities();
-  }, []);
 
   const popularProducts = [
     {
@@ -80,9 +42,8 @@ const Index = () => {
     addToCart(product);
   };
 
-  const citiesList = cities.map(c => c.name).join(', ');
   const pageTitle = 'FloRustic — Доставка свежих цветов и букетов по России';
-  const pageDescription = `Доставка свежих цветов и букетов в ${citiesList || 'города России'}. Широкий выбор композиций для любого случая. Заказать букет онлайн с быстрой доставкой на дом.`;
+  const pageDescription = 'Доставка свежих цветов и букетов в города России. Широкий выбор композиций для любого случая. Заказать букет онлайн с быстрой доставкой на дом.';
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -171,44 +132,7 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
-            {getText('home', 'cities_title', 'Доставка по городам')}
-          </h2>
-          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-            {getText('home', 'cities_subtitle', 'Выберите свой город для просмотра актуального каталога и цен')}
-          </p>
-          
-          {loadingCities ? (
-            <div className="text-center py-8">
-              <div className="animate-spin mx-auto mb-3 w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
-              <p className="text-muted-foreground">Загрузка городов...</p>
-            </div>
-          ) : cities.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
-              {cities.slice(0, 12).map(city => (
-                <Link 
-                  key={city.id} 
-                  to={`/city/${createSlug(city.name)}`}
-                  className="group"
-                >
-                  <div className="bg-card border rounded-lg p-6 text-center hover:border-primary hover:shadow-lg transition-all duration-300">
-                    <Icon name="MapPin" size={32} className="mx-auto mb-3 text-primary group-hover:scale-110 transition-transform" />
-                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
-                      {city.name}
-                    </h3>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground">Города пока не добавлены</p>
-            </div>
-          )}
-        </div>
-      </section>
+      <ReviewsSection />
 
       <section className="py-20 bg-accent/10">
         <div className="container mx-auto px-4">
