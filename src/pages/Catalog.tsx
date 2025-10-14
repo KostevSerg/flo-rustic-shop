@@ -35,9 +35,11 @@ const Catalog = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
+        console.log('Загрузка товаров для города:', selectedCity, 'категория:', activeCategory);
         const url = `${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}&category=${encodeURIComponent(activeCategory)}`;
         const response = await fetch(url);
         const data = await response.json();
+        console.log('Получено товаров:', data.products?.length || 0);
         setProducts(data.products || []);
       } catch (error) {
         console.error('Failed to fetch products:', error);
