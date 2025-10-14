@@ -33,6 +33,8 @@ const createSlug = (name: string): string => {
     .replace(/\s+/g, '-');
 };
 
+type Category = 'Цветы' | 'Шары' | 'Подарки';
+
 const City = () => {
   const { citySlug } = useParams<{ citySlug: string }>();
   const navigate = useNavigate();
@@ -41,6 +43,7 @@ const City = () => {
   const [cityName, setCityName] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [activeCategory, setActiveCategory] = useState<Category>('Цветы');
 
   useEffect(() => {
     const fetchCityAndProducts = async () => {
@@ -71,7 +74,7 @@ const City = () => {
         foundCityName = foundCity.name;
         setCityName(foundCityName);
         
-        const productsUrl = `${API_ENDPOINTS.products}?city=${encodeURIComponent(foundCityName)}`;
+        const productsUrl = `${API_ENDPOINTS.products}?city=${encodeURIComponent(foundCityName)}&category=${encodeURIComponent(activeCategory)}`;
         const productsResponse = await fetch(productsUrl);
         const productsData = await productsResponse.json();
         
@@ -85,7 +88,7 @@ const City = () => {
     };
 
     fetchCityAndProducts();
-  }, [citySlug]);
+  }, [citySlug, activeCategory]);
 
   const handleAddToCart = (product: Product) => {
     addToCart({
@@ -187,9 +190,33 @@ const City = () => {
           <h1 className="text-5xl font-bold mb-4">
             Цветы в {cityName}
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
             Доставка свежих букетов по городу {cityName}. Выберите идеальный букет для любого случая
           </p>
+          
+          <div className="flex justify-center gap-4 flex-wrap">
+            <Button
+              variant={activeCategory === 'Цветы' ? 'default' : 'outline'}
+              onClick={() => setActiveCategory('Цветы')}
+              className="px-6"
+            >
+              Цветы
+            </Button>
+            <Button
+              variant={activeCategory === 'Шары' ? 'default' : 'outline'}
+              onClick={() => setActiveCategory('Шары')}
+              className="px-6"
+            >
+              Шары
+            </Button>
+            <Button
+              variant={activeCategory === 'Подарки' ? 'default' : 'outline'}
+              onClick={() => setActiveCategory('Подарки')}
+              className="px-6"
+            >
+              Подарки
+            </Button>
+          </div>
         </div>
 
         {products.length === 0 ? (
