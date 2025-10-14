@@ -230,14 +230,20 @@ const AdminProducts = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Категория</label>
-                    <input
-                      type="text"
+                    <label className="block text-sm font-medium mb-2">
+                      Категория <span className="text-destructive">*</span>
+                    </label>
+                    <select
                       value={newProduct.category}
                       onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
                       className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                      placeholder="roses"
-                    />
+                      required
+                    >
+                      <option value="">Выберите категорию</option>
+                      <option value="Цветы">Цветы</option>
+                      <option value="Шары">Шары</option>
+                      <option value="Подарки">Подарки</option>
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">URL изображения</label>

@@ -6,6 +6,8 @@ import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import { Button } from '@/components/ui/button';
+import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
 
 interface Product {
@@ -17,18 +19,23 @@ interface Product {
   category?: string;
 }
 
+type Category = 'Цветы' | 'Шары' | 'Подарки';
+type SortOrder = 'asc' | 'desc' | null;
+
 const Catalog = () => {
   const { addToCart, totalItems } = useCart();
   const { selectedCity } = useCity();
   const { getText } = useSiteTexts();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState<Category>('Цветы');
+  const [sortOrder, setSortOrder] = useState<SortOrder>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const url = `${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}`;
+        const url = `${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}&category=${encodeURIComponent(activeCategory)}`;
         const response = await fetch(url);
         const data = await response.json();
         setProducts(data.products || []);
@@ -40,7 +47,7 @@ const Catalog = () => {
     };
 
     fetchProducts();
-  }, [selectedCity]);
+  }, [selectedCity, activeCategory]);
 
   const handleAddToCart = (product: Product) => {
     addToCart({
@@ -51,8 +58,15 @@ const Catalog = () => {
     });
   };
 
+  const sortedProducts = [...products].sort((a, b) => {
+    if (!sortOrder) return 0;
+    return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
+  });
+
   const pageTitle = 'Каталог букетов | FloRustic — Доставка цветов';
   const pageDescription = 'Полный каталог свежих букетов и цветочных композиций. Выберите идеальный букет для любого случая. Доставка по всей России.';
+
+  const categories: Category[] = ['Цветы', 'Шары', 'Подарки'];
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -88,21 +102,59 @@ const Catalog = () => {
         <h1 className="text-5xl font-bold text-center mb-4">
           {getText('catalog', 'title', 'Каталог')}
         </h1>
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+        <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
           {getText('catalog', 'subtitle', 'Выберите идеальный букет для любого случая')}
         </p>
+
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+          <div className="flex gap-2 overflow-x-auto w-full sm:w-auto">
+            {categories.map((cat) => (
+              <Button
+                key={cat}
+                variant={activeCategory === cat ? 'default' : 'outline'}
+                onClick={() => setActiveCategory(cat)}
+                className="whitespace-nowrap"
+              >
+                {cat}
+              </Button>
+            ))}
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              variant={sortOrder === 'asc' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSortOrder(sortOrder === 'asc' ? null : 'asc')}
+              className="whitespace-nowrap"
+            >
+              <Icon name="ArrowUp" size={16} className="mr-1" />
+              По возрастанию
+            </Button>
+            <Button
+              variant={sortOrder === 'desc' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSortOrder(sortOrder === 'desc' ? null : 'desc')}
+              className="whitespace-nowrap"
+            >
+              <Icon name="ArrowDown" size={16} className="mr-1" />
+              По убыванию
+            </Button>
+          </div>
+        </div>
+
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin mx-auto mb-3 w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
             <p className="text-muted-foreground">Загрузка товаров...</p>
           </div>
-        ) : products.length === 0 ? (
+        ) : sortedProducts.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">Товары не найдены</p>
+            <Icon name="Package" size={64} className="mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">Товары в этой категории пока не добавлены</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map(product => (
+            {sortedProducts.map(product => (
               <ProductCard 
                 key={product.id} 
                 product={{
