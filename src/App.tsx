@@ -9,6 +9,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { CityProvider } from "@/contexts/CityContext";
 import { SiteTextsProvider } from "@/contexts/SiteTextsContext";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
+import JivoChat from "@/components/JivoChat";
 import Index from "./pages/Index";
 import Catalog from "./pages/Catalog";
 import City from "./pages/City";
@@ -41,6 +42,7 @@ const App = () => (
               <TooltipProvider>
                 <Toaster />
                 <Sonner />
+                <JivoChat />
                 <BrowserRouter>
                   <Routes>
                     <Route path="/" element={<Index />} />

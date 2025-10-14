@@ -4,6 +4,8 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
 from datetime import datetime
+import uuid
+import requests
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -99,6 +101,88 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         elif method == 'POST':
             body_data = json.loads(event.get('body', '{}'))
+            params = event.get('queryStringParameters') or {}
+            action = params.get('action')
+            
+            if action == 'create_payment':
+                shop_id = os.environ.get('YUKASSA_SHOP_ID')
+                secret_key = os.environ.get('YUKASSA_SECRET_KEY')
+                
+                if not shop_id or not secret_key:
+                    return {
+                        'statusCode': 500,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Payment not configured'}),
+                        'isBase64Encoded': False
+                    }
+                
+                amount = body_data.get('amount')
+                order_id = body_data.get('order_id')
+                return_url = body_data.get('return_url', 'https://your-site.com/')
+                
+                if not amount or not order_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Amount and order_id required'}),
+                        'isBase64Encoded': False
+                    }
+                
+                idempotence_key = str(uuid.uuid4())
+                
+                payment_data = {
+                    'amount': {
+                        'value': f'{float(amount):.2f}',
+                        'currency': 'RUB'
+                    },
+                    'confirmation': {
+                        'type': 'redirect',
+                        'return_url': return_url
+                    },
+                    'capture': True,
+                    'description': f'Заказ #{order_id}',
+                    'metadata': {
+                        'order_id': str(order_id)
+                    }
+                }
+                
+                response = requests.post(
+                    'https://api.yookassa.ru/v3/payments',
+                    json=payment_data,
+                    headers={
+                        'Idempotence-Key': idempotence_key,
+                        'Content-Type': 'application/json'
+                    },
+                    auth=(shop_id, secret_key)
+                )
+                
+                if response.status_code != 200:
+                    return {
+                        'statusCode': 500,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Payment creation failed'}),
+                        'isBase64Encoded': False
+                    }
+                
+                payment_info = response.json()
+                
+                cursor.execute('''
+                    UPDATE orders
+                    SET payment_id = %s
+                    WHERE id = %s
+                ''', (payment_info['id'], order_id))
+                conn.commit()
+                
+                return {
+                    'statusCode': 200,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({
+                        'payment_id': payment_info['id'],
+                        'payment_url': payment_info['confirmation']['confirmation_url'],
+                        'status': payment_info['status']
+                    }),
+                    'isBase64Encoded': False
+                }
             
             order_number = f"ORD-{datetime.now().strftime('%Y%m%d')}-{datetime.now().microsecond}"
             

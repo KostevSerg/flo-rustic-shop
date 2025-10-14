@@ -142,6 +142,29 @@ const Checkout = () => {
         throw new Error('Failed to send order');
       }
 
+      const result = await response.json();
+      const orderId = result.id;
+
+      if (formData.paymentMethod === 'online') {
+        const paymentResponse = await fetch('https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae?action=create_payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: finalPrice,
+            order_id: orderId,
+            return_url: window.location.origin + '/orders/' + orderId
+          })
+        });
+
+        if (paymentResponse.ok) {
+          const paymentData = await paymentResponse.json();
+          window.location.href = paymentData.payment_url;
+          return;
+        }
+      }
+
       toast({
         title: "Заказ оформлен!",
         description: `Ваш заказ на сумму ${finalPrice} ₽ принят в обработку. Мы свяжемся с вами в ближайшее время.`
