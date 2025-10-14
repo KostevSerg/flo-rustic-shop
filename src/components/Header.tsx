@@ -44,9 +44,6 @@ const Header = ({ cartCount }: HeaderProps) => {
             <Link to="/about" className="hover:text-primary transition">
               О нас
             </Link>
-            <Link to="/reviews" className="hover:text-primary transition">
-              Отзывы
-            </Link>
             <Link to="/contacts" className="hover:text-primary transition">
               Контакты
             </Link>
@@ -63,6 +60,11 @@ const Header = ({ cartCount }: HeaderProps) => {
             <Link to="/admin" className="hover:text-primary transition" title="Админ-панель">
               <Icon name="Settings" size={24} />
             </Link>
+
+            <a href="tel:+79952151096" className="flex items-center gap-2 hover:text-primary transition font-medium">
+              <Icon name="Phone" size={20} />
+              <span className="whitespace-nowrap">+7 995 215-10-96</span>
+            </a>
 
             <Link to="/cart" className="relative hover:text-primary transition">
               <Icon name="ShoppingCart" size={24} />
@@ -89,9 +91,6 @@ const Header = ({ cartCount }: HeaderProps) => {
             <Link to="/about" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
               О нас
             </Link>
-            <Link to="/reviews" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
-              Отзывы
-            </Link>
             <Link to="/contacts" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
               Контакты
             </Link>
@@ -105,6 +104,10 @@ const Header = ({ cartCount }: HeaderProps) => {
                   />
                 </div>
               </div>
+              <a href="tel:+79952151096" className="flex items-center gap-2 hover:text-primary transition font-medium">
+                <Icon name="Phone" size={20} />
+                <span>+7 995 215-10-96</span>
+              </a>
               <div className="flex items-center justify-end space-x-4">
                 <Link to="/admin" className="hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
                   <Icon name="Settings" size={24} />
