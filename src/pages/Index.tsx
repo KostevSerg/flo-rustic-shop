@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
+import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -16,6 +17,7 @@ interface City {
 
 const Index = () => {
   const { addToCart, totalItems } = useCart();
+  const { getText } = useSiteTexts();
   const [cities, setCities] = useState<City[]>([]);
   const [loadingCities, setLoadingCities] = useState(true);
 
@@ -109,10 +111,10 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-              Цветы, которые дарят эмоции
+              {getText('home', 'hero_title', 'Цветы, которые дарят эмоции')}
             </h1>
             <p className="text-xl text-muted-foreground mb-8 animate-fade-in">
-              Свежие букеты с доставкой по городу. Создаем композиции с душой и вниманием к деталям.
+              {getText('home', 'hero_subtitle', 'Свежие букеты с доставкой по городу. Создаем композиции с душой и вниманием к деталям.')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
               <Link to="/catalog">
@@ -132,9 +134,11 @@ const Index = () => {
 
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">Популярные товары</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
+            {getText('home', 'popular_title', 'Популярные товары')}
+          </h2>
           <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Наши самые любимые композиции, которые выбирают чаще всего
+            {getText('home', 'popular_subtitle', 'Наши самые любимые композиции, которые выбирают чаще всего')}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {popularProducts.map(product => (
@@ -154,9 +158,11 @@ const Index = () => {
 
       <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">Доставка по городам</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
+            {getText('home', 'cities_title', 'Доставка по городам')}
+          </h2>
           <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Выберите свой город для просмотра актуального каталога и цен
+            {getText('home', 'cities_subtitle', 'Выберите свой город для просмотра актуального каталога и цен')}
           </p>
           
           {loadingCities ? (

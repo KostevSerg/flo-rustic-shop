@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
+import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -18,6 +19,7 @@ interface Product {
 const Catalog = () => {
   const { addToCart, totalItems } = useCart();
   const { selectedCity } = useCity();
+  const { getText } = useSiteTexts();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -82,9 +84,11 @@ const Catalog = () => {
       
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
-        <h1 className="text-5xl font-bold text-center mb-4">Каталог</h1>
+        <h1 className="text-5xl font-bold text-center mb-4">
+          {getText('catalog', 'title', 'Каталог')}
+        </h1>
         <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          Выберите идеальный букет для любого случая
+          {getText('catalog', 'subtitle', 'Выберите идеальный букет для любого случая')}
         </p>
         {loading ? (
           <div className="text-center py-12">

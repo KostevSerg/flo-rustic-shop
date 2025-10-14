@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
+import { useSiteTexts } from '@/contexts/SiteTextsContext';
 
 const Footer = () => {
+  const { getText } = useSiteTexts();
   return (
     <footer className="bg-primary text-primary-foreground mt-auto">
       <div className="container mx-auto px-4 py-12">
@@ -15,7 +17,7 @@ const Footer = () => {
               />
             </div>
             <p className="text-primary-foreground/80 text-sm">
-              Цветочная мастерская с душой. Создаем букеты, которые дарят радость.
+              {getText('footer', 'description', 'Цветочная мастерская с душой. Создаем букеты, которые дарят радость.')}
             </p>
           </div>
 
@@ -50,15 +52,15 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-primary-foreground/80">
               <li className="flex items-center space-x-2">
                 <Icon name="Phone" size={16} />
-                <span>+7 (999) 123-45-67</span>
+                <span>{getText('contacts', 'phone', '+7 (999) 123-45-67')}</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Icon name="Mail" size={16} />
-                <span>info@florustic.ru</span>
+                <span>{getText('contacts', 'email', 'info@florustic.ru')}</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Icon name="MapPin" size={16} />
-                <span>г. Москва, ул. Цветочная, 15</span>
+                <span>{getText('contacts', 'address', 'г. Москва, ул. Цветочная, 15')}</span>
               </li>
             </ul>
           </div>

@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { CartProvider } from "@/contexts/CartContext";
 import { CityProvider } from "@/contexts/CityContext";
+import { SiteTextsProvider } from "@/contexts/SiteTextsContext";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import Index from "./pages/Index";
 import Catalog from "./pages/Catalog";
@@ -21,6 +22,7 @@ import Checkout from "./pages/Checkout";
 import Admin from "./pages/Admin";
 import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
+import AdminTexts from "./pages/AdminTexts";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -30,34 +32,37 @@ const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <AdminAuthProvider>
-        <CityProvider>
-          <CartProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/catalog" element={<Catalog />} />
-                  <Route path="/city/:citySlug" element={<City />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/delivery" element={<Delivery />} />
-                  <Route path="/guarantees" element={<Guarantees />} />
-                  <Route path="/contacts" element={<Contacts />} />
-                  <Route path="/reviews" element={<Reviews />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route path="/admin" element={<AdminDashboard />} />
-                  <Route path="/admin/cities" element={<Admin />} />
-                  <Route path="/admin/products" element={<AdminProducts />} />
-                  <Route path="/admin/orders" element={<AdminOrders />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </BrowserRouter>
-            </TooltipProvider>
-          </CartProvider>
-        </CityProvider>
+        <SiteTextsProvider>
+          <CityProvider>
+            <CartProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/catalog" element={<Catalog />} />
+                    <Route path="/city/:citySlug" element={<City />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/delivery" element={<Delivery />} />
+                    <Route path="/guarantees" element={<Guarantees />} />
+                    <Route path="/contacts" element={<Contacts />} />
+                    <Route path="/reviews" element={<Reviews />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/admin" element={<AdminDashboard />} />
+                    <Route path="/admin/cities" element={<Admin />} />
+                    <Route path="/admin/products" element={<AdminProducts />} />
+                    <Route path="/admin/orders" element={<AdminOrders />} />
+                    <Route path="/admin/texts" element={<AdminTexts />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+              </TooltipProvider>
+            </CartProvider>
+          </CityProvider>
+        </SiteTextsProvider>
       </AdminAuthProvider>
     </QueryClientProvider>
   </HelmetProvider>

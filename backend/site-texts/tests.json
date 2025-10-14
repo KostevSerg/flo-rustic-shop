@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "name": "Get all site texts",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "texts": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Update site text",
+      "method": "PUT",
+      "path": "/",
+      "body": {
+        "id": 1,
+        "value": "Новый текст заголовка"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

@@ -152,7 +152,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <button
                   onClick={() => navigate('/admin/orders')}
                   className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all hover:scale-105 text-left"
@@ -198,6 +198,22 @@ const AdminDashboard = () => {
                   <h3 className="text-xl font-bold mb-2">Города</h3>
                   <p className="text-muted-foreground text-sm">
                     Управление городами доставки
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => navigate('/admin/texts')}
+                  className="bg-card border border-border rounded-xl p-6 hover:shadow-lg transition-all hover:scale-105 text-left"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <Icon name="FileText" size={24} className="text-primary" />
+                    </div>
+                    <Icon name="ArrowRight" size={20} className="text-muted-foreground" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">Редактирование сайта</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Изменение текстов на страницах
                   </p>
                 </button>
               </div>
