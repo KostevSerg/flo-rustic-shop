@@ -5,6 +5,7 @@ import AdminAuth from '@/components/AdminAuth';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useCart } from '@/contexts/CartContext';
+import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
@@ -23,6 +24,7 @@ const AdminTexts = () => {
   const { isAuthenticated } = useAdminAuth();
   const { totalItems } = useCart();
   const { toast } = useToast();
+  const { refreshTexts } = useSiteTexts();
   const [texts, setTexts] = useState<SiteText[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -85,6 +87,7 @@ const AdminTexts = () => {
         );
         setEditingId(null);
         setEditValue('');
+        await refreshTexts();
         toast({
           title: 'Успешно',
           description: 'Текст обновлён'
