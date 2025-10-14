@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
-  const [cartCount, setCartCount] = useState(0);
+  const { addToCart, totalItems } = useCart();
 
   const popularProducts = [
     {
@@ -33,13 +33,13 @@ const Index = () => {
     }
   ];
 
-  const handleAddToCart = () => {
-    setCartCount(cartCount + 1);
+  const handleAddToCart = (product: typeof popularProducts[0]) => {
+    addToCart(product);
   };
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header cartCount={cartCount} />
+      <Header cartCount={totalItems} />
       
       <section className="relative bg-gradient-to-br from-accent/20 to-background py-24 md:py-32">
         <div className="container mx-auto px-4">
@@ -74,7 +74,7 @@ const Index = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {popularProducts.map(product => (
-              <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
+              <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
             ))}
           </div>
           <div className="text-center">

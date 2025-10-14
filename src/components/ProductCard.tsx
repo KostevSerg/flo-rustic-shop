@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 
 interface Product {
@@ -15,6 +16,15 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
+  const { toast } = useToast();
+
+  const handleAddToCart = () => {
+    onAddToCart();
+    toast({
+      title: "Добавлено в корзину",
+      description: `${product.name} успешно добавлен в корзину`
+    });
+  };
   return (
     <div className="group bg-card border border-border rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300">
       <div className="relative overflow-hidden aspect-square">
@@ -30,7 +40,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
         <div className="flex items-center justify-between">
           <span className="text-2xl font-bold">{product.price} ₽</span>
           <Button 
-            onClick={onAddToCart}
+            onClick={handleAddToCart}
             className="bg-primary text-primary-foreground hover:opacity-90"
           >
             <Icon name="ShoppingCart" size={20} className="mr-2" />

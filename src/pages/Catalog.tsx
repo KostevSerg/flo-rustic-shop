@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 
 const Catalog = () => {
-  const [cartCount, setCartCount] = useState(0);
+  const { addToCart, totalItems } = useCart();
 
   const products = [
     {
@@ -51,13 +51,13 @@ const Catalog = () => {
     }
   ];
 
-  const handleAddToCart = () => {
-    setCartCount(cartCount + 1);
+  const handleAddToCart = (product: typeof products[0]) => {
+    addToCart(product);
   };
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header cartCount={cartCount} />
+      <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <h1 className="text-5xl font-bold text-center mb-4">Каталог</h1>
         <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
@@ -65,7 +65,7 @@ const Catalog = () => {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map(product => (
-            <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
+            <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
           ))}
         </div>
       </main>

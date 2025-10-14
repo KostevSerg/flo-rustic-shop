@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Icon from '@/components/ui/icon';
 
 const Reviews = () => {
-  const [cartCount] = useState(0);
+  const { totalItems } = useCart();
 
   const reviews = [
     {
@@ -53,7 +53,7 @@ const Reviews = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header cartCount={cartCount} />
+      <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-5xl font-bold text-center mb-4">Отзывы</h1>
