@@ -1,58 +1,49 @@
+import { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  image_url: string;
+  category?: string;
+}
+
 const Catalog = () => {
   const { addToCart, totalItems } = useCart();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCity, setSelectedCity] = useState('Москва');
 
-  const products = [
-    {
-      id: 1,
-      name: 'Нежность',
-      description: 'Букет из розовых и белых роз с эвкалиптом',
-      price: 3500,
-      image: 'https://cdn.poehali.dev/projects/be23cceb-0ab8-4764-8b57-fed61fedc50e/files/24578968-7a19-4e34-bde7-3db4eeb6fbfb.jpg'
-    },
-    {
-      id: 2,
-      name: 'Классика',
-      description: 'Элегантный букет из красных роз и белых лилий',
-      price: 4200,
-      image: 'https://cdn.poehali.dev/projects/be23cceb-0ab8-4764-8b57-fed61fedc50e/files/0d6e767d-1dda-4de4-a9eb-29047a061763.jpg'
-    },
-    {
-      id: 3,
-      name: 'Полевой',
-      description: 'Букет с подсолнухами, ромашками и зеленью',
-      price: 2800,
-      image: 'https://cdn.poehali.dev/projects/be23cceb-0ab8-4764-8b57-fed61fedc50e/files/77f65509-61f6-4258-b779-cb174989f3e5.jpg'
-    },
-    {
-      id: 4,
-      name: 'Весенний',
-      description: 'Яркий микс из тюльпанов и гипсофилы',
-      price: 3200,
-      image: 'https://cdn.poehali.dev/projects/be23cceb-0ab8-4764-8b57-fed61fedc50e/files/24578968-7a19-4e34-bde7-3db4eeb6fbfb.jpg'
-    },
-    {
-      id: 5,
-      name: 'Романтика',
-      description: 'Пионы и кустовые розы в нежных тонах',
-      price: 4500,
-      image: 'https://cdn.poehali.dev/projects/be23cceb-0ab8-4764-8b57-fed61fedc50e/files/0d6e767d-1dda-4de4-a9eb-29047a061763.jpg'
-    },
-    {
-      id: 6,
-      name: 'Летний',
-      description: 'Гортензии с декоративной зеленью',
-      price: 3800,
-      image: 'https://cdn.poehali.dev/projects/be23cceb-0ab8-4764-8b57-fed61fedc50e/files/77f65509-61f6-4258-b779-cb174989f3e5.jpg'
-    }
-  ];
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const url = `https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531?city=${encodeURIComponent(selectedCity)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        setProducts(data.products || []);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleAddToCart = (product: typeof products[0]) => {
-    addToCart(product);
+    fetchProducts();
+  }, [selectedCity]);
+
+  const handleAddToCart = (product: Product) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image_url
+    });
   };
 
   return (
@@ -63,11 +54,32 @@ const Catalog = () => {
         <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
           Выберите идеальный букет для любого случая
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map(product => (
-            <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin mx-auto mb-3 w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
+            <p className="text-muted-foreground">Загрузка товаров...</p>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Товары не найдены</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map(product => (
+              <ProductCard 
+                key={product.id} 
+                product={{
+                  id: product.id,
+                  name: product.name,
+                  description: product.description,
+                  price: product.price,
+                  image: product.image_url
+                }} 
+                onAddToCart={() => handleAddToCart(product)} 
+              />
+            ))}
+          </div>
+        )}
       </main>
       <Footer />
     </div>
