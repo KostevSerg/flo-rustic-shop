@@ -31,7 +31,7 @@ const Checkout = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name || !formData.phone || !formData.address) {
@@ -43,16 +43,64 @@ const Checkout = () => {
       return;
     }
 
-    toast({
-      title: "Заказ оформлен!",
-      description: `Ваш заказ на сумму ${totalPrice} ₽ принят в обработку. Мы свяжемся с вами в ближайшее время.`
-    });
+    const paymentMethodLabels: Record<string, string> = {
+      'card': 'Картой онлайн',
+      'cash': 'Наличными при получении',
+      'card-courier': 'Картой курьеру'
+    };
 
-    clearCart();
-    
-    setTimeout(() => {
-      navigate('/');
-    }, 2000);
+    const orderData = {
+      order: {
+        city: formData.city,
+        address: formData.address,
+        deliveryDate: formData.deliveryDate,
+        deliveryTime: formData.deliveryTime,
+        totalPrice: totalPrice,
+        paymentMethod: paymentMethodLabels[formData.paymentMethod] || formData.paymentMethod,
+        comment: formData.comment
+      },
+      customer: {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email
+      },
+      items: items.map(item => ({
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price
+      }))
+    };
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/97825be8-1815-431a-99ba-3b3ed7c3f8a5', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send order');
+      }
+
+      toast({
+        title: "Заказ оформлен!",
+        description: `Ваш заказ на сумму ${totalPrice} ₽ принят в обработку. Мы свяжемся с вами в ближайшее время.`
+      });
+
+      clearCart();
+      
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } catch (error) {
+      toast({
+        title: "Ошибка отправки",
+        description: "Не удалось отправить заказ. Попробуйте позже или свяжитесь с нами по телефону.",
+        variant: "destructive"
+      });
+    }
   };
 
   if (items.length === 0) {

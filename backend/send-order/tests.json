@@ -1,0 +1,48 @@
+{
+  "tests": [
+    {
+      "name": "Test OPTIONS request for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Test order email sending",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "order": {
+          "city": "Москва",
+          "address": "ул. Тестовая, д. 1",
+          "deliveryDate": "2024-10-20",
+          "deliveryTime": "14:00",
+          "totalPrice": 7700,
+          "paymentMethod": "Картой онлайн",
+          "comment": "Тестовый заказ"
+        },
+        "customer": {
+          "name": "Тестовый Покупатель",
+          "phone": "+7 (999) 123-45-67",
+          "email": "test@example.com"
+        },
+        "items": [
+          {
+            "name": "Нежность",
+            "quantity": 1,
+            "price": 3500
+          },
+          {
+            "name": "Классика",
+            "quantity": 1,
+            "price": 4200
+          }
+        ]
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "message": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
