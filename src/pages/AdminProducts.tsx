@@ -228,11 +228,11 @@ const AdminProducts = () => {
   const handleEditClick = (product: Product) => {
     setEditProduct({
       id: product.id,
-      name: product.name,
-      description: product.description,
-      image_url: product.image_url,
-      base_price: product.base_price.toString(),
-      category: product.category
+      name: product.name || '',
+      description: product.description || '',
+      image_url: product.image_url || '',
+      base_price: product.base_price ? product.base_price.toString() : '',
+      category: product.category || ''
     });
     setShowEditModal(true);
   };
