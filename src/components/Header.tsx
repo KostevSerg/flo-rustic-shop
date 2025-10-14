@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import CitySelector from '@/components/CitySelector';
+import { useCity } from '@/contexts/CityContext';
 
 interface HeaderProps {
   cartCount: number;
 }
 
 const Header = ({ cartCount }: HeaderProps) => {
-  const [selectedCity, setSelectedCity] = useState('Москва');
+  const { selectedCity, setCity } = useCity();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -54,7 +55,7 @@ const Header = ({ cartCount }: HeaderProps) => {
             <div className="w-56">
               <CitySelector
                 value={selectedCity}
-                onChange={setSelectedCity}
+                onChange={setCity}
               />
             </div>
 
@@ -99,7 +100,7 @@ const Header = ({ cartCount }: HeaderProps) => {
                 <div className="flex-1">
                   <CitySelector
                     value={selectedCity}
-                    onChange={setSelectedCity}
+                    onChange={setCity}
                   />
                 </div>
               </div>

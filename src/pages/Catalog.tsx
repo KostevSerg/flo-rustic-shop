@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
+import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -16,9 +17,9 @@ interface Product {
 
 const Catalog = () => {
   const { addToCart, totalItems } = useCart();
+  const { selectedCity } = useCity();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCity, setSelectedCity] = useState('Москва');
 
   useEffect(() => {
     const fetchProducts = async () => {
