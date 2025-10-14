@@ -1,10 +1,45 @@
+import { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
+import { useCity } from '@/contexts/CityContext';
+import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Icon from '@/components/ui/icon';
+import API_ENDPOINTS from '@/config/api';
+
+interface CityContact {
+  phone: string;
+  email: string;
+  address: string;
+}
 
 const Contacts = () => {
   const { totalItems } = useCart();
+  const { selectedCity } = useCity();
+  const { getText } = useSiteTexts();
+  const [cityContact, setCityContact] = useState<CityContact | null>(null);
+
+  useEffect(() => {
+    const fetchCityContact = async () => {
+      try {
+        const response = await fetch(`${API_ENDPOINTS.cities}?action=contacts&city=${encodeURIComponent(selectedCity)}`);
+        const data = await response.json();
+        if (data.contact) {
+          setCityContact({
+            phone: data.contact.phone,
+            email: data.contact.email,
+            address: data.contact.address
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch city contact:', error);
+      }
+    };
+
+    if (selectedCity) {
+      fetchCityContact();
+    }
+  }, [selectedCity]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -21,7 +56,7 @@ const Contacts = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Телефон</h3>
-                  <p className="text-muted-foreground">+7 (999) 123-45-67</p>
+                  <p className="text-muted-foreground">{cityContact?.phone || getText('contacts', 'phone', '+7 (999) 123-45-67')}</p>
                   <p className="text-sm text-muted-foreground">Ежедневно с 9:00 до 21:00</p>
                 </div>
               </div>
@@ -32,7 +67,7 @@ const Contacts = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Email</h3>
-                  <p className="text-muted-foreground">info@florustic.ru</p>
+                  <p className="text-muted-foreground">{cityContact?.email || getText('contacts', 'email', 'info@florustic.ru')}</p>
                   <p className="text-sm text-muted-foreground">Ответим в течение часа</p>
                 </div>
               </div>
@@ -43,8 +78,8 @@ const Contacts = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Адрес</h3>
-                  <p className="text-muted-foreground">г. Москва, ул. Цветочная, д. 15</p>
-                  <p className="text-sm text-muted-foreground">Ближайшее метро: Парк культуры</p>
+                  <p className="text-muted-foreground">{cityContact?.address || getText('contacts', 'address', 'г. Москва, ул. Цветочная, 15')}</p>
+                  <p className="text-sm text-muted-foreground">Город: {selectedCity}</p>
                 </div>
               </div>
 
