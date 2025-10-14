@@ -10,7 +10,7 @@ interface City {
 
 interface CitySelectorProps {
   value: string;
-  onChange: (city: string) => void;
+  onChange: (city: string, cityId: number) => void;
 }
 
 const CitySelector = ({ value, onChange }: CitySelectorProps) => {
@@ -46,8 +46,8 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
     return acc;
   }, {} as Record<string, City[]>);
 
-  const handleSelect = (cityName: string) => {
-    onChange(cityName);
+  const handleSelect = (cityName: string, cityId: number) => {
+    onChange(cityName, cityId);
     setIsOpen(false);
     setSearchQuery('');
   };
@@ -120,7 +120,7 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
                         {regionCities.map((city) => (
                           <button
                             key={city.id}
-                            onClick={() => handleSelect(city.name)}
+                            onClick={() => handleSelect(city.name, city.id)}
                             className="w-full px-3 py-2 text-left rounded-md hover:bg-primary hover:text-primary-foreground transition-colors"
                           >
                             {city.name}

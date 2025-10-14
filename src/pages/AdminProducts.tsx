@@ -235,8 +235,8 @@ const AdminProducts = () => {
             </div>
             <div className="flex gap-3">
               <Button variant="outline" onClick={() => navigate('/admin')}>
-                <Icon name="MapPin" size={18} className="mr-2" />
-                Города
+                <Icon name="LayoutDashboard" size={18} className="mr-2" />
+                Админ-панель
               </Button>
               <Button onClick={() => setShowAddForm(!showAddForm)}>
                 <Icon name="Plus" size={18} className="mr-2" />

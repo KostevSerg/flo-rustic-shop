@@ -18,7 +18,8 @@ const Checkout = () => {
     phone: '',
     email: '',
     address: '',
-    city: 'Москва',
+    city: '',
+    cityId: null as number | null,
     comment: '',
     paymentMethod: 'card',
     deliveryDate: '',
@@ -35,45 +36,32 @@ const Checkout = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.phone || !formData.address) {
+    if (!formData.name || !formData.phone || !formData.address || !formData.cityId) {
       toast({
         title: "Ошибка",
-        description: "Заполните все обязательные поля",
+        description: "Заполните все обязательные поля, включая город",
         variant: "destructive"
       });
       return;
     }
 
-    const paymentMethodLabels: Record<string, string> = {
-      'card': 'Картой онлайн',
-      'cash': 'Наличными при получении',
-      'card-courier': 'Картой курьеру'
-    };
-
     const orderData = {
-      order: {
-        city: formData.city,
-        address: formData.address,
-        deliveryDate: formData.deliveryDate,
-        deliveryTime: formData.deliveryTime,
-        totalPrice: totalPrice,
-        paymentMethod: paymentMethodLabels[formData.paymentMethod] || formData.paymentMethod,
-        comment: formData.comment
-      },
-      customer: {
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email
-      },
+      customer_name: formData.name,
+      customer_phone: formData.phone,
+      customer_email: formData.email || null,
+      city_id: formData.cityId,
+      delivery_address: formData.address,
       items: items.map(item => ({
+        id: item.id,
         name: item.name,
         quantity: item.quantity,
         price: item.price
-      }))
+      })),
+      total_amount: totalPrice
     };
 
     try {
-      const response = await fetch('https://functions.poehali.dev/97825be8-1815-431a-99ba-3b3ed7c3f8a5', {
+      const response = await fetch('https://functions.poehali.dev/92fe6c7e-b699-4325-a4e7-ee427bef50ae', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -173,10 +161,12 @@ const Checkout = () => {
                 </h2>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Город</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Город <span className="text-destructive">*</span>
+                    </label>
                     <CitySelector
                       value={formData.city}
-                      onChange={(city) => setFormData({ ...formData, city })}
+                      onChange={(city, cityId) => setFormData({ ...formData, city, cityId })}
                     />
                   </div>
                   <div>

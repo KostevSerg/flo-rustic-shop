@@ -173,10 +173,10 @@ const Admin = () => {
             <div className="flex gap-3">
               <Button
                 variant="outline"
-                onClick={() => navigate('/admin/products')}
+                onClick={() => navigate('/admin')}
               >
-                <Icon name="Package" size={18} className="mr-2" />
-                Товары
+                <Icon name="LayoutDashboard" size={18} className="mr-2" />
+                Админ-панель
               </Button>
               <Button
                 onClick={() => setShowAddForm(!showAddForm)}

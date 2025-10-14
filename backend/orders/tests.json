@@ -1,0 +1,27 @@
+{
+  "tests": [
+    {
+      "name": "Get all orders",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": [],
+      "bodyMatcher": "type"
+    },
+    {
+      "name": "Create new order",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "customer_name": "Иван Иванов",
+        "customer_phone": "+79001234567",
+        "customer_email": "ivan@example.com",
+        "city_id": 1,
+        "delivery_address": "ул. Тестовая, д. 1",
+        "items": [{"id": 1, "name": "Test Product", "quantity": 1, "price": 1000}],
+        "total_amount": 1000
+      },
+      "expectedStatus": 201
+    }
+  ]
+}
