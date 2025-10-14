@@ -88,7 +88,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     msg.attach(MIMEText(email_body, 'plain', 'utf-8'))
     
     try:
-        server = smtplib.SMTP('smtp.yandex.ru', smtp_port)
+        server = smtplib.SMTP('smtp.yandex.ru', smtp_port, timeout=10)
+        server.set_debuglevel(0)
         server.starttls()
         server.login(smtp_user, smtp_password)
         server.send_message(msg)
@@ -101,7 +102,27 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Origin': '*'
             },
             'isBase64Encoded': False,
-            'body': json.dumps({'success': True, 'message': 'Сообщение отправлено'})
+            'body': json.dumps({'success': True, 'message': 'Сообщение успешно отправлено'})
+        }
+    except smtplib.SMTPAuthenticationError as e:
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'isBase64Encoded': False,
+            'body': json.dumps({'error': 'Ошибка авторизации SMTP. Проверьте логин и пароль приложения'})
+        }
+    except smtplib.SMTPException as e:
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'isBase64Encoded': False,
+            'body': json.dumps({'error': f'Ошибка SMTP: {str(e)}'})
         }
     except Exception as e:
         return {
@@ -110,5 +131,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
+            'isBase64Encoded': False,
             'body': json.dumps({'error': f'Ошибка отправки: {str(e)}'})
         }
