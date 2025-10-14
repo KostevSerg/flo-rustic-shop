@@ -12,7 +12,7 @@ const CheckoutPaymentForm = ({ paymentMethod, onChange }: CheckoutPaymentFormPro
   useEffect(() => {
     const fetchPaymentInfo = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/27d94d36-d1b7-4d70-b481-1c9d30e56c2c');
+        const response = await fetch('https://functions.poehali.dev/9659db56-006e-4dec-892b-23c00b3eefeb');
         const data = await response.json();
         const paymentInfo = data.texts?.find((t: any) => t.page === 'checkout' && t.key === 'payment_info');
         if (paymentInfo) {
