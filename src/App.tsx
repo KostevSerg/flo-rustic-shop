@@ -24,6 +24,7 @@ import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
 import AdminTexts from "./pages/AdminTexts";
 import AdminCityContacts from "./pages/AdminCityContacts";
+import AdminReviews from "./pages/AdminReviews";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -57,6 +58,7 @@ const App = () => (
                     <Route path="/admin/orders" element={<AdminOrders />} />
                     <Route path="/admin/texts" element={<AdminTexts />} />
                     <Route path="/admin/city-contacts" element={<AdminCityContacts />} />
+                    <Route path="/admin/reviews" element={<AdminReviews />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>

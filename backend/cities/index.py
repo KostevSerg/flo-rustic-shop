@@ -44,13 +44,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     try:
         if method == 'GET':
             if action == 'reviews':
+                show_all = params.get('all') == 'true'
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    cur.execute('''
-                        SELECT id, name, city, rating, comment, created_at 
-                        FROM reviews 
-                        WHERE is_approved = TRUE 
-                        ORDER BY created_at DESC
-                    ''')
+                    if show_all:
+                        cur.execute('''
+                            SELECT id, name, city, email, phone, rating, comment, is_approved, created_at 
+                            FROM reviews 
+                            ORDER BY created_at DESC
+                        ''')
+                    else:
+                        cur.execute('''
+                            SELECT id, name, city, rating, comment, created_at 
+                            FROM reviews 
+                            WHERE is_approved = TRUE 
+                            ORDER BY created_at DESC
+                        ''')
                     rows = cur.fetchall()
                     reviews = [dict(row) for row in rows]
                     
@@ -242,7 +250,41 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
         
         elif method == 'PUT':
-            if action == 'contacts':
+            if action == 'reviews':
+                body_data = json.loads(event.get('body', '{}'))
+                review_id = body_data.get('id')
+                is_approved = body_data.get('is_approved')
+                
+                if not review_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Review ID is required'})
+                    }
+                
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('''
+                        UPDATE reviews 
+                        SET is_approved = %s 
+                        WHERE id = %s
+                    ''', (is_approved, review_id))
+                    
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'message': 'Review updated successfully'})
+                    }
+            elif action == 'contacts':
                 body_data = json.loads(event.get('body', '{}'))
                 city_id = body_data.get('city_id')
                 phone = body_data.get('phone')
@@ -302,33 +344,61 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         elif method == 'DELETE':
-            body_data = json.loads(event.get('body', '{}'))
-            city_id = body_data.get('id')
-            
-            if not city_id:
-                return {
-                    'statusCode': 400,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'isBase64Encoded': False,
-                    'body': json.dumps({'error': 'City ID is required'})
-                }
-            
-            with conn.cursor() as cur:
-                cur.execute('UPDATE cities SET is_active = false WHERE id = %s', (city_id,))
-                conn.commit()
+            if action == 'reviews':
+                review_id = params.get('id')
                 
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'isBase64Encoded': False,
-                    'body': json.dumps({'success': True})
-                }
+                if not review_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Review ID is required'})
+                    }
+                
+                with conn.cursor() as cur:
+                    cur.execute('DELETE FROM reviews WHERE id = %s', (review_id,))
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'message': 'Review deleted successfully'})
+                    }
+            else:
+                body_data = json.loads(event.get('body', '{}'))
+                city_id = body_data.get('id')
+                
+                if not city_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'City ID is required'})
+                    }
+                
+                with conn.cursor() as cur:
+                    cur.execute('UPDATE cities SET is_active = false WHERE id = %s', (city_id,))
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'success': True})
+                    }
         
         return {
             'statusCode': 405,
