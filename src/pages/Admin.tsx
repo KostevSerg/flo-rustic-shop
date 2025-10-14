@@ -119,7 +119,7 @@ const Admin = () => {
             <div>
               <h1 className="text-4xl font-bold mb-2">Управление городами</h1>
               <p className="text-muted-foreground">
-                Добавляйте и удаляйте города доставки
+                Управляйте городами и населенными пунктами доставки
               </p>
             </div>
             <div className="flex gap-3">
@@ -210,22 +210,32 @@ const Admin = () => {
                     {regionCities.map((city) => (
                       <div
                         key={city.id}
-                        className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors"
+                        className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
+                        onClick={() => navigate(`/admin/city-settlements?city_id=${city.id}&city_name=${encodeURIComponent(city.name)}`)}
                       >
-                        <span className="font-medium">{city.name}</span>
+                        <div className="flex items-center gap-2">
+                          <Icon name="Building2" size={18} className="text-primary" />
+                          <span className="font-medium">{city.name}</span>
+                        </div>
                         <div className="flex gap-1">
                           <Button
                             size="sm"
-                            variant="ghost"
-                            onClick={() => navigate(`/admin/city-settlements?city_id=${city.id}&city_name=${encodeURIComponent(city.name)}`)}
-                            title="Населенные пункты"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/admin/city-settlements?city_id=${city.id}&city_name=${encodeURIComponent(city.name)}`);
+                            }}
+                            title="Населенные пункты и цены доставки"
                           >
-                            <Icon name="MapPin" size={16} />
+                            <Icon name="Settings" size={16} />
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => handleDeleteCity(city.id, city.name)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteCity(city.id, city.name);
+                            }}
                             className="text-destructive hover:text-destructive hover:bg-destructive/10"
                           >
                             <Icon name="Trash2" size={16} />
