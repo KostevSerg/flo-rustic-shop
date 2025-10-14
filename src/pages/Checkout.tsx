@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
@@ -10,30 +10,76 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 
+interface Settlement {
+  id: number;
+  name: string;
+  delivery_price: number;
+}
+
 const Checkout = () => {
   const { items, totalItems, totalPrice, clearCart, removeFromCart, updateQuantity } = useCart();
   const { selectedCity } = useCity();
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const [settlements, setSettlements] = useState<Settlement[]>([]);
+  const [loadingSettlements, setLoadingSettlements] = useState(false);
+  
   const [formData, setFormData] = useState({
     recipientName: '',
     recipientPhone: '',
     senderName: '',
     senderPhone: '',
     email: '',
+    settlementId: '',
     address: '',
     deliveryDate: '',
     deliveryTime: 'any',
     comment: '',
     postcard: '',
-    paymentMethod: 'cash',
-    deliveryType: 'courier',
-    anonymous: false
+    paymentMethod: 'cash'
   });
 
+  useEffect(() => {
+    if (selectedCity) {
+      fetchSettlements();
+    }
+  }, [selectedCity]);
+
+  const fetchSettlements = async () => {
+    setLoadingSettlements(true);
+    try {
+      const citiesResponse = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459');
+      const citiesData = await citiesResponse.json();
+      
+      let cityId = null;
+      const allCities: any[] = [];
+      Object.values(citiesData.cities || {}).forEach((regionCities: any) => {
+        allCities.push(...regionCities);
+      });
+      
+      const foundCity = allCities.find((c: any) => c.name === selectedCity);
+      if (foundCity) {
+        cityId = foundCity.id;
+        
+        const settlementsResponse = await fetch(`https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=settlements&city_id=${cityId}`);
+        const settlementsData = await settlementsResponse.json();
+        setSettlements(settlementsData.settlements || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch settlements:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось загрузить населенные пункты',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoadingSettlements(false);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
+    const value = e.target.value;
     setFormData({
       ...formData,
       [e.target.name]: value
@@ -43,7 +89,7 @@ const Checkout = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.recipientName || !formData.recipientPhone || !formData.address) {
+    if (!formData.recipientName || !formData.recipientPhone || !formData.address || !formData.settlementId) {
       toast({
         title: "Ошибка",
         description: "Заполните все обязательные поля",

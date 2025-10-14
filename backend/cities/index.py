@@ -6,10 +6,10 @@ from psycopg2.extras import RealDictCursor
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Manage cities, city contacts, and reviews (action=contacts for contacts, action=reviews for reviews)
-    Args: event with httpMethod, body, queryStringParameters (action parameter determines operation)
+    Business: Manage cities, city contacts, reviews, and settlements
+    Args: event with httpMethod, body, queryStringParameters (action: contacts/reviews/settlements)
           context with request_id attribute
-    Returns: HTTP response with cities data, contacts data, or reviews data
+    Returns: HTTP response with cities, contacts, reviews, or settlements data
     '''
     method: str = event.get('httpMethod', 'GET')
     params = event.get('queryStringParameters') or {}
@@ -43,7 +43,37 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     try:
         if method == 'GET':
-            if action == 'reviews':
+            if action == 'settlements':
+                city_id = params.get('city_id')
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    if city_id:
+                        cur.execute('''
+                            SELECT id, city_id, name, delivery_price, is_active
+                            FROM settlements
+                            WHERE city_id = %s AND is_active = TRUE
+                            ORDER BY name
+                        ''', (city_id,))
+                    else:
+                        cur.execute('''
+                            SELECT s.id, s.city_id, c.name as city_name, s.name, s.delivery_price, s.is_active
+                            FROM settlements s
+                            JOIN cities c ON c.id = s.city_id
+                            WHERE s.is_active = TRUE
+                            ORDER BY c.name, s.name
+                        ''')
+                    rows = cur.fetchall()
+                    settlements = [dict(row) for row in rows]
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'settlements': settlements}, ensure_ascii=False, default=str)
+                    }
+            elif action == 'reviews':
                 show_all = params.get('all') == 'true'
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     if show_all:
@@ -151,7 +181,43 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
         
         elif method == 'POST':
-            if action == 'reviews':
+            if action == 'settlements':
+                body_data = json.loads(event.get('body', '{}'))
+                city_id = body_data.get('city_id')
+                name = body_data.get('name', '').strip()
+                delivery_price = body_data.get('delivery_price', 0)
+                
+                if not city_id or not name:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'City ID and name are required'})
+                    }
+                
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('''
+                        INSERT INTO settlements (city_id, name, delivery_price)
+                        VALUES (%s, %s, %s)
+                        RETURNING id, city_id, name, delivery_price
+                    ''', (city_id, name, delivery_price))
+                    
+                    result = cur.fetchone()
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 201,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'settlement': dict(result)}, ensure_ascii=False)
+                    }
+            elif action == 'reviews':
                 body_data = json.loads(event.get('body', '{}'))
                 name = body_data.get('name', '').strip()
                 city = body_data.get('city', '').strip()
@@ -250,7 +316,46 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
         
         elif method == 'PUT':
-            if action == 'reviews':
+            if action == 'settlements':
+                body_data = json.loads(event.get('body', '{}'))
+                settlement_id = body_data.get('id')
+                name = body_data.get('name')
+                delivery_price = body_data.get('delivery_price')
+                
+                if not settlement_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Settlement ID is required'})
+                    }
+                
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('''
+                        UPDATE settlements 
+                        SET name = COALESCE(%s, name),
+                            delivery_price = COALESCE(%s, delivery_price),
+                            updated_at = CURRENT_TIMESTAMP
+                        WHERE id = %s
+                        RETURNING id, city_id, name, delivery_price
+                    ''', (name, delivery_price, settlement_id))
+                    
+                    updated = cur.fetchone()
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'settlement': dict(updated)}, ensure_ascii=False)
+                    }
+            elif action == 'reviews':
                 body_data = json.loads(event.get('body', '{}'))
                 review_id = body_data.get('id')
                 is_approved = body_data.get('is_approved')
@@ -344,7 +449,34 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         elif method == 'DELETE':
-            if action == 'reviews':
+            if action == 'settlements':
+                settlement_id = params.get('id')
+                
+                if not settlement_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Settlement ID is required'})
+                    }
+                
+                with conn.cursor() as cur:
+                    cur.execute('UPDATE settlements SET is_active = FALSE WHERE id = %s', (settlement_id,))
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'message': 'Settlement deactivated successfully'})
+                    }
+            elif action == 'reviews':
                 review_id = params.get('id')
                 
                 if not review_id:

@@ -213,14 +213,24 @@ const Admin = () => {
                         className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors"
                       >
                         <span className="font-medium">{city.name}</span>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDeleteCity(city.id, city.name)}
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                        >
-                          <Icon name="Trash2" size={16} />
-                        </Button>
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => navigate(`/admin/city-settlements?city_id=${city.id}&city_name=${encodeURIComponent(city.name)}`)}
+                            title="Населенные пункты"
+                          >
+                            <Icon name="MapPin" size={16} />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleDeleteCity(city.id, city.name)}
+                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          >
+                            <Icon name="Trash2" size={16} />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
