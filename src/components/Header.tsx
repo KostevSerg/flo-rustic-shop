@@ -44,9 +44,6 @@ const Header = ({ cartCount }: HeaderProps) => {
             <Link to="/about" className="hover:text-primary transition">
               О нас
             </Link>
-            <Link to="/contacts" className="hover:text-primary transition">
-              Контакты
-            </Link>
           </nav>
 
           <div className="hidden lg:flex items-center space-x-6">
@@ -90,9 +87,6 @@ const Header = ({ cartCount }: HeaderProps) => {
             </Link>
             <Link to="/about" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
               О нас
-            </Link>
-            <Link to="/contacts" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
-              Контакты
             </Link>
             <div className="space-y-3 pt-3 border-t border-border">
               <div className="flex items-center space-x-2">
