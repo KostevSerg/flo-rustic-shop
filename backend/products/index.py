@@ -43,35 +43,23 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if method == 'GET':
             query_params = event.get('queryStringParameters') or {}
             city_name = query_params.get('city')
-            category = query_params.get('category')
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 if city_name:
-                    safe_city = city_name.replace("'", "''")
-                    where_clause = "WHERE p.is_active = true"
-                    if category:
-                        safe_category = category.replace("'", "''")
-                        where_clause += f" AND p.category = '{safe_category}'"
-                    
-                    cur.execute(f'''
+                    cur.execute('''
                         SELECT p.id, p.name, p.description, p.image_url, p.category,
                                COALESCE(pcp.price, p.base_price) as price
                         FROM products p
-                        LEFT JOIN cities c ON c.name = '{safe_city}' AND c.is_active = true
+                        LEFT JOIN cities c ON c.name = %s AND c.is_active = true
                         LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
-                        {where_clause}
+                        WHERE p.is_active = true
                         ORDER BY p.created_at DESC
-                    ''')
+                    ''', (city_name,))
                 else:
-                    where_clause = "WHERE p.is_active = true"
-                    if category:
-                        safe_category = category.replace("'", "''")
-                        where_clause += f" AND p.category = '{safe_category}'"
-                    
-                    cur.execute(f'''
+                    cur.execute('''
                         SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category
                         FROM products p
-                        {where_clause}
+                        WHERE p.is_active = true
                         ORDER BY p.created_at DESC
                     ''')
                 
@@ -109,16 +97,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'body': json.dumps({'error': 'Name and base_price are required'})
                     }
                 
-                safe_name = name.replace("'", "''")
-                safe_description = description.replace("'", "''")
-                safe_image_url = image_url.replace("'", "''")
-                safe_category = category.replace("'", "''")
-                
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute(
-                        f'''INSERT INTO products (name, description, image_url, base_price, category)
-                           VALUES ('{safe_name}', '{safe_description}', '{safe_image_url}', {base_price}, '{safe_category}') 
-                           RETURNING id, name, description, image_url, base_price, category'''
+                        '''INSERT INTO products (name, description, image_url, base_price, category)
+                           VALUES (%s, %s, %s, %s, %s) RETURNING id, name, description, image_url, base_price, category''',
+                        (name, description, image_url, base_price, category)
                     )
                     new_product = dict(cur.fetchone())
                     conn.commit()
@@ -151,10 +134,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 with conn.cursor() as cur:
                     cur.execute(
-                        f'''INSERT INTO product_city_prices (product_id, city_id, price)
-                           VALUES ({product_id}, {city_id}, {price})
+                        '''INSERT INTO product_city_prices (product_id, city_id, price)
+                           VALUES (%s, %s, %s)
                            ON CONFLICT (product_id, city_id) 
-                           DO UPDATE SET price = EXCLUDED.price, updated_at = CURRENT_TIMESTAMP'''
+                           DO UPDATE SET price = EXCLUDED.price, updated_at = CURRENT_TIMESTAMP''',
+                        (product_id, city_id, price)
                     )
                     conn.commit()
                     
@@ -184,21 +168,23 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             update_fields = []
+            params = []
             
             if 'name' in body_data:
-                safe_name = body_data['name'].replace("'", "''")
-                update_fields.append(f"name = '{safe_name}'")
+                update_fields.append('name = %s')
+                params.append(body_data['name'])
             if 'description' in body_data:
-                safe_description = body_data['description'].replace("'", "''")
-                update_fields.append(f"description = '{safe_description}'")
+                update_fields.append('description = %s')
+                params.append(body_data['description'])
             if 'image_url' in body_data:
-                safe_image_url = body_data['image_url'].replace("'", "''")
-                update_fields.append(f"image_url = '{safe_image_url}'")
+                update_fields.append('image_url = %s')
+                params.append(body_data['image_url'])
             if 'base_price' in body_data:
-                update_fields.append(f"base_price = {body_data['base_price']}")
+                update_fields.append('base_price = %s')
+                params.append(body_data['base_price'])
             if 'category' in body_data:
-                safe_category = body_data['category'].replace("'", "''")
-                update_fields.append(f"category = '{safe_category}'")
+                update_fields.append('category = %s')
+                params.append(body_data['category'])
             
             if not update_fields:
                 return {
@@ -211,10 +197,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'body': json.dumps({'error': 'No fields to update'})
                 }
             
+            params.append(product_id)
+            
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
                     f'''UPDATE products SET {', '.join(update_fields)}, updated_at = CURRENT_TIMESTAMP
-                        WHERE id = {product_id} RETURNING id, name, description, image_url, base_price, category'''
+                        WHERE id = %s RETURNING id, name, description, image_url, base_price, category''',
+                    params
                 )
                 updated_product = dict(cur.fetchone())
                 conn.commit()
@@ -245,7 +234,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             with conn.cursor() as cur:
-                cur.execute(f'UPDATE products SET is_active = false WHERE id = {product_id}')
+                cur.execute('UPDATE products SET is_active = false WHERE id = %s', (product_id,))
                 conn.commit()
                 
                 return {

@@ -8,10 +8,6 @@ import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import { useCart } from '@/contexts/CartContext';
 import API_ENDPOINTS from '@/config/api';
-import ProductAddForm from '@/components/admin/ProductAddForm';
-import ProductEditModal from '@/components/admin/ProductEditModal';
-import ProductPriceModal from '@/components/admin/ProductPriceModal';
-import ProductCard from '@/components/admin/ProductCard';
 
 interface Product {
   id: number;
@@ -37,17 +33,8 @@ const AdminProducts = () => {
   const [loading, setLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showPriceModal, setShowPriceModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [newProduct, setNewProduct] = useState({
-    name: '',
-    description: '',
-    image_url: '',
-    base_price: '',
-    category: ''
-  });
-  const [editProduct, setEditProduct] = useState({
-    id: 0,
     name: '',
     description: '',
     image_url: '',
@@ -124,50 +111,6 @@ const AdminProducts = () => {
     }
   };
 
-  const handleEditProduct = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!editProduct.name || !editProduct.base_price) {
-      toast({
-        title: 'Ошибка',
-        description: 'Заполните обязательные поля',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch(API_ENDPOINTS.products, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: editProduct.id,
-          name: editProduct.name,
-          description: editProduct.description,
-          image_url: editProduct.image_url,
-          base_price: parseInt(editProduct.base_price),
-          category: editProduct.category
-        })
-      });
-
-      if (!response.ok) throw new Error('Failed to update product');
-
-      toast({
-        title: 'Успешно',
-        description: `Товар "${editProduct.name}" обновлён`
-      });
-
-      setShowEditModal(false);
-      loadProducts();
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось обновить товар',
-        variant: 'destructive'
-      });
-    }
-  };
-
   const handleDeleteProduct = async (productId: number, productName: string) => {
     if (!confirm(`Удалить товар "${productName}"?`)) return;
 
@@ -225,23 +168,6 @@ const AdminProducts = () => {
     }
   };
 
-  const handleEditClick = (product: Product) => {
-    setEditProduct({
-      id: product.id,
-      name: product.name || '',
-      description: product.description || '',
-      image_url: product.image_url || '',
-      base_price: product.base_price ? product.base_price.toString() : '',
-      category: product.category || ''
-    });
-    setShowEditModal(true);
-  };
-
-  const handlePriceClick = (product: Product) => {
-    setSelectedProduct(product);
-    setShowPriceModal(true);
-  };
-
   useEffect(() => {
     loadProducts();
     loadCities();
@@ -252,77 +178,220 @@ const AdminProducts = () => {
       <div className="min-h-screen flex flex-col">
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
-              <div>
-                <h1 className="text-4xl font-bold mb-2">Управление товарами</h1>
-                <p className="text-muted-foreground">
-                  Добавляйте товары и настраивайте цены для разных городов
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={() => navigate('/admin')}>
-                  <Icon name="LayoutDashboard" size={18} className="mr-2" />
-                  Админ-панель
-                </Button>
-                <Button onClick={() => setShowAddForm(!showAddForm)}>
-                  <Icon name="Plus" size={18} className="mr-2" />
-                  Добавить товар
-                </Button>
-              </div>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">Управление товарами</h1>
+              <p className="text-muted-foreground">
+                Добавляйте товары и настраивайте цены для разных городов
+              </p>
             </div>
-
-            {showAddForm && (
-              <ProductAddForm
-                product={newProduct}
-                onSubmit={handleAddProduct}
-                onChange={setNewProduct}
-                onCancel={() => {
-                  setShowAddForm(false);
-                  setNewProduct({ name: '', description: '', image_url: '', base_price: '', category: '' });
-                }}
-              />
-            )}
-
-            {loading ? (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">Загрузка товаров...</p>
-              </div>
-            ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onEdit={handleEditClick}
-                    onSetPrice={handlePriceClick}
-                    onDelete={handleDeleteProduct}
-                  />
-                ))}
-              </div>
-            )}
-
-            {showEditModal && (
-              <ProductEditModal
-                product={editProduct}
-                onSubmit={handleEditProduct}
-                onChange={setEditProduct}
-                onClose={() => setShowEditModal(false)}
-              />
-            )}
-
-            {showPriceModal && selectedProduct && (
-              <ProductPriceModal
-                product={selectedProduct}
-                cities={cities}
-                onSetPrice={handleSetCityPrice}
-                onClose={() => setShowPriceModal(false)}
-              />
-            )}
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => navigate('/admin')}>
+                <Icon name="LayoutDashboard" size={18} className="mr-2" />
+                Админ-панель
+              </Button>
+              <Button onClick={() => setShowAddForm(!showAddForm)}>
+                <Icon name="Plus" size={18} className="mr-2" />
+                Добавить товар
+              </Button>
+            </div>
           </div>
-        </main>
-        <Footer />
-      </div>
+
+          {showAddForm && (
+            <div className="bg-card border border-border rounded-lg p-6 mb-8">
+              <h2 className="text-2xl font-bold mb-4">Добавить новый товар</h2>
+              <form onSubmit={handleAddProduct} className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Название товара <span className="text-destructive">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={newProduct.name}
+                      onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder='Например: Букет "Нежность"'
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Базовая цена <span className="text-destructive">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      value={newProduct.base_price}
+                      onChange={(e) => setNewProduct({ ...newProduct, base_price: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="3500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Категория</label>
+                    <input
+                      type="text"
+                      value={newProduct.category}
+                      onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="roses"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">URL изображения</label>
+                    <input
+                      type="url"
+                      value={newProduct.image_url}
+                      onChange={(e) => setNewProduct({ ...newProduct, image_url: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="https://..."
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium mb-2">Описание</label>
+                    <textarea
+                      value={newProduct.description}
+                      onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                      rows={3}
+                      placeholder="Описание букета..."
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Button type="submit">
+                    <Icon name="Save" size={18} className="mr-2" />
+                    Сохранить
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setShowAddForm(false);
+                      setNewProduct({ name: '', description: '', image_url: '', base_price: '', category: '' });
+                    }}
+                  >
+                    Отмена
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {loading ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Загрузка товаров...</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product) => (
+                <div key={product.id} className="bg-card border border-border rounded-lg overflow-hidden">
+                  {product.image_url && (
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-48 object-cover"
+                    />
+                  )}
+                  <div className="p-4">
+                    <h3 className="text-lg font-bold mb-2">{product.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                      {product.description}
+                    </p>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-xl font-bold">{product.base_price} ₽</span>
+                      {product.category && (
+                        <span className="text-xs bg-accent px-2 py-1 rounded">
+                          {product.category}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => {
+                          setSelectedProduct(product);
+                          setShowPriceModal(true);
+                        }}
+                      >
+                        <Icon name="DollarSign" size={16} className="mr-1" />
+                        Цены
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDeleteProduct(product.id, product.name)}
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      >
+                        <Icon name="Trash2" size={16} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {showPriceModal && selectedProduct && (
+            <>
+              <div
+                className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
+                onClick={() => setShowPriceModal(false)}
+              />
+              <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-3xl bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
+                <div className="p-6 border-b border-border">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-bold">Цены для "{selectedProduct.name}"</h3>
+                    <button
+                      onClick={() => setShowPriceModal(false)}
+                      className="hover:bg-accent/50 rounded-lg p-2 transition-colors"
+                    >
+                      <Icon name="X" size={24} />
+                    </button>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Базовая цена: {selectedProduct.base_price} ₽
+                  </p>
+                </div>
+                <div className="p-6 max-h-[60vh] overflow-y-auto">
+                  {Object.entries(cities).map(([region, regionCities]) => (
+                    <div key={region} className="mb-6 last:mb-0">
+                      <h4 className="font-semibold mb-3 flex items-center">
+                        <Icon name="MapPin" size={18} className="mr-2 text-primary" />
+                        {region}
+                      </h4>
+                      <div className="space-y-2">
+                        {regionCities.map((city) => (
+                          <div key={city.id} className="flex items-center gap-3 p-3 bg-accent/20 rounded-lg">
+                            <span className="flex-1">{city.name}</span>
+                            <input
+                              type="number"
+                              placeholder={`${selectedProduct.base_price}`}
+                              className="w-32 px-3 py-1 rounded border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                              onBlur={(e) => {
+                                if (e.target.value) {
+                                  handleSetCityPrice(city.id, city.name, e.target.value);
+                                }
+                              }}
+                            />
+                            <span className="text-muted-foreground">₽</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </main>
+      <Footer />
+    </div>
     </AdminAuth>
   );
 };
