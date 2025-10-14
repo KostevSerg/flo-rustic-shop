@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
+import CitySelector from '@/components/CitySelector';
 
 const Checkout = () => {
   const { items, totalItems, totalPrice, clearCart } = useCart();
@@ -173,15 +174,10 @@ const Checkout = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Город</label>
-                    <select
-                      name="city"
+                    <CitySelector
                       value={formData.city}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                    >
-                      <option value="Москва">Москва</option>
-                      <option value="Санкт-Петербург">Санкт-Петербург</option>
-                    </select>
+                      onChange={(city) => setFormData({ ...formData, city })}
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">
