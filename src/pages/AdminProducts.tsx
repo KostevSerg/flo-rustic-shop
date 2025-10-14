@@ -33,8 +33,17 @@ const AdminProducts = () => {
   const [loading, setLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showPriceModal, setShowPriceModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [newProduct, setNewProduct] = useState({
+    name: '',
+    description: '',
+    image_url: '',
+    base_price: '',
+    category: ''
+  });
+  const [editProduct, setEditProduct] = useState({
+    id: 0,
     name: '',
     description: '',
     image_url: '',
@@ -106,6 +115,50 @@ const AdminProducts = () => {
       toast({
         title: 'Ошибка',
         description: 'Не удалось добавить товар',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const handleEditProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!editProduct.name || !editProduct.base_price) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните обязательные поля',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(API_ENDPOINTS.products, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editProduct.id,
+          name: editProduct.name,
+          description: editProduct.description,
+          image_url: editProduct.image_url,
+          base_price: parseInt(editProduct.base_price),
+          category: editProduct.category
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to update product');
+
+      toast({
+        title: 'Успешно',
+        description: `Товар "${editProduct.name}" обновлён`
+      });
+
+      setShowEditModal(false);
+      loadProducts();
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить товар',
         variant: 'destructive'
       });
     }
@@ -318,14 +371,29 @@ const AdminProducts = () => {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="flex-1"
+                        onClick={() => {
+                          setEditProduct({
+                            id: product.id,
+                            name: product.name,
+                            description: product.description,
+                            image_url: product.image_url,
+                            base_price: product.base_price.toString(),
+                            category: product.category
+                          });
+                          setShowEditModal(true);
+                        }}
+                      >
+                        <Icon name="Pencil" size={16} />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
                         onClick={() => {
                           setSelectedProduct(product);
                           setShowPriceModal(true);
                         }}
                       >
-                        <Icon name="DollarSign" size={16} className="mr-1" />
-                        Цены
+                        <Icon name="DollarSign" size={16} />
                       </Button>
                       <Button
                         size="sm"
@@ -340,6 +408,105 @@ const AdminProducts = () => {
                 </div>
               ))}
             </div>
+          )}
+
+          {showEditModal && (
+            <>
+              <div
+                className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
+                onClick={() => setShowEditModal(false)}
+              />
+              <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-2xl bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
+                <div className="p-6 border-b border-border">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-bold">Редактировать товар</h3>
+                    <button
+                      onClick={() => setShowEditModal(false)}
+                      className="hover:bg-accent/50 rounded-lg p-2 transition-colors"
+                    >
+                      <Icon name="X" size={24} />
+                    </button>
+                  </div>
+                </div>
+                <form onSubmit={handleEditProduct} className="p-6 max-h-[70vh] overflow-y-auto">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Название товара <span className="text-destructive">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={editProduct.name}
+                        onChange={(e) => setEditProduct({ ...editProduct, name: e.target.value })}
+                        className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                      />
+                    </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Базовая цена <span className="text-destructive">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          value={editProduct.base_price}
+                          onChange={(e) => setEditProduct({ ...editProduct, base_price: e.target.value })}
+                          className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Категория <span className="text-destructive">*</span>
+                        </label>
+                        <select
+                          value={editProduct.category}
+                          onChange={(e) => setEditProduct({ ...editProduct, category: e.target.value })}
+                          className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                          required
+                        >
+                          <option value="">Выберите категорию</option>
+                          <option value="Цветы">Цветы</option>
+                          <option value="Шары">Шары</option>
+                          <option value="Подарки">Подарки</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">URL изображения</label>
+                      <input
+                        type="url"
+                        value={editProduct.image_url}
+                        onChange={(e) => setEditProduct({ ...editProduct, image_url: e.target.value })}
+                        className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Описание</label>
+                      <textarea
+                        value={editProduct.description}
+                        onChange={(e) => setEditProduct({ ...editProduct, description: e.target.value })}
+                        className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-3 mt-6">
+                    <Button type="submit">
+                      <Icon name="Save" size={18} className="mr-2" />
+                      Сохранить изменения
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowEditModal(false)}
+                    >
+                      Отмена
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </>
           )}
 
           {showPriceModal && selectedProduct && (
