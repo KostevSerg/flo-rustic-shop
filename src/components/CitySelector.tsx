@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
-import API_ENDPOINTS from '@/config/api';
 
 interface City {
   id: number;
