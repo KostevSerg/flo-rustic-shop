@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
+import CitySelector from '@/components/CitySelector';
 
 interface HeaderProps {
   cartCount: number;
@@ -50,13 +51,12 @@ const Header = ({ cartCount }: HeaderProps) => {
           </nav>
 
           <div className="hidden lg:flex items-center space-x-6">
-            <button 
-              onClick={() => setSelectedCity(selectedCity === 'Москва' ? 'Санкт-Петербург' : 'Москва')}
-              className="flex items-center space-x-2 hover:text-primary transition"
-            >
-              <Icon name="MapPin" size={20} />
-              <span>{selectedCity}</span>
-            </button>
+            <div className="w-56">
+              <CitySelector
+                value={selectedCity}
+                onChange={setSelectedCity}
+              />
+            </div>
 
             <Link to="/admin" className="hover:text-primary transition" title="Админ-панель">
               <Icon name="Settings" size={24} />
@@ -93,15 +93,17 @@ const Header = ({ cartCount }: HeaderProps) => {
             <Link to="/contacts" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
               Контакты
             </Link>
-            <div className="flex items-center justify-between pt-3 border-t border-border">
-              <button 
-                onClick={() => setSelectedCity(selectedCity === 'Москва' ? 'Санкт-Петербург' : 'Москва')}
-                className="flex items-center space-x-2 hover:text-primary transition"
-              >
-                <Icon name="MapPin" size={20} />
-                <span>{selectedCity}</span>
-              </button>
-              <div className="flex items-center space-x-4">
+            <div className="space-y-3 pt-3 border-t border-border">
+              <div className="flex items-center space-x-2">
+                <Icon name="MapPin" size={20} className="flex-shrink-0" />
+                <div className="flex-1">
+                  <CitySelector
+                    value={selectedCity}
+                    onChange={setSelectedCity}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-end space-x-4">
                 <Link to="/admin" className="hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
                   <Icon name="Settings" size={24} />
                 </Link>
