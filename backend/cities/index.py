@@ -319,10 +319,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if action == 'settlements':
                 body_data = json.loads(event.get('body', '{}'))
                 settlement_id = body_data.get('id')
-                name = body_data.get('name')
+                name = body_data.get('name', '').strip()
                 delivery_price = body_data.get('delivery_price')
                 
-                if not settlement_id:
+                if not settlement_id or not name:
                     return {
                         'statusCode': 400,
                         'headers': {
@@ -330,14 +330,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'error': 'Settlement ID is required'})
+                        'body': json.dumps({'error': 'Settlement ID and name are required'})
                     }
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute('''
                         UPDATE settlements 
-                        SET name = COALESCE(%s, name),
-                            delivery_price = COALESCE(%s, delivery_price),
+                        SET name = %s,
+                            delivery_price = %s,
                             updated_at = CURRENT_TIMESTAMP
                         WHERE id = %s
                         RETURNING id, city_id, name, delivery_price
@@ -437,16 +437,43 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False,
                         'body': json.dumps({'success': True, 'contact': dict(updated)}, ensure_ascii=False)
                     }
-            
-            return {
-                'statusCode': 400,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'isBase64Encoded': False,
-                'body': json.dumps({'error': 'Invalid action'})
-            }
+            else:
+                body_data = json.loads(event.get('body', '{}'))
+                city_id = body_data.get('id')
+                name = body_data.get('name', '').strip()
+                region = body_data.get('region', '').strip()
+                
+                if not city_id or not name or not region:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'City ID, name and region are required'})
+                    }
+                
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('''
+                        UPDATE cities 
+                        SET name = %s, region = %s 
+                        WHERE id = %s
+                        RETURNING id, name, region
+                    ''', (name, region, city_id))
+                    
+                    updated = cur.fetchone()
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'success': True, 'city': dict(updated)}, ensure_ascii=False)
+                    }
         
         elif method == 'DELETE':
             if action == 'settlements':

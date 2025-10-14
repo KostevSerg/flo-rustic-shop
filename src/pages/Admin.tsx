@@ -22,6 +22,8 @@ const Admin = () => {
   const [loading, setLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newCity, setNewCity] = useState({ name: '', region: '' });
+  const [editingCity, setEditingCity] = useState<City | null>(null);
+  const [editForm, setEditForm] = useState({ name: '', region: '' });
 
   const loadCities = async () => {
     setLoading(true);
@@ -100,6 +102,58 @@ const Admin = () => {
       toast({
         title: 'Ошибка',
         description: 'Не удалось удалить город',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const startEditCity = (city: City) => {
+    setEditingCity(city);
+    setEditForm({ name: city.name, region: city.region });
+    setShowAddForm(false);
+  };
+
+  const cancelEditCity = () => {
+    setEditingCity(null);
+    setEditForm({ name: '', region: '' });
+  };
+
+  const handleUpdateCity = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!editingCity || !editForm.name || !editForm.region) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните все поля',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingCity.id,
+          name: editForm.name,
+          region: editForm.region
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to update city');
+
+      toast({
+        title: 'Успешно',
+        description: `Город ${editForm.name} обновлён`
+      });
+
+      cancelEditCity();
+      loadCities();
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить город',
         variant: 'destructive'
       });
     }
@@ -191,6 +245,55 @@ const Admin = () => {
             </div>
           )}
 
+          {editingCity && (
+            <div className="bg-card border-2 border-primary rounded-lg p-6 mb-8">
+              <h2 className="text-2xl font-bold mb-4">Редактировать город</h2>
+              <form onSubmit={handleUpdateCity} className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Название города <span className="text-destructive">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={editForm.name}
+                      onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Например: Краснодар"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Регион <span className="text-destructive">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={editForm.region}
+                      onChange={(e) => setEditForm({ ...editForm, region: e.target.value })}
+                      className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="Например: Краснодарский край"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Button type="submit">
+                    <Icon name="Save" size={18} className="mr-2" />
+                    Сохранить изменения
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={cancelEditCity}
+                  >
+                    Отмена
+                  </Button>
+                </div>
+              </form>
+            </div>
+          )}
+
           {loading ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">Загрузка городов...</p>
@@ -210,8 +313,7 @@ const Admin = () => {
                     {regionCities.map((city) => (
                       <div
                         key={city.id}
-                        className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
-                        onClick={() => navigate(`/admin/city-settlements?city_id=${city.id}&city_name=${encodeURIComponent(city.name)}`)}
+                        className="flex items-center justify-between p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors"
                       >
                         <div className="flex items-center gap-2">
                           <Icon name="Building2" size={18} className="text-primary" />
@@ -221,21 +323,23 @@ const Admin = () => {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigate(`/admin/city-settlements?city_id=${city.id}&city_name=${encodeURIComponent(city.name)}`);
-                            }}
+                            onClick={() => navigate(`/admin/city-settlements?city_id=${city.id}&city_name=${encodeURIComponent(city.name)}`)}
                             title="Населенные пункты и цены доставки"
                           >
-                            <Icon name="Settings" size={16} />
+                            <Icon name="MapPin" size={16} />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => startEditCity(city)}
+                            title="Редактировать название города"
+                          >
+                            <Icon name="Pencil" size={16} />
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteCity(city.id, city.name);
-                            }}
+                            onClick={() => handleDeleteCity(city.id, city.name)}
                             className="text-destructive hover:text-destructive hover:bg-destructive/10"
                           >
                             <Icon name="Trash2" size={16} />
