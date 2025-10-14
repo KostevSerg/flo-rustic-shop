@@ -79,12 +79,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
-            cur.execute('''
+            # Escape single quotes for SQL injection protection
+            safe_value = value.replace("'", "''")
+            
+            cur.execute(f'''
                 UPDATE site_texts 
-                SET value = %s, updated_at = CURRENT_TIMESTAMP 
-                WHERE id = %s
+                SET value = '{safe_value}', updated_at = CURRENT_TIMESTAMP 
+                WHERE id = {text_id}
                 RETURNING id, page, key, value
-            ''', (value, text_id))
+            ''')
             
             updated = cur.fetchone()
             conn.commit()
