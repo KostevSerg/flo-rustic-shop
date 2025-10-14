@@ -41,7 +41,7 @@ const Checkout = () => {
     deliveryTime: 'any',
     comment: '',
     postcard: '',
-    paymentMethod: 'cash'
+    paymentMethod: 'online'
   });
 
   useEffect(() => {
