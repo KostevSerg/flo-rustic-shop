@@ -58,6 +58,10 @@ const Header = ({ cartCount }: HeaderProps) => {
               <span>{selectedCity}</span>
             </button>
 
+            <Link to="/admin" className="hover:text-primary transition" title="Админ-панель">
+              <Icon name="Settings" size={24} />
+            </Link>
+
             <Link to="/cart" className="relative hover:text-primary transition">
               <Icon name="ShoppingCart" size={24} />
               {cartCount > 0 && (
@@ -97,14 +101,19 @@ const Header = ({ cartCount }: HeaderProps) => {
                 <Icon name="MapPin" size={20} />
                 <span>{selectedCity}</span>
               </button>
-              <Link to="/cart" className="relative hover:text-primary transition">
-                <Icon name="ShoppingCart" size={24} />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
+              <div className="flex items-center space-x-4">
+                <Link to="/admin" className="hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
+                  <Icon name="Settings" size={24} />
+                </Link>
+                <Link to="/cart" className="relative hover:text-primary transition">
+                  <Icon name="ShoppingCart" size={24} />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
+              </div>
             </div>
           </nav>
         )}
