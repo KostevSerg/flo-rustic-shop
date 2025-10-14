@@ -7,9 +7,12 @@ const Footer = () => {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center space-x-3 mb-4">
-              <Icon name="Flower2" size={32} />
-              <span className="text-2xl font-bold">FloRustic</span>
+            <div className="mb-4">
+              <img 
+                src="https://cdn.poehali.dev/files/9580fd38-7d54-40e5-9120-ff97a68d6c3b.png" 
+                alt="FloRustic" 
+                className="h-10 brightness-0 invert"
+              />
             </div>
             <p className="text-primary-foreground/80 text-sm">
               Цветочная мастерская с душой. Создаем букеты, которые дарят радость.

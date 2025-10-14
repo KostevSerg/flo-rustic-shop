@@ -16,11 +16,12 @@ const Header = ({ cartCount }: HeaderProps) => {
     <header className="bg-white border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
-          <Link to="/" className="flex items-center space-x-3">
-            <div className="text-primary">
-              <Icon name="Flower2" size={32} />
-            </div>
-            <span className="text-2xl font-bold">FloRustic</span>
+          <Link to="/" className="flex items-center">
+            <img 
+              src="https://cdn.poehali.dev/files/9580fd38-7d54-40e5-9120-ff97a68d6c3b.png" 
+              alt="FloRustic" 
+              className="h-12"
+            />
           </Link>
 
           <button 
