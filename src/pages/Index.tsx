@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
@@ -6,8 +7,32 @@ import ProductCard from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
+interface City {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 const Index = () => {
   const { addToCart, totalItems } = useCart();
+  const [cities, setCities] = useState<City[]>([]);
+  const [loadingCities, setLoadingCities] = useState(true);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await fetch('https://functions.poehali.dev/bb2b7d69-0c7e-4fa4-a4dc-fe6f20b98c33');
+        const data = await response.json();
+        setCities(data.cities || []);
+      } catch (error) {
+        console.error('Failed to fetch cities:', error);
+      } finally {
+        setLoadingCities(false);
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   const popularProducts = [
     {
@@ -85,6 +110,43 @@ const Index = () => {
               </Button>
             </Link>
           </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">Доставка по городам</h2>
+          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+            Выберите свой город для просмотра актуального каталога и цен
+          </p>
+          
+          {loadingCities ? (
+            <div className="text-center py-8">
+              <div className="animate-spin mx-auto mb-3 w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
+              <p className="text-muted-foreground">Загрузка городов...</p>
+            </div>
+          ) : cities.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
+              {cities.map(city => (
+                <Link 
+                  key={city.id} 
+                  to={`/city/${city.slug}`}
+                  className="group"
+                >
+                  <div className="bg-card border rounded-lg p-6 text-center hover:border-primary hover:shadow-lg transition-all duration-300">
+                    <Icon name="MapPin" size={32} className="mx-auto mb-3 text-primary group-hover:scale-110 transition-transform" />
+                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                      {city.name}
+                    </h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Города пока не добавлены</p>
+            </div>
+          )}
         </div>
       </section>
 

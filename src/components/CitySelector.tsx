@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
 interface City {
   id: number;
   name: string;
-  region: string;
+  slug: string;
 }
 
 interface CitySelectorProps {
@@ -14,17 +15,18 @@ interface CitySelectorProps {
 }
 
 const CitySelector = ({ value, onChange }: CitySelectorProps) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [cities, setCities] = useState<Record<string, City[]>>({});
+  const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459');
+        const response = await fetch('https://functions.poehali.dev/bb2b7d69-0c7e-4fa4-a4dc-fe6f20b98c33');
         const data = await response.json();
-        setCities(data.cities || {});
+        setCities(data.cities || []);
       } catch (error) {
         console.error('Failed to fetch cities:', error);
       } finally {
@@ -35,19 +37,13 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
     fetchCities();
   }, []);
 
-  const filteredCities = Object.entries(cities).reduce((acc, [region, regionCities]) => {
-    const filtered = regionCities.filter(city =>
-      city.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      region.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    if (filtered.length > 0) {
-      acc[region] = filtered;
-    }
-    return acc;
-  }, {} as Record<string, City[]>);
+  const filteredCities = cities.filter(city =>
+    city.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const handleSelect = (cityName: string, cityId: number) => {
-    onChange(cityName, cityId);
+  const handleSelect = (city: City) => {
+    onChange(city.name, city.id);
+    navigate(`/city/${city.slug}`);
     setIsOpen(false);
     setSearchQuery('');
   };
@@ -101,33 +97,22 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
                   <div className="animate-spin mx-auto mb-3 w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
                   Загрузка городов...
                 </div>
-              ) : Object.keys(filteredCities).length === 0 ? (
+              ) : filteredCities.length === 0 ? (
                 <div className="p-8 text-center text-muted-foreground">
                   <Icon name="Search" size={48} className="mx-auto mb-3 opacity-50" />
                   <p>Города не найдены</p>
                 </div>
               ) : (
-                <div className="grid md:grid-cols-2 gap-4 p-6">
-                  {Object.entries(filteredCities).map(([region, regionCities]) => (
-                    <div key={region} className="bg-accent/20 rounded-lg p-4">
-                      <div className="flex items-center mb-3">
-                        <Icon name="MapPin" size={18} className="mr-2 text-primary" />
-                        <h4 className="font-semibold text-sm text-muted-foreground">
-                          {region}
-                        </h4>
-                      </div>
-                      <div className="space-y-1">
-                        {regionCities.map((city) => (
-                          <button
-                            key={city.id}
-                            onClick={() => handleSelect(city.name, city.id)}
-                            className="w-full px-3 py-2 text-left rounded-md hover:bg-primary hover:text-primary-foreground transition-colors"
-                          >
-                            {city.name}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 p-6">
+                  {filteredCities.map((city) => (
+                    <button
+                      key={city.id}
+                      onClick={() => handleSelect(city)}
+                      className="px-4 py-3 text-left rounded-lg hover:bg-primary hover:text-primary-foreground transition-colors border border-border flex items-center group"
+                    >
+                      <Icon name="MapPin" size={18} className="mr-2 text-primary group-hover:text-primary-foreground" />
+                      {city.name}
+                    </button>
                   ))}
                 </div>
               )}
