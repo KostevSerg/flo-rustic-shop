@@ -141,7 +141,7 @@ const City = () => {
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={`цветы ${city.name}, букеты ${city.name}, доставка цветов ${city.name}, купить букет ${city.name}, заказать цветы ${city.name}, свежие цветы ${city.name}`} />
+        <meta name="keywords" content={`цветы ${cityName}, букеты ${cityName}, доставка цветов ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, свежие цветы ${cityName}`} />
         
         <meta property="og:type" content="website" />
         <meta property="og:title" content={pageTitle} />
