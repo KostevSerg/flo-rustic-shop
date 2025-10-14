@@ -67,50 +67,69 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
       {isOpen && (
         <>
           <div
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute z-50 w-full mt-2 bg-card border border-border rounded-lg shadow-lg max-h-96 overflow-hidden">
-            <div className="p-3 border-b border-border sticky top-0 bg-card">
+          <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-2xl bg-card border border-border rounded-xl shadow-2xl overflow-hidden animate-fade-in">
+            <div className="p-6 border-b border-border bg-card">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold">Выберите город доставки</h3>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="hover:bg-accent/50 rounded-lg p-2 transition-colors"
+                >
+                  <Icon name="X" size={24} />
+                </button>
+              </div>
               <div className="relative">
-                <Icon name="Search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <input
                   type="text"
                   placeholder="Поиск города или региона..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary bg-background"
                   onClick={(e) => e.stopPropagation()}
+                  autoFocus
                 />
               </div>
             </div>
 
-            <div className="overflow-y-auto max-h-80">
+            <div className="overflow-y-auto max-h-[60vh]">
               {loading ? (
-                <div className="p-4 text-center text-muted-foreground">
+                <div className="p-8 text-center text-muted-foreground">
+                  <div className="animate-spin mx-auto mb-3 w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
                   Загрузка городов...
                 </div>
               ) : Object.keys(filteredCities).length === 0 ? (
-                <div className="p-4 text-center text-muted-foreground">
-                  Города не найдены
+                <div className="p-8 text-center text-muted-foreground">
+                  <Icon name="Search" size={48} className="mx-auto mb-3 opacity-50" />
+                  <p>Города не найдены</p>
                 </div>
               ) : (
-                Object.entries(filteredCities).map(([region, regionCities]) => (
-                  <div key={region} className="border-b border-border last:border-0">
-                    <div className="px-4 py-2 bg-accent/30 text-sm font-semibold text-muted-foreground sticky top-0">
-                      {region}
+                <div className="grid md:grid-cols-2 gap-4 p-6">
+                  {Object.entries(filteredCities).map(([region, regionCities]) => (
+                    <div key={region} className="bg-accent/20 rounded-lg p-4">
+                      <div className="flex items-center mb-3">
+                        <Icon name="MapPin" size={18} className="mr-2 text-primary" />
+                        <h4 className="font-semibold text-sm text-muted-foreground">
+                          {region}
+                        </h4>
+                      </div>
+                      <div className="space-y-1">
+                        {regionCities.map((city) => (
+                          <button
+                            key={city.id}
+                            onClick={() => handleSelect(city.name)}
+                            className="w-full px-3 py-2 text-left rounded-md hover:bg-primary hover:text-primary-foreground transition-colors"
+                          >
+                            {city.name}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    {regionCities.map((city) => (
-                      <button
-                        key={city.id}
-                        onClick={() => handleSelect(city.name)}
-                        className="w-full px-4 py-2 text-left hover:bg-accent/50 transition-colors"
-                      >
-                        {city.name}
-                      </button>
-                    ))}
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
           </div>
