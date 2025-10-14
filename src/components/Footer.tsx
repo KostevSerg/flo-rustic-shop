@@ -1,9 +1,41 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { useSiteTexts } from '@/contexts/SiteTextsContext';
+import { useCity } from '@/contexts/CityContext';
+
+interface CityContact {
+  phone: string;
+  email: string;
+  address: string;
+}
 
 const Footer = () => {
   const { getText } = useSiteTexts();
+  const { selectedCity } = useCity();
+  const [cityContact, setCityContact] = useState<CityContact | null>(null);
+
+  useEffect(() => {
+    const fetchCityContact = async () => {
+      try {
+        const response = await fetch(`https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=contacts&city=${encodeURIComponent(selectedCity)}`);
+        const data = await response.json();
+        if (data.contact) {
+          setCityContact({
+            phone: data.contact.phone,
+            email: data.contact.email,
+            address: data.contact.address
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch city contact:', error);
+      }
+    };
+
+    if (selectedCity) {
+      fetchCityContact();
+    }
+  }, [selectedCity]);
   return (
     <footer className="bg-primary text-primary-foreground mt-auto">
       <div className="container mx-auto px-4 py-12">
@@ -52,15 +84,15 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-primary-foreground/80">
               <li className="flex items-center space-x-2">
                 <Icon name="Phone" size={16} />
-                <span>{getText('contacts', 'phone', '+7 (999) 123-45-67')}</span>
+                <span>{cityContact?.phone || getText('contacts', 'phone', '+7 (999) 123-45-67')}</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Icon name="Mail" size={16} />
-                <span>{getText('contacts', 'email', 'info@florustic.ru')}</span>
+                <span>{cityContact?.email || getText('contacts', 'email', 'info@florustic.ru')}</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Icon name="MapPin" size={16} />
-                <span>{getText('contacts', 'address', 'г. Москва, ул. Цветочная, 15')}</span>
+                <span>{cityContact?.address || getText('contacts', 'address', 'г. Москва, ул. Цветочная, 15')}</span>
               </li>
             </ul>
           </div>

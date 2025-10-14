@@ -6,12 +6,14 @@ from psycopg2.extras import RealDictCursor
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Manage cities list (get all cities, add new city, update, delete)
-    Args: event with httpMethod, body, queryStringParameters
+    Business: Manage cities list and city contacts (get cities, add city, get/update contacts)
+    Args: event with httpMethod, body, queryStringParameters (action=contacts for contact operations)
           context with request_id attribute
-    Returns: HTTP response with cities data
+    Returns: HTTP response with cities data or contacts data
     '''
     method: str = event.get('httpMethod', 'GET')
+    params = event.get('queryStringParameters') or {}
+    action = params.get('action')
     
     if method == 'OPTIONS':
         return {
@@ -41,30 +43,84 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     try:
         if method == 'GET':
-            with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                cur.execute('SELECT id, name, region, is_active FROM cities WHERE is_active = true ORDER BY region, name')
-                cities = cur.fetchall()
-                
-                grouped_cities: Dict[str, List[Dict[str, Any]]] = {}
-                for city in cities:
-                    region = city['region']
-                    if region not in grouped_cities:
-                        grouped_cities[region] = []
-                    grouped_cities[region].append({
-                        'id': city['id'],
-                        'name': city['name'],
-                        'region': city['region']
-                    })
-                
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*'
-                    },
-                    'isBase64Encoded': False,
-                    'body': json.dumps({'cities': grouped_cities}, ensure_ascii=False)
-                }
+            if action == 'contacts':
+                city_name = params.get('city')
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    if city_name:
+                        cur.execute('''
+                            SELECT cc.id, cc.city_id, c.name as city_name, cc.phone, 
+                                   cc.email, cc.address, cc.working_hours, cc.delivery_info
+                            FROM city_contacts cc
+                            JOIN cities c ON c.id = cc.city_id
+                            WHERE c.name = %s
+                        ''', (city_name,))
+                        row = cur.fetchone()
+                        
+                        if row:
+                            return {
+                                'statusCode': 200,
+                                'headers': {
+                                    'Content-Type': 'application/json',
+                                    'Access-Control-Allow-Origin': '*'
+                                },
+                                'isBase64Encoded': False,
+                                'body': json.dumps({'contact': dict(row)}, ensure_ascii=False)
+                            }
+                        else:
+                            return {
+                                'statusCode': 404,
+                                'headers': {
+                                    'Content-Type': 'application/json',
+                                    'Access-Control-Allow-Origin': '*'
+                                },
+                                'isBase64Encoded': False,
+                                'body': json.dumps({'error': 'Contact not found'})
+                            }
+                    else:
+                        cur.execute('''
+                            SELECT cc.id, cc.city_id, c.name as city_name, cc.phone, 
+                                   cc.email, cc.address, cc.working_hours, cc.delivery_info
+                            FROM city_contacts cc
+                            JOIN cities c ON c.id = cc.city_id
+                            ORDER BY c.name
+                        ''')
+                        rows = cur.fetchall()
+                        contacts = [dict(row) for row in rows]
+                        
+                        return {
+                            'statusCode': 200,
+                            'headers': {
+                                'Content-Type': 'application/json',
+                                'Access-Control-Allow-Origin': '*'
+                            },
+                            'isBase64Encoded': False,
+                            'body': json.dumps({'contacts': contacts}, ensure_ascii=False)
+                        }
+            else:
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('SELECT id, name, region, is_active FROM cities WHERE is_active = true ORDER BY region, name')
+                    cities = cur.fetchall()
+                    
+                    grouped_cities: Dict[str, List[Dict[str, Any]]] = {}
+                    for city in cities:
+                        region = city['region']
+                        if region not in grouped_cities:
+                            grouped_cities[region] = []
+                        grouped_cities[region].append({
+                            'id': city['id'],
+                            'name': city['name'],
+                            'region': city['region']
+                        })
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'cities': grouped_cities}, ensure_ascii=False)
+                    }
         
         elif method == 'POST':
             body_data = json.loads(event.get('body', '{}'))
@@ -88,6 +144,20 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     (name, region)
                 )
                 new_city = cur.fetchone()
+                city_id = new_city['id']
+                
+                cur.execute('''
+                    INSERT INTO city_contacts (city_id, phone, email, address, working_hours, delivery_info)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                ''', (
+                    city_id,
+                    '+7 (999) 123-45-67',
+                    'info@florustic.ru',
+                    f'г. {name}, ул. Цветочная, 15',
+                    'Круглосуточно',
+                    'Бесплатная доставка в пределах центра'
+                ))
+                
                 conn.commit()
                 
                 return {
@@ -99,6 +169,66 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False,
                     'body': json.dumps({'city': dict(new_city)}, ensure_ascii=False)
                 }
+        
+        elif method == 'PUT':
+            if action == 'contacts':
+                body_data = json.loads(event.get('body', '{}'))
+                city_id = body_data.get('city_id')
+                phone = body_data.get('phone')
+                email = body_data.get('email')
+                address = body_data.get('address')
+                working_hours = body_data.get('working_hours')
+                delivery_info = body_data.get('delivery_info')
+                
+                if not city_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Missing city_id'})
+                    }
+                
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('''
+                        INSERT INTO city_contacts 
+                            (city_id, phone, email, address, working_hours, delivery_info, updated_at)
+                        VALUES (%s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+                        ON CONFLICT (city_id) 
+                        DO UPDATE SET 
+                            phone = EXCLUDED.phone,
+                            email = EXCLUDED.email,
+                            address = EXCLUDED.address,
+                            working_hours = EXCLUDED.working_hours,
+                            delivery_info = EXCLUDED.delivery_info,
+                            updated_at = CURRENT_TIMESTAMP
+                        RETURNING id, city_id
+                    ''', (city_id, phone, email, address, working_hours, delivery_info))
+                    
+                    updated = cur.fetchone()
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'success': True, 'contact': dict(updated)}, ensure_ascii=False)
+                    }
+            
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'isBase64Encoded': False,
+                'body': json.dumps({'error': 'Invalid action'})
+            }
         
         elif method == 'DELETE':
             body_data = json.loads(event.get('body', '{}'))
