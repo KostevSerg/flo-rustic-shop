@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import CitySelector from '@/components/CitySelector';
 import { useCity } from '@/contexts/CityContext';
@@ -8,41 +8,21 @@ interface HeaderProps {
   cartCount: number;
 }
 
-const createSlug = (name: string): string => {
-  return name
-    .toLowerCase()
-    .replace(/ё/g, 'e')
-    .replace(/[^\u0430-\u044f\u0410-\u042fa-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-');
-};
-
 const Header = ({ cartCount }: HeaderProps) => {
   const { selectedCity, setCity } = useCity();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const handleLogoClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (selectedCity === 'Москва') {
-      navigate('/');
-    } else {
-      const citySlug = createSlug(selectedCity);
-      navigate(`/city/${citySlug}`);
-    }
-  };
 
   return (
     <header className="bg-white border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
-          <a href="/" onClick={handleLogoClick} className="flex items-center cursor-pointer">
+          <Link to="/" className="flex items-center">
             <img 
               src="https://cdn.poehali.dev/files/9580fd38-7d54-40e5-9120-ff97a68d6c3b.png" 
               alt="FloRustic" 
               className="h-12"
             />
-          </a>
+          </Link>
 
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
