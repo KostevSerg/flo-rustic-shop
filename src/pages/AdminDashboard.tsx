@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import AdminAuth from '@/components/AdminAuth';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import { useCart } from '@/contexts/CartContext';
+import { useAdminAuth } from '@/contexts/AdminAuthContext';
 
 interface Stats {
   totalOrders: number;
@@ -17,10 +19,8 @@ interface Stats {
 
 const AdminDashboard = () => {
   const { totalItems } = useCart();
-  const { toast } = useToast();
+  const { logout } = useAdminAuth();
   const navigate = useNavigate();
-  const [password, setPassword] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [stats, setStats] = useState<Stats>({
     totalOrders: 0,
     newOrders: 0,
@@ -29,22 +29,6 @@ const AdminDashboard = () => {
     totalCities: 0
   });
   const [loading, setLoading] = useState(false);
-
-  const ADMIN_PASSWORD = 'admin2024';
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      loadStats();
-    } else {
-      toast({
-        title: 'Ошибка',
-        description: 'Неверный пароль',
-        variant: 'destructive'
-      });
-    }
-  };
 
   const loadStats = async () => {
     setLoading(true);
@@ -81,61 +65,39 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      loadStats();
-    }
-  }, [isAuthenticated]);
-
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5">
-        <div className="bg-card border border-border rounded-lg shadow-xl p-8 w-full max-w-md">
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-              <Icon name="Lock" size={32} className="text-primary" />
-            </div>
-            <h1 className="text-3xl font-bold mb-2">Админ-панель</h1>
-            <p className="text-muted-foreground">Введите пароль для доступа</p>
-          </div>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Пароль администратора"
-              className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-              autoFocus
-            />
-            <Button type="submit" className="w-full" size="lg">
-              <Icon name="LogIn" size={18} className="mr-2" />
-              Войти
-            </Button>
-          </form>
-        </div>
-      </div>
-    );
-  }
+    loadStats();
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-accent/5">
-      <Header cartCount={totalItems} />
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">Админ-панель</h1>
-              <p className="text-muted-foreground">
-                Управление интернет-магазином
-              </p>
+    <AdminAuth>
+      <div className="min-h-screen flex flex-col bg-accent/5">
+        <Header cartCount={totalItems} />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h1 className="text-4xl font-bold mb-2">Админ-панель</h1>
+                <p className="text-muted-foreground">
+                  Управление интернет-магазином
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={logout}
+                >
+                  <Icon name="LogOut" size={18} className="mr-2" />
+                  Выйти
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate('/')}
+                >
+                  <Icon name="Home" size={18} className="mr-2" />
+                  На главную
+                </Button>
+              </div>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => navigate('/')}
-            >
-              <Icon name="Home" size={18} className="mr-2" />
-              На главную
-            </Button>
-          </div>
 
           {loading ? (
             <div className="flex justify-center items-center py-20">
@@ -245,6 +207,7 @@ const AdminDashboard = () => {
       </main>
       <Footer />
     </div>
+    </AdminAuth>
   );
 };
 

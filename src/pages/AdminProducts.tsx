@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import AdminAuth from '@/components/AdminAuth';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
@@ -26,8 +27,6 @@ const AdminProducts = () => {
   const { totalItems } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [password, setPassword] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [cities, setCities] = useState<Record<string, City[]>>({});
   const [loading, setLoading] = useState(false);
@@ -41,23 +40,6 @@ const AdminProducts = () => {
     base_price: '',
     category: ''
   });
-
-  const ADMIN_PASSWORD = 'admin2024';
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      loadProducts();
-      loadCities();
-    } else {
-      toast({
-        title: 'Ошибка',
-        description: 'Неверный пароль',
-        variant: 'destructive'
-      });
-    }
-  };
 
   const loadProducts = async () => {
     setLoading(true);
@@ -185,46 +167,16 @@ const AdminProducts = () => {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Header cartCount={totalItems} />
-        <main className="flex-1 container mx-auto px-4 py-16 flex items-center justify-center">
-          <div className="max-w-md w-full">
-            <div className="bg-card border border-border rounded-lg p-8">
-              <div className="text-center mb-6">
-                <Icon name="Lock" size={48} className="mx-auto text-primary mb-4" />
-                <h1 className="text-3xl font-bold mb-2">Панель администратора</h1>
-                <p className="text-muted-foreground">Введите пароль для доступа</p>
-              </div>
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Пароль</label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Введите пароль"
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full">
-                  Войти
-                </Button>
-              </form>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  useEffect(() => {
+    loadProducts();
+    loadCities();
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header cartCount={totalItems} />
-      <main className="flex-1 container mx-auto px-4 py-16">
+    <AdminAuth>
+      <div className="min-h-screen flex flex-col">
+        <Header cartCount={totalItems} />
+        <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div>
@@ -439,6 +391,7 @@ const AdminProducts = () => {
       </main>
       <Footer />
     </div>
+    </AdminAuth>
   );
 };
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import AdminAuth from '@/components/AdminAuth';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
@@ -52,28 +53,10 @@ const AdminOrders = () => {
   const { totalItems } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [password, setPassword] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>('all');
-
-  const ADMIN_PASSWORD = 'admin2024';
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      loadOrders();
-    } else {
-      toast({
-        title: 'Ошибка',
-        description: 'Неверный пароль',
-        variant: 'destructive'
-      });
-    }
-  };
 
   const loadOrders = async () => {
     setLoading(true);
@@ -97,10 +80,8 @@ const AdminOrders = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      loadOrders();
-    }
-  }, [filterStatus, isAuthenticated]);
+    loadOrders();
+  }, [filterStatus]);
 
   const handleUpdateStatus = async (orderId: number, newStatus: string) => {
     try {
@@ -181,40 +162,11 @@ const AdminOrders = () => {
     }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5">
-        <div className="bg-card border border-border rounded-lg shadow-xl p-8 w-full max-w-md">
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-              <Icon name="Lock" size={32} className="text-primary" />
-            </div>
-            <h1 className="text-3xl font-bold mb-2">Управление заказами</h1>
-            <p className="text-muted-foreground">Введите пароль для доступа</p>
-          </div>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Пароль администратора"
-              className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-              autoFocus
-            />
-            <Button type="submit" className="w-full" size="lg">
-              <Icon name="LogIn" size={18} className="mr-2" />
-              Войти
-            </Button>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex flex-col bg-accent/5">
-      <Header cartCount={totalItems} />
-      <main className="flex-1 container mx-auto px-4 py-8">
+    <AdminAuth>
+      <div className="min-h-screen flex flex-col bg-accent/5">
+        <Header cartCount={totalItems} />
+        <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div>
@@ -326,7 +278,7 @@ const AdminOrders = () => {
       </main>
       <Footer />
 
-      {selectedOrder && (
+        {selectedOrder && (
         <>
           <div
             className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
@@ -442,8 +394,9 @@ const AdminOrders = () => {
             </div>
           </div>
         </>
-      )}
-    </div>
+        )}
+      </div>
+    </AdminAuth>
   );
 };
 
