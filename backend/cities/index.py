@@ -1,8 +1,14 @@
 import json
 import os
 from typing import Dict, Any, List
+from decimal import Decimal
 import psycopg2
 from psycopg2.extras import RealDictCursor
+
+def decimal_default(obj):
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -71,7 +77,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'settlements': settlements}, ensure_ascii=False, default=str)
+                        'body': json.dumps({'settlements': settlements}, ensure_ascii=False, default=decimal_default)
                     }
             elif action == 'reviews':
                 show_all = params.get('all') == 'true'
@@ -215,7 +221,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'settlement': dict(result)}, ensure_ascii=False)
+                        'body': json.dumps({'settlement': dict(result)}, ensure_ascii=False, default=decimal_default)
                     }
             elif action == 'reviews':
                 body_data = json.loads(event.get('body', '{}'))
@@ -353,7 +359,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'settlement': dict(updated)}, ensure_ascii=False)
+                        'body': json.dumps({'settlement': dict(updated)}, ensure_ascii=False, default=decimal_default)
                     }
             elif action == 'reviews':
                 body_data = json.loads(event.get('body', '{}'))
