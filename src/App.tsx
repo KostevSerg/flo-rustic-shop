@@ -12,6 +12,7 @@ import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import JivoChat from "@/components/JivoChat";
 import Index from "./pages/Index";
 import Catalog from "./pages/Catalog";
+import Product from "./pages/Product";
 import City from "./pages/City";
 import About from "./pages/About";
 import Delivery from "./pages/Delivery";
@@ -48,6 +49,7 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/catalog" element={<Catalog />} />
+                    <Route path="/product/:id" element={<Product />} />
                     <Route path="/city/:citySlug" element={<City />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/delivery" element={<Delivery />} />
