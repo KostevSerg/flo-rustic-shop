@@ -48,7 +48,7 @@ const Checkout = () => {
     settlementId: '',
     address: '',
     deliveryDate: '',
-    deliveryTime: 'any',
+    deliveryTime: '',
     comment: '',
     postcard: '',
     paymentMethod: 'online'
