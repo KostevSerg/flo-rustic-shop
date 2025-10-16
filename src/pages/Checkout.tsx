@@ -214,36 +214,27 @@ const Checkout = () => {
       const result = await response.json();
       const orderId = result.id;
 
-      if (formData.paymentMethod === 'online') {
-        const paymentResponse = await fetch(`${API_ENDPOINTS.orders}?action=create_payment`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount: finalPrice,
-            order_id: orderId,
-            return_url: window.location.origin + '/orders/' + orderId
-          })
-        });
-
-        if (paymentResponse.ok) {
-          const paymentData = await paymentResponse.json();
-          window.location.href = paymentData.payment_url;
-          return;
-        }
-      }
-
-      toast({
-        title: "Заказ оформлен!",
-        description: `Ваш заказ на сумму ${finalPrice} ₽ принят в обработку. Мы свяжемся с вами в ближайшее время.`
+      // Создаём платёж для всех заказов
+      const paymentResponse = await fetch(`${API_ENDPOINTS.orders}?action=create_payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: finalPrice,
+          order_id: orderId,
+          return_url: window.location.origin + '/'
+        })
       });
 
-      clearCart();
-      
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
+      if (paymentResponse.ok) {
+        const paymentData = await paymentResponse.json();
+        clearCart();
+        window.location.href = paymentData.payment_url;
+        return;
+      } else {
+        throw new Error('Failed to create payment');
+      }
     } catch (error) {
       toast({
         title: "Ошибка отправки",
