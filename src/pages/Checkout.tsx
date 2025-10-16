@@ -212,6 +212,7 @@ const Checkout = () => {
     };
 
     try {
+      console.log('Отправка заказа:', orderData);
       const response = await fetch(API_ENDPOINTS.orders, {
         method: 'POST',
         headers: {
@@ -220,14 +221,20 @@ const Checkout = () => {
         body: JSON.stringify(orderData)
       });
 
+      console.log('Ответ сервера:', response.status, response.statusText);
+
       if (!response.ok) {
-        throw new Error('Failed to send order');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Ошибка создания заказа:', errorData);
+        throw new Error(errorData.error || 'Failed to send order');
       }
 
       const result = await response.json();
+      console.log('Заказ создан:', result);
       const orderId = result.id;
 
       // Создаём платёж для всех заказов
+      console.log('Создание платежа для заказа:', orderId);
       const paymentResponse = await fetch(`${API_ENDPOINTS.orders}?action=create_payment`, {
         method: 'POST',
         headers: {
@@ -240,18 +247,24 @@ const Checkout = () => {
         })
       });
 
+      console.log('Ответ создания платежа:', paymentResponse.status);
+
       if (paymentResponse.ok) {
         const paymentData = await paymentResponse.json();
+        console.log('Платеж создан, перенаправление на:', paymentData.payment_url);
         clearCart();
         window.location.href = paymentData.payment_url;
         return;
       } else {
-        throw new Error('Failed to create payment');
+        const paymentError = await paymentResponse.json().catch(() => ({}));
+        console.error('Ошибка создания платежа:', paymentError);
+        throw new Error(paymentError.error || 'Failed to create payment');
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Общая ошибка отправки заказа:', error);
       toast({
         title: "Ошибка отправки",
-        description: "Не удалось отправить заказ. Попробуйте позже или свяжитесь с нами по телефону.",
+        description: error.message || "Не удалось отправить заказ. Попробуйте позже или свяжитесь с нами по телефону.",
         variant: "destructive"
       });
     }
