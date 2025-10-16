@@ -98,8 +98,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         order_number = order_data.get('order_number', 'Не указан')
         recipient_name = customer.get('recipient_name', '')
         recipient_phone = customer.get('recipient_phone', '')
-        sender_name = customer.get('sender_name', '')
+        sender_name = customer.get('sender_name', 'Не указан')
         sender_phone = customer.get('sender_phone', '')
+        city = order_data.get('city', 'Не указан')
         
         html_body = f'''
         <html>
@@ -152,7 +153,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         '''
         
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = f'Новый заказ #{order_number} от {recipient_name}'
+        msg['Subject'] = f'Новый заказ #{order_number} от {sender_name} в город {city}'
         msg['From'] = smtp_user
         msg['To'] = 'florustic@yandex.ru'
         
