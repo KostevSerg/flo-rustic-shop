@@ -8,11 +8,28 @@ import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import { useCart } from '@/contexts/CartContext';
 import API_ENDPOINTS from '@/config/api';
+import WorkHoursEditor from '@/components/admin/WorkHoursEditor';
+
+interface DaySchedule {
+  from: string;
+  to: string;
+}
+
+interface WorkHours {
+  monday: DaySchedule;
+  tuesday: DaySchedule;
+  wednesday: DaySchedule;
+  thursday: DaySchedule;
+  friday: DaySchedule;
+  saturday: DaySchedule;
+  sunday: DaySchedule;
+}
 
 interface City {
   id: number;
   name: string;
   region: string;
+  work_hours?: WorkHours;
 }
 
 const Admin = () => {
@@ -25,6 +42,7 @@ const Admin = () => {
   const [newCity, setNewCity] = useState({ name: '', region: '' });
   const [editingCity, setEditingCity] = useState<City | null>(null);
   const [editForm, setEditForm] = useState({ name: '', region: '' });
+  const [editingWorkHours, setEditingWorkHours] = useState<City | null>(null);
 
   const loadCities = async () => {
     setLoading(true);
@@ -117,6 +135,37 @@ const Admin = () => {
   const cancelEditCity = () => {
     setEditingCity(null);
     setEditForm({ name: '', region: '' });
+  };
+
+  const handleSaveWorkHours = async (workHours: WorkHours) => {
+    if (!editingWorkHours) return;
+
+    try {
+      const response = await fetch(API_ENDPOINTS.cities, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingWorkHours.id,
+          work_hours: workHours
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to update work hours');
+
+      toast({
+        title: 'Успешно',
+        description: `График работы для ${editingWorkHours.name} обновлён`
+      });
+
+      setEditingWorkHours(null);
+      loadCities();
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить график работы',
+        variant: 'destructive'
+      });
+    }
   };
 
   const handleUpdateCity = async (e: React.FormEvent) => {
@@ -246,6 +295,24 @@ const Admin = () => {
             </div>
           )}
 
+          {editingWorkHours && (
+            <div className="mb-8">
+              <WorkHoursEditor
+                workHours={editingWorkHours.work_hours || {
+                  monday: { from: '09:00', to: '21:00' },
+                  tuesday: { from: '09:00', to: '21:00' },
+                  wednesday: { from: '09:00', to: '21:00' },
+                  thursday: { from: '09:00', to: '21:00' },
+                  friday: { from: '09:00', to: '21:00' },
+                  saturday: { from: '10:00', to: '20:00' },
+                  sunday: { from: '10:00', to: '20:00' }
+                }}
+                onSave={handleSaveWorkHours}
+                onCancel={() => setEditingWorkHours(null)}
+              />
+            </div>
+          )}
+
           {editingCity && (
             <div className="bg-card border-2 border-primary rounded-lg p-6 mb-8">
               <h2 className="text-2xl font-bold mb-4">Редактировать город</h2>
@@ -321,6 +388,14 @@ const Admin = () => {
                           <span className="font-medium">{city.name}</span>
                         </div>
                         <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setEditingWorkHours(city)}
+                            title="График работы"
+                          >
+                            <Icon name="Clock" size={16} />
+                          </Button>
                           <Button
                             size="sm"
                             variant="outline"

@@ -1,0 +1,1 @@
+ALTER TABLE cities ADD COLUMN work_hours JSONB DEFAULT '{"monday": {"from": "09:00", "to": "21:00"}, "tuesday": {"from": "09:00", "to": "21:00"}, "wednesday": {"from": "09:00", "to": "21:00"}, "thursday": {"from": "09:00", "to": "21:00"}, "friday": {"from": "09:00", "to": "21:00"}, "saturday": {"from": "10:00", "to": "20:00"}, "sunday": {"from": "10:00", "to": "20:00"}}'::jsonb;

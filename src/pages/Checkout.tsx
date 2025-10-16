@@ -15,6 +15,21 @@ import CheckoutAdditionalForm from '@/components/checkout/CheckoutAdditionalForm
 import CheckoutOrderSummary from '@/components/checkout/CheckoutOrderSummary';
 import API_ENDPOINTS from '@/config/api';
 
+interface DaySchedule {
+  from: string;
+  to: string;
+}
+
+interface WorkHours {
+  monday: DaySchedule;
+  tuesday: DaySchedule;
+  wednesday: DaySchedule;
+  thursday: DaySchedule;
+  friday: DaySchedule;
+  saturday: DaySchedule;
+  sunday: DaySchedule;
+}
+
 interface Settlement {
   id: number;
   name: string;
@@ -32,6 +47,7 @@ const Checkout = () => {
   const [promoCode, setPromoCode] = useState('');
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; discount_percent: number } | null>(null);
   const [checkingPromo, setCheckingPromo] = useState(false);
+  const [cityWorkHours, setCityWorkHours] = useState<WorkHours | null>(null);
   
   const [formData, setFormData] = useState({
     recipientName: '',
@@ -75,6 +91,7 @@ const Checkout = () => {
       const foundCity = allCities.find((c: any) => c.name === selectedCity);
       if (foundCity) {
         cityId = foundCity.id;
+        setCityWorkHours(foundCity.work_hours || null);
         
         const settlementsResponse = await fetch(`${API_ENDPOINTS.cities}?action=settlements&city_id=${cityId}`);
         const settlementsData = await settlementsResponse.json();
@@ -308,6 +325,7 @@ const Checkout = () => {
                   loadingSettlements={loadingSettlements}
                   onChange={handleChange}
                   getTodayDate={getTodayDate}
+                  cityWorkHours={cityWorkHours}
                 />
 
                 <CheckoutPaymentForm

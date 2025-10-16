@@ -162,7 +162,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         }
             else:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    cur.execute('SELECT id, name, region, is_active FROM cities WHERE is_active = true ORDER BY region, name')
+                    cur.execute('SELECT id, name, region, is_active, work_hours FROM cities WHERE is_active = true ORDER BY region, name')
                     cities = cur.fetchall()
                     
                     grouped_cities: Dict[str, List[Dict[str, Any]]] = {}
@@ -173,7 +173,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         grouped_cities[region].append({
                             'id': city['id'],
                             'name': city['name'],
-                            'region': city['region']
+                            'region': city['region'],
+                            'work_hours': city.get('work_hours')
                         })
                     
                     return {
@@ -446,10 +447,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             else:
                 body_data = json.loads(event.get('body', '{}'))
                 city_id = body_data.get('id')
-                name = body_data.get('name', '').strip()
-                region = body_data.get('region', '').strip()
+                name = body_data.get('name', '').strip() if body_data.get('name') else None
+                region = body_data.get('region', '').strip() if body_data.get('region') else None
+                work_hours = body_data.get('work_hours')
                 
-                if not city_id or not name or not region:
+                if not city_id:
                     return {
                         'statusCode': 400,
                         'headers': {
@@ -457,16 +459,34 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'error': 'City ID, name and region are required'})
+                        'body': json.dumps({'error': 'City ID is required'})
                     }
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    cur.execute('''
-                        UPDATE cities 
-                        SET name = %s, region = %s 
-                        WHERE id = %s
-                        RETURNING id, name, region
-                    ''', (name, region, city_id))
+                    if work_hours is not None:
+                        cur.execute('''
+                            UPDATE cities 
+                            SET work_hours = %s 
+                            WHERE id = %s
+                            RETURNING id, name, region, work_hours
+                        ''', (json.dumps(work_hours), city_id))
+                    elif name and region:
+                        cur.execute('''
+                            UPDATE cities 
+                            SET name = %s, region = %s 
+                            WHERE id = %s
+                            RETURNING id, name, region, work_hours
+                        ''', (name, region, city_id))
+                    else:
+                        return {
+                            'statusCode': 400,
+                            'headers': {
+                                'Content-Type': 'application/json',
+                                'Access-Control-Allow-Origin': '*'
+                            },
+                            'isBase64Encoded': False,
+                            'body': json.dumps({'error': 'Name and region, or work_hours are required'})
+                        }
                     
                     updated = cur.fetchone()
                     conn.commit()

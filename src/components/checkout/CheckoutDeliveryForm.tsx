@@ -1,6 +1,21 @@
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 
+interface DaySchedule {
+  from: string;
+  to: string;
+}
+
+interface WorkHours {
+  monday: DaySchedule;
+  tuesday: DaySchedule;
+  wednesday: DaySchedule;
+  thursday: DaySchedule;
+  friday: DaySchedule;
+  saturday: DaySchedule;
+  sunday: DaySchedule;
+}
+
 interface Settlement {
   id: number;
   name: string;
@@ -17,6 +32,7 @@ interface CheckoutDeliveryFormProps {
   loadingSettlements: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   getTodayDate: () => string;
+  cityWorkHours: WorkHours | null;
 }
 
 const CheckoutDeliveryForm = ({
@@ -28,8 +44,36 @@ const CheckoutDeliveryForm = ({
   settlements,
   loadingSettlements,
   onChange,
-  getTodayDate
+  getTodayDate,
+  cityWorkHours
 }: CheckoutDeliveryFormProps) => {
+  const getTodayDayOfWeek = () => {
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    return days[new Date().getDay()] as keyof WorkHours;
+  };
+
+  const getTimeOptions = () => {
+    if (!cityWorkHours) {
+      return [
+        { value: 'any', label: 'В любое время' },
+        { value: 'morning', label: 'Утро (9:00 - 12:00)' },
+        { value: 'day', label: 'День (12:00 - 18:00)' },
+        { value: 'evening', label: 'Вечер (18:00 - 21:00)' }
+      ];
+    }
+
+    const today = getTodayDayOfWeek();
+    const schedule = cityWorkHours[today];
+    
+    return [
+      { value: 'any', label: `В любое время (${schedule.from} - ${schedule.to})` },
+      { value: 'morning', label: `Утро (${schedule.from} - 12:00)` },
+      { value: 'day', label: `День (12:00 - 18:00)` },
+      { value: 'evening', label: `Вечер (18:00 - ${schedule.to})` }
+    ];
+  };
+
+  const timeOptions = getTimeOptions();
   return (
     <div className="bg-card rounded-lg p-6 space-y-4">
       <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -113,10 +157,11 @@ const CheckoutDeliveryForm = ({
             onChange={onChange}
             className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary bg-background"
           >
-            <option value="any">В любое время</option>
-            <option value="morning">Утро (9:00 - 12:00)</option>
-            <option value="day">День (12:00 - 18:00)</option>
-            <option value="evening">Вечер (18:00 - 21:00)</option>
+            {timeOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
         </div>
       </div>
