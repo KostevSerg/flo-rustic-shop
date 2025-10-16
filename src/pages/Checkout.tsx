@@ -15,19 +15,9 @@ import CheckoutAdditionalForm from '@/components/checkout/CheckoutAdditionalForm
 import CheckoutOrderSummary from '@/components/checkout/CheckoutOrderSummary';
 import API_ENDPOINTS from '@/config/api';
 
-interface DaySchedule {
+interface WorkHours {
   from: string;
   to: string;
-}
-
-interface WorkHours {
-  monday: DaySchedule;
-  tuesday: DaySchedule;
-  wednesday: DaySchedule;
-  thursday: DaySchedule;
-  friday: DaySchedule;
-  saturday: DaySchedule;
-  sunday: DaySchedule;
 }
 
 interface Settlement {

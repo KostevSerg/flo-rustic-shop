@@ -10,19 +10,9 @@ import { useCart } from '@/contexts/CartContext';
 import API_ENDPOINTS from '@/config/api';
 import WorkHoursEditor from '@/components/admin/WorkHoursEditor';
 
-interface DaySchedule {
+interface WorkHours {
   from: string;
   to: string;
-}
-
-interface WorkHours {
-  monday: DaySchedule;
-  tuesday: DaySchedule;
-  wednesday: DaySchedule;
-  thursday: DaySchedule;
-  friday: DaySchedule;
-  saturday: DaySchedule;
-  sunday: DaySchedule;
 }
 
 interface City {
@@ -298,15 +288,7 @@ const Admin = () => {
           {editingWorkHours && (
             <div className="mb-8">
               <WorkHoursEditor
-                workHours={editingWorkHours.work_hours || {
-                  monday: { from: '09:00', to: '21:00' },
-                  tuesday: { from: '09:00', to: '21:00' },
-                  wednesday: { from: '09:00', to: '21:00' },
-                  thursday: { from: '09:00', to: '21:00' },
-                  friday: { from: '09:00', to: '21:00' },
-                  saturday: { from: '10:00', to: '20:00' },
-                  sunday: { from: '10:00', to: '20:00' }
-                }}
+                workHours={editingWorkHours.work_hours || { from: '00:00', to: '23:59' }}
                 onSave={handleSaveWorkHours}
                 onCancel={() => setEditingWorkHours(null)}
               />

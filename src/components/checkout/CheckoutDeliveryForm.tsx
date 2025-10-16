@@ -1,19 +1,9 @@
 import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 
-interface DaySchedule {
+interface WorkHours {
   from: string;
   to: string;
-}
-
-interface WorkHours {
-  monday: DaySchedule;
-  tuesday: DaySchedule;
-  wednesday: DaySchedule;
-  thursday: DaySchedule;
-  friday: DaySchedule;
-  saturday: DaySchedule;
-  sunday: DaySchedule;
 }
 
 interface Settlement {
@@ -47,11 +37,6 @@ const CheckoutDeliveryForm = ({
   getTodayDate,
   cityWorkHours
 }: CheckoutDeliveryFormProps) => {
-  const getTodayDayOfWeek = () => {
-    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    return days[new Date().getDay()] as keyof WorkHours;
-  };
-
   const getTimeOptions = () => {
     if (!cityWorkHours) {
       return [
@@ -61,15 +46,12 @@ const CheckoutDeliveryForm = ({
         { value: 'evening', label: 'Вечер (18:00 - 21:00)' }
       ];
     }
-
-    const today = getTodayDayOfWeek();
-    const schedule = cityWorkHours[today];
     
     return [
-      { value: 'any', label: `В любое время (${schedule.from} - ${schedule.to})` },
-      { value: 'morning', label: `Утро (${schedule.from} - 12:00)` },
+      { value: 'any', label: `В любое время (${cityWorkHours.from} - ${cityWorkHours.to})` },
+      { value: 'morning', label: `Утро (${cityWorkHours.from} - 12:00)` },
       { value: 'day', label: `День (12:00 - 18:00)` },
-      { value: 'evening', label: `Вечер (18:00 - ${schedule.to})` }
+      { value: 'evening', label: `Вечер (18:00 - ${cityWorkHours.to})` }
     ];
   };
 

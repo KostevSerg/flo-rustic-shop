@@ -2,19 +2,9 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
-interface DaySchedule {
+interface WorkHours {
   from: string;
   to: string;
-}
-
-interface WorkHours {
-  monday: DaySchedule;
-  tuesday: DaySchedule;
-  wednesday: DaySchedule;
-  thursday: DaySchedule;
-  friday: DaySchedule;
-  saturday: DaySchedule;
-  sunday: DaySchedule;
 }
 
 interface WorkHoursEditorProps {
@@ -23,28 +13,8 @@ interface WorkHoursEditorProps {
   onCancel: () => void;
 }
 
-const dayNames: Record<keyof WorkHours, string> = {
-  monday: 'Понедельник',
-  tuesday: 'Вторник',
-  wednesday: 'Среда',
-  thursday: 'Четверг',
-  friday: 'Пятница',
-  saturday: 'Суббота',
-  sunday: 'Воскресенье'
-};
-
 const WorkHoursEditor = ({ workHours, onSave, onCancel }: WorkHoursEditorProps) => {
   const [editedHours, setEditedHours] = useState<WorkHours>(workHours);
-
-  const handleDayChange = (day: keyof WorkHours, field: 'from' | 'to', value: string) => {
-    setEditedHours({
-      ...editedHours,
-      [day]: {
-        ...editedHours[day],
-        [field]: value
-      }
-    });
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,33 +28,31 @@ const WorkHoursEditor = ({ workHours, onSave, onCancel }: WorkHoursEditorProps) 
         График работы
       </h3>
       <form onSubmit={handleSubmit}>
-        <div className="space-y-3 mb-4">
-          {Object.entries(dayNames).map(([day, label]) => (
-            <div key={day} className="grid grid-cols-[140px_1fr_1fr] gap-3 items-center">
-              <span className="font-medium">{label}</span>
-              <div>
-                <label className="block text-xs text-muted-foreground mb-1">С</label>
-                <input
-                  type="time"
-                  value={editedHours[day as keyof WorkHours].from}
-                  onChange={(e) => handleDayChange(day as keyof WorkHours, 'from', e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-muted-foreground mb-1">До</label>
-                <input
-                  type="time"
-                  value={editedHours[day as keyof WorkHours].to}
-                  onChange={(e) => handleDayChange(day as keyof WorkHours, 'to', e.target.value)}
-                  className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                  required
-                />
-              </div>
-            </div>
-          ))}
+        <div className="grid md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Время начала работы</label>
+            <input
+              type="time"
+              value={editedHours.from}
+              onChange={(e) => setEditedHours({ ...editedHours, from: e.target.value })}
+              className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Время окончания работы</label>
+            <input
+              type="time"
+              value={editedHours.to}
+              onChange={(e) => setEditedHours({ ...editedHours, to: e.target.value })}
+              className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+              required
+            />
+          </div>
         </div>
+        <p className="text-sm text-muted-foreground mb-4">
+          График работы будет применен ко всем дням недели
+        </p>
         <div className="flex gap-3">
           <Button type="submit">
             <Icon name="Save" size={18} className="mr-2" />
