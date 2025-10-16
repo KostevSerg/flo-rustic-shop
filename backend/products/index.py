@@ -77,7 +77,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''', (category,))
                     else:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category
+                            SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category, p.is_featured
                             FROM products p
                             WHERE p.is_active = true
                             ORDER BY p.created_at DESC
@@ -205,6 +205,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if 'category' in body_data:
                 update_fields.append('category = %s')
                 params.append(body_data['category'])
+            if 'is_featured' in body_data:
+                update_fields.append('is_featured = %s')
+                params.append(body_data['is_featured'])
             
             if not update_fields:
                 return {
@@ -222,7 +225,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
                     f'''UPDATE products SET {', '.join(update_fields)}, updated_at = CURRENT_TIMESTAMP
-                        WHERE id = %s RETURNING id, name, description, image_url, base_price, category''',
+                        WHERE id = %s RETURNING id, name, description, image_url, base_price, category, is_featured''',
                     params
                 )
                 updated_product = dict(cur.fetchone())

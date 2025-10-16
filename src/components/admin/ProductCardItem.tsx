@@ -8,6 +8,7 @@ interface Product {
   image_url: string;
   base_price: number;
   category: string;
+  is_featured?: boolean;
 }
 
 interface ProductCardItemProps {
@@ -15,9 +16,10 @@ interface ProductCardItemProps {
   onEdit: (product: Product) => void;
   onSetPrice: (product: Product) => void;
   onDelete: (productId: number, productName: string) => void;
+  onToggleFeatured: (productId: number, currentStatus: boolean) => void;
 }
 
-const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete }: ProductCardItemProps) => {
+const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatured }: ProductCardItemProps) => {
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden">
       {product.image_url && (
@@ -34,20 +36,37 @@ const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete }: ProductCardI
         </p>
         <div className="flex items-center justify-between mb-3">
           <span className="text-xl font-bold">{product.base_price} ₽</span>
-          {product.category && (
-            <span className="text-xs bg-accent px-2 py-1 rounded">
-              {product.category}
-            </span>
-          )}
+          <div className="flex gap-2 items-center">
+            {product.is_featured && (
+              <span className="text-xs bg-yellow-500 text-white px-2 py-1 rounded flex items-center gap-1">
+                <Icon name="Star" size={12} />
+                Популярный
+              </span>
+            )}
+            {product.category && (
+              <span className="text-xs bg-accent px-2 py-1 rounded">
+                {product.category}
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex gap-2">
           <Button
             size="sm"
             variant="outline"
             onClick={() => onEdit(product)}
+            className="flex-1"
           >
             <Icon name="Edit" size={16} className="mr-1" />
             Редактировать
+          </Button>
+          <Button
+            size="sm"
+            variant={product.is_featured ? "default" : "outline"}
+            onClick={() => onToggleFeatured(product.id, product.is_featured || false)}
+            title={product.is_featured ? "Убрать из популярных" : "Добавить в популярные"}
+          >
+            <Icon name="Star" size={16} />
           </Button>
         </div>
         <div className="flex gap-2 mt-2">

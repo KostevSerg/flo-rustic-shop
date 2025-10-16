@@ -10,6 +10,17 @@ import ProductCard from '@/components/ProductCard';
 import ReviewsSection from '@/components/ReviewsSection';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import API_ENDPOINTS from '@/config/api';
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  image_url: string;
+  category: string;
+  is_featured?: boolean;
+}
 
 const createSlug = (name: string): string => {
   return name
@@ -25,33 +36,34 @@ const Index = () => {
   const { getText } = useSiteTexts();
   const { selectedCity } = useCity();
   const citySlug = createSlug(selectedCity);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const popularProducts = [
-    {
-      id: 1,
-      name: 'Нежность',
-      description: 'Букет из розовых и белых роз с эвкалиптом',
-      price: 3500,
-      image: 'https://cdn.poehali.dev/projects/be23cceb-0ab8-4764-8b57-fed61fedc50e/files/24578968-7a19-4e34-bde7-3db4eeb6fbfb.jpg'
-    },
-    {
-      id: 2,
-      name: 'Классика',
-      description: 'Элегантный букет из красных роз и белых лилий',
-      price: 4200,
-      image: 'https://cdn.poehali.dev/projects/be23cceb-0ab8-4764-8b57-fed61fedc50e/files/0d6e767d-1dda-4de4-a9eb-29047a061763.jpg'
-    },
-    {
-      id: 3,
-      name: 'Полевой',
-      description: 'Букет с подсолнухами, ромашками и зеленью',
-      price: 2800,
-      image: 'https://cdn.poehali.dev/projects/be23cceb-0ab8-4764-8b57-fed61fedc50e/files/77f65509-61f6-4258-b779-cb174989f3e5.jpg'
-    }
-  ];
+  useEffect(() => {
+    const loadFeaturedProducts = async () => {
+      try {
+        const response = await fetch(`${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}`);
+        const data = await response.json();
+        const featured = data.products.filter((p: Product) => p.is_featured);
+        setFeaturedProducts(featured.slice(0, 3));
+      } catch (error) {
+        console.error('Failed to load featured products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleAddToCart = (product: typeof popularProducts[0]) => {
-    addToCart(product);
+    loadFeaturedProducts();
+  }, [selectedCity]);
+
+  const handleAddToCart = (product: Product) => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      image: product.image_url
+    });
   };
 
   const pageTitle = 'FloRustic — Доставка свежих цветов и букетов по России';
@@ -129,9 +141,29 @@ const Index = () => {
             {getText('home', 'popular_subtitle', 'Наши самые любимые композиции, которые выбирают чаще всего')}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {popularProducts.map(product => (
-              <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
-            ))}
+            {loading ? (
+              <div className="col-span-full text-center py-12">
+                <p className="text-muted-foreground">Загрузка товаров...</p>
+              </div>
+            ) : featuredProducts.length > 0 ? (
+              featuredProducts.map(product => (
+                <ProductCard 
+                  key={product.id} 
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    description: product.description,
+                    price: product.price,
+                    image: product.image_url
+                  }} 
+                  onAddToCart={() => handleAddToCart(product)} 
+                />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-muted-foreground">Популярные товары скоро появятся</p>
+              </div>
+            )}
           </div>
           <div className="text-center">
             <Link to={`/city/${citySlug}`}>

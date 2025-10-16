@@ -20,6 +20,7 @@ interface Product {
   image_url: string;
   base_price: number;
   category: string;
+  is_featured?: boolean;
 }
 
 interface City {
@@ -209,6 +210,34 @@ const AdminProducts = () => {
     }
   };
 
+  const handleToggleFeatured = async (productId: number, currentStatus: boolean) => {
+    try {
+      const response = await fetch(API_ENDPOINTS.products, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: productId,
+          is_featured: !currentStatus
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to toggle featured');
+
+      toast({
+        title: 'Успешно',
+        description: !currentStatus ? 'Товар добавлен в популярные' : 'Товар убран из популярных'
+      });
+
+      loadProducts();
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить статус товара',
+        variant: 'destructive'
+      });
+    }
+  };
+
   useEffect(() => {
     loadProducts();
     loadCities();
@@ -267,6 +296,7 @@ const AdminProducts = () => {
                       setShowPriceModal(true);
                     }}
                     onDelete={handleDeleteProduct}
+                    onToggleFeatured={handleToggleFeatured}
                   />
                 ))}
               </div>
