@@ -187,7 +187,15 @@ const Checkout = () => {
       })),
       total_amount: finalPrice,
       promo_code: appliedPromo?.code || null,
-      discount_amount: discountAmount
+      discount_amount: discountAmount,
+      recipient_name: formData.recipientName,
+      recipient_phone: formData.recipientPhone,
+      sender_name: formData.senderName || null,
+      sender_phone: formData.senderPhone || null,
+      delivery_date: formData.deliveryDate || null,
+      delivery_time: formData.deliveryTime || null,
+      postcard_text: formData.postcard || null,
+      payment_method: formData.paymentMethod
     };
 
     try {

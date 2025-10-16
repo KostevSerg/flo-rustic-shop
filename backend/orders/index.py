@@ -205,8 +205,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 INSERT INTO orders (
                     order_number, customer_name, customer_phone, customer_email,
                     city_id, delivery_address, items, total_amount, status,
-                    promo_code_id, discount_amount
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    promo_code_id, discount_amount,
+                    recipient_name, recipient_phone, sender_name, sender_phone,
+                    delivery_date, delivery_time, postcard_text, payment_method
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING id, order_number
             ''', (
                 order_number,
@@ -219,7 +221,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 body_data.get('total_amount'),
                 'new',
                 promo_code_id,
-                body_data.get('discount_amount', 0)
+                body_data.get('discount_amount', 0),
+                body_data.get('recipient_name'),
+                body_data.get('recipient_phone'),
+                body_data.get('sender_name'),
+                body_data.get('sender_phone'),
+                body_data.get('delivery_date'),
+                body_data.get('delivery_time'),
+                body_data.get('postcard_text'),
+                body_data.get('payment_method', 'cash')
             ))
             
             result = cursor.fetchone()

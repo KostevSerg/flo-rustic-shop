@@ -35,6 +35,14 @@ interface Order {
   promo_code?: string | null;
   promo_discount?: number | null;
   discount_amount?: number | null;
+  recipient_name?: string | null;
+  recipient_phone?: string | null;
+  sender_name?: string | null;
+  sender_phone?: string | null;
+  delivery_date?: string | null;
+  delivery_time?: string | null;
+  postcard_text?: string | null;
+  payment_method?: string | null;
 }
 
 const statusLabels: Record<string, string> = {
@@ -333,25 +341,94 @@ const AdminOrders = () => {
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="bg-accent/20 rounded-lg p-4">
                   <h3 className="font-bold mb-3 flex items-center">
-                    <Icon name="User" size={18} className="mr-2" />
-                    Клиент
+                    <Icon name="UserCheck" size={18} className="mr-2" />
+                    Получатель
                   </h3>
-                  <p className="font-semibold mb-1">{selectedOrder.customer_name}</p>
-                  <p className="text-sm mb-1">{selectedOrder.customer_phone}</p>
+                  <p className="font-semibold mb-1">{selectedOrder.recipient_name || selectedOrder.customer_name}</p>
+                  <p className="text-sm mb-1">{selectedOrder.recipient_phone || selectedOrder.customer_phone}</p>
                   {selectedOrder.customer_email && (
                     <p className="text-sm text-muted-foreground">{selectedOrder.customer_email}</p>
                   )}
                 </div>
 
+                {(selectedOrder.sender_name || selectedOrder.sender_phone) && (
+                  <div className="bg-accent/20 rounded-lg p-4">
+                    <h3 className="font-bold mb-3 flex items-center">
+                      <Icon name="User" size={18} className="mr-2" />
+                      Отправитель
+                    </h3>
+                    {selectedOrder.sender_name && (
+                      <p className="font-semibold mb-1">{selectedOrder.sender_name}</p>
+                    )}
+                    {selectedOrder.sender_phone && (
+                      <p className="text-sm">{selectedOrder.sender_phone}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
                 <div className="bg-accent/20 rounded-lg p-4">
                   <h3 className="font-bold mb-3 flex items-center">
                     <Icon name="MapPin" size={18} className="mr-2" />
-                    Доставка
+                    Адрес доставки
                   </h3>
                   <p className="font-semibold mb-1">{selectedOrder.city_name}, {selectedOrder.region}</p>
                   <p className="text-sm">{selectedOrder.delivery_address}</p>
                 </div>
+
+                {(selectedOrder.delivery_date || selectedOrder.delivery_time) && (
+                  <div className="bg-accent/20 rounded-lg p-4">
+                    <h3 className="font-bold mb-3 flex items-center">
+                      <Icon name="CalendarClock" size={18} className="mr-2" />
+                      Время доставки
+                    </h3>
+                    {selectedOrder.delivery_date && (
+                      <p className="font-semibold mb-1">
+                        {new Date(selectedOrder.delivery_date).toLocaleDateString('ru-RU', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric'
+                        })}
+                      </p>
+                    )}
+                    {selectedOrder.delivery_time && (
+                      <p className="text-sm">
+                        {selectedOrder.delivery_time === 'any' ? 'Любое время' : 
+                         selectedOrder.delivery_time === 'morning' ? 'Утро (9:00-12:00)' :
+                         selectedOrder.delivery_time === 'day' ? 'День (12:00-17:00)' :
+                         selectedOrder.delivery_time === 'evening' ? 'Вечер (17:00-21:00)' :
+                         selectedOrder.delivery_time}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
+
+              {selectedOrder.postcard_text && (
+                <div className="bg-accent/20 rounded-lg p-4">
+                  <h3 className="font-bold mb-3 flex items-center">
+                    <Icon name="MessageSquare" size={18} className="mr-2" />
+                    Текст открытки
+                  </h3>
+                  <p className="text-sm whitespace-pre-wrap">{selectedOrder.postcard_text}</p>
+                </div>
+              )}
+
+              {selectedOrder.payment_method && (
+                <div className="bg-accent/20 rounded-lg p-4">
+                  <h3 className="font-bold mb-3 flex items-center">
+                    <Icon name="CreditCard" size={18} className="mr-2" />
+                    Способ оплаты
+                  </h3>
+                  <p className="text-sm">
+                    {selectedOrder.payment_method === 'online' ? 'Онлайн оплата' : 
+                     selectedOrder.payment_method === 'cash' ? 'Наличными курьеру' :
+                     selectedOrder.payment_method === 'card' ? 'Картой курьеру' :
+                     selectedOrder.payment_method}
+                  </p>
+                </div>
+              )}
 
               <div className="bg-accent/20 rounded-lg p-4">
                 <h3 className="font-bold mb-3 flex items-center">
