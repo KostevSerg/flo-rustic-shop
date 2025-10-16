@@ -256,15 +256,24 @@ const Checkout = () => {
         window.location.href = paymentData.payment_url;
         return;
       } else {
-        const paymentError = await paymentResponse.json().catch(() => ({}));
-        console.error('Ошибка создания платежа:', paymentError);
-        throw new Error(paymentError.error || 'Failed to create payment');
+        // Если платёжная система не работает, заказ уже создан
+        console.warn('Платёжная система недоступна, но заказ создан');
+        clearCart();
+        toast({
+          title: "Заказ принят!",
+          description: "Проблема с платёжной системой. Заказ создан, вскоре наш специалист свяжется с вами для уточнения оплаты.",
+          variant: "default"
+        });
+        setTimeout(() => {
+          navigate('/');
+        }, 3000);
+        return;
       }
     } catch (error: any) {
       console.error('Общая ошибка отправки заказа:', error);
       toast({
         title: "Ошибка отправки",
-        description: error.message || "Не удалось отправить заказ. Попробуйте позже или свяжитесь с нами по телефону.",
+        description: "Не удалось отправить заказ. Попробуйте позже или свяжитесь с нами по телефону.",
         variant: "destructive"
       });
     }
