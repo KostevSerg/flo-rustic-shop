@@ -101,6 +101,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         sender_name = customer.get('sender_name', 'Не указан')
         sender_phone = customer.get('sender_phone', '')
         city = order_data.get('city', 'Не указан')
+        settlement = order_data.get('settlement', '')
+        full_city = f'{city}, {settlement}' if settlement else city
         
         html_body = f'''
         <html>
@@ -117,7 +119,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     {f'<h2 style="color: #2D5016; margin-top: 30px;">Отправитель</h2><p><strong>Имя:</strong> {sender_name}</p><p><strong>Телефон:</strong> {sender_phone}</p>' if sender_name or sender_phone else ''}
                     
                     <h2 style="color: #2D5016; margin-top: 30px;">Адрес доставки</h2>
-                    <p><strong>Город:</strong> {order_data.get('city', 'Не указан')}</p>
+                    <p><strong>Город:</strong> {full_city}</p>
                     <p><strong>Адрес:</strong> {order_data.get('address', '')}</p>
                     <p><strong>Дата доставки:</strong> {order_data.get('deliveryDate', 'Не указана')}</p>
                     <p><strong>Время доставки:</strong> {order_data.get('deliveryTime', 'Не указано')}</p>
@@ -153,7 +155,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         '''
         
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = f'Новый заказ #{order_number} от {sender_name} в город {city}'
+        msg['Subject'] = f'Новый заказ #{order_number} от {sender_name} в город {full_city}'
         msg['From'] = smtp_user
         msg['To'] = 'florustic@yandex.ru'
         

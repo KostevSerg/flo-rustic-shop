@@ -235,6 +235,9 @@ const Checkout = () => {
 
       // Отправляем письмо с данными заказа
       try {
+        const selectedSettlement = settlements.find(s => s.id.toString() === formData.settlementId);
+        const settlementName = selectedSettlement ? selectedSettlement.name : '';
+        
         await fetch(API_ENDPOINTS.sendOrder, {
           method: 'POST',
           headers: {
@@ -244,6 +247,7 @@ const Checkout = () => {
             order: {
               order_number: orderId,
               city: selectedCity || 'Не указан',
+              settlement: settlementName,
               address: formData.address,
               deliveryDate: formData.deliveryDate,
               deliveryTime: formData.deliveryTime,
