@@ -256,6 +256,7 @@ const Checkout = () => {
               email: formData.senderName
             },
             items: items.map(item => ({
+              id: item.id,
               name: item.name,
               quantity: item.quantity,
               price: item.price

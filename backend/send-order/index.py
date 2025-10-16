@@ -68,9 +68,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         items_html = ''
         for item in items:
+            item_id = item.get('id', '')
+            item_name = item.get('name', '')
+            product_link = f'https://florustic.ru/product/{item_id}' if item_id else ''
+            
+            name_with_link = f'<a href="{product_link}" style="color: #2D5016; text-decoration: none;">{item_name}</a>' if product_link else item_name
+            
             items_html += f'''
                 <tr>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{item.get('name', '')}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{name_with_link}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #eee;">{item.get('quantity', 0)} шт</td>
                     <td style="padding: 10px; border-bottom: 1px solid #eee;">{item.get('price', 0)} ₽</td>
                     <td style="padding: 10px; border-bottom: 1px solid #eee;">{item.get('price', 0) * item.get('quantity', 0)} ₽</td>
