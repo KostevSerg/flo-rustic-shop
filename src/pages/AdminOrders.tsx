@@ -32,6 +32,9 @@ interface Order {
   notes: string | null;
   created_at: string;
   updated_at: string;
+  promo_code?: string | null;
+  promo_discount?: number | null;
+  discount_amount?: number | null;
 }
 
 const statusLabels: Record<string, string> = {
@@ -269,6 +272,12 @@ const AdminOrders = () => {
                           <span className="font-semibold">{item.price * item.quantity} ₽</span>
                         </div>
                       ))}
+                      {order.promo_code && order.discount_amount && (
+                        <div className="flex justify-between text-sm pt-2 border-t border-border/50">
+                          <span className="text-green-600 font-medium">Промокод {order.promo_code} (-{order.promo_discount}%)</span>
+                          <span className="font-semibold text-green-600">-{order.discount_amount} ₽</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -359,6 +368,15 @@ const AdminOrders = () => {
                       <p className="font-bold">{item.price * item.quantity} ₽</p>
                     </div>
                   ))}
+                  {selectedOrder.promo_code && selectedOrder.discount_amount && (
+                    <div className="flex justify-between items-center pt-2 border-t border-border/50">
+                      <div>
+                        <p className="font-semibold text-green-600">Промокод {selectedOrder.promo_code}</p>
+                        <p className="text-sm text-muted-foreground">Скидка {selectedOrder.promo_discount}%</p>
+                      </div>
+                      <p className="font-bold text-green-600">-{selectedOrder.discount_amount} ₽</p>
+                    </div>
+                  )}
                   <div className="border-t border-border pt-2 mt-2">
                     <div className="flex justify-between items-center">
                       <p className="font-bold text-lg">Итого:</p>

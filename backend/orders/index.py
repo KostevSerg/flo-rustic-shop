@@ -48,9 +48,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             if order_id:
                 cursor.execute('''
-                    SELECT o.*, c.name as city_name, c.region
+                    SELECT o.*, c.name as city_name, c.region,
+                           pc.code as promo_code, pc.discount_percent as promo_discount
                     FROM orders o
                     LEFT JOIN cities c ON o.city_id = c.id
+                    LEFT JOIN promo_codes pc ON o.promo_code_id = pc.id
                     WHERE o.id = %s
                 ''', (order_id,))
                 order = cursor.fetchone()
@@ -75,17 +77,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 if status_filter:
                     cursor.execute('''
-                        SELECT o.*, c.name as city_name, c.region
+                        SELECT o.*, c.name as city_name, c.region,
+                               pc.code as promo_code, pc.discount_percent as promo_discount
                         FROM orders o
                         LEFT JOIN cities c ON o.city_id = c.id
+                        LEFT JOIN promo_codes pc ON o.promo_code_id = pc.id
                         WHERE o.status = %s
                         ORDER BY o.created_at DESC
                     ''', (status_filter,))
                 else:
                     cursor.execute('''
-                        SELECT o.*, c.name as city_name, c.region
+                        SELECT o.*, c.name as city_name, c.region,
+                               pc.code as promo_code, pc.discount_percent as promo_discount
                         FROM orders o
                         LEFT JOIN cities c ON o.city_id = c.id
+                        LEFT JOIN promo_codes pc ON o.promo_code_id = pc.id
                         ORDER BY o.created_at DESC
                     ''')
                 
