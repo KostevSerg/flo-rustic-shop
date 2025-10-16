@@ -233,6 +233,40 @@ const Checkout = () => {
       console.log('Заказ создан:', result);
       const orderId = result.id;
 
+      // Отправляем письмо с данными заказа
+      try {
+        await fetch(API_ENDPOINTS.sendOrder, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            order: {
+              city: formData.city,
+              address: formData.address,
+              deliveryDate: formData.deliveryDate,
+              deliveryTime: formData.deliveryTime,
+              totalPrice: finalPrice,
+              paymentMethod: formData.paymentMethod === 'online' ? 'Онлайн оплата' : 'Оплата при получении',
+              comment: formData.postcard
+            },
+            customer: {
+              name: formData.recipientName,
+              phone: formData.recipientPhone,
+              email: formData.senderName
+            },
+            items: items.map(item => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price
+            }))
+          })
+        });
+        console.log('Письмо с заказом отправлено');
+      } catch (emailError) {
+        console.error('Ошибка отправки письма:', emailError);
+      }
+
       // Создаём платёж для всех заказов
       console.log('Создание платежа для заказа:', orderId);
       const paymentResponse = await fetch(`${API_ENDPOINTS.orders}?action=create_payment`, {
