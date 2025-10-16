@@ -70,16 +70,28 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         for item in items:
             item_id = item.get('id', '')
             item_name = item.get('name', '')
+            item_image = item.get('image_url', '')
             product_link = f'https://florustic.ru/product/{item_id}' if item_id else ''
             
-            name_with_link = f'<a href="{product_link}" style="color: #2D5016; text-decoration: none;">{item_name}</a>' if product_link else item_name
+            name_with_link = f'<a href="{product_link}" style="color: #2D5016; text-decoration: none; font-weight: 600;">{item_name}</a>' if product_link else item_name
+            
+            image_html = ''
+            if item_image:
+                image_html = f'<a href="{product_link}"><img src="{item_image}" alt="{item_name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #E8B4B8;"></a>'
             
             items_html += f'''
                 <tr>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{name_with_link}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{item.get('quantity', 0)} шт</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{item.get('price', 0)} ₽</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{item.get('price', 0) * item.get('quantity', 0)} ₽</td>
+                    <td style="padding: 15px; border-bottom: 1px solid #eee;">
+                        <table cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+                                <td style="padding-right: 15px;">{image_html}</td>
+                                <td>{name_with_link}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="padding: 15px; border-bottom: 1px solid #eee; text-align: center;">{item.get('quantity', 0)} шт</td>
+                    <td style="padding: 15px; border-bottom: 1px solid #eee; text-align: right;">{item.get('price', 0)} ₽</td>
+                    <td style="padding: 15px; border-bottom: 1px solid #eee; text-align: right; font-weight: bold;">{item.get('price', 0) * item.get('quantity', 0)} ₽</td>
                 </tr>
             '''
         

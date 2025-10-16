@@ -195,10 +195,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'isBase64Encoded': False
                 }
             
-            cursor.execute('SELECT MAX(id) as max_id FROM orders')
-            max_id_result = cursor.fetchone()
-            next_order_number = (max_id_result['max_id'] or 0) + 1
-            order_number = str(next_order_number)
+            cursor.execute("SELECT COALESCE(MAX(CAST(order_number AS INTEGER)), 0) + 1 as next_number FROM orders WHERE order_number ~ '^[0-9]+$'")
+            next_order_result = cursor.fetchone()
+            order_number = str(next_order_result['next_number'])
             
             promo_code = body_data.get('promo_code')
             promo_code_id = None
