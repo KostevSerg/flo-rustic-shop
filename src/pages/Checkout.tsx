@@ -156,22 +156,29 @@ const Checkout = () => {
 
     const selectedSettlement = settlements.find(s => s.id === parseInt(formData.settlementId));
 
+    // Найти city_id по названию города
+    let cityId = null;
+    try {
+      const citiesResponse = await fetch(API_ENDPOINTS.cities);
+      const citiesData = await citiesResponse.json();
+      const allCities: any[] = [];
+      Object.values(citiesData.cities || {}).forEach((regionCities: any) => {
+        allCities.push(...regionCities);
+      });
+      const foundCity = allCities.find((c: any) => c.name === selectedCity);
+      if (foundCity) {
+        cityId = foundCity.id;
+      }
+    } catch (error) {
+      console.error('Failed to get city_id:', error);
+    }
+
     const orderData = {
-      recipient_name: formData.recipientName,
-      recipient_phone: formData.recipientPhone,
-      sender_name: formData.senderName || null,
-      sender_phone: formData.senderPhone || null,
+      customer_name: formData.recipientName,
+      customer_phone: formData.recipientPhone,
       customer_email: formData.email || null,
-      city: selectedCity,
-      settlement_id: parseInt(formData.settlementId),
-      settlement_name: selectedSettlement?.name || '',
-      delivery_price: selectedSettlement?.delivery_price || 0,
+      city_id: cityId,
       delivery_address: formData.address,
-      delivery_date: formData.deliveryDate || null,
-      delivery_time: formData.deliveryTime,
-      comment: formData.comment || null,
-      postcard_text: formData.postcard || null,
-      payment_method: formData.paymentMethod,
       items: items.map(item => ({
         id: item.id,
         name: item.name,
