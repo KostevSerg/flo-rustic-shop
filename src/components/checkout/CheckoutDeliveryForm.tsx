@@ -37,25 +37,6 @@ const CheckoutDeliveryForm = ({
   getTodayDate,
   cityWorkHours
 }: CheckoutDeliveryFormProps) => {
-  const getTimeOptions = () => {
-    if (!cityWorkHours) {
-      return [
-        { value: 'any', label: 'В любое время' },
-        { value: 'morning', label: 'Утро (9:00 - 12:00)' },
-        { value: 'day', label: 'День (12:00 - 18:00)' },
-        { value: 'evening', label: 'Вечер (18:00 - 21:00)' }
-      ];
-    }
-    
-    return [
-      { value: 'any', label: `В любое время (${cityWorkHours.from} - ${cityWorkHours.to})` },
-      { value: 'morning', label: `Утро (${cityWorkHours.from} - 12:00)` },
-      { value: 'day', label: `День (12:00 - 18:00)` },
-      { value: 'evening', label: `Вечер (18:00 - ${cityWorkHours.to})` }
-    ];
-  };
-
-  const timeOptions = getTimeOptions();
   return (
     <div className="bg-card rounded-lg p-6 space-y-4">
       <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -132,19 +113,21 @@ const CheckoutDeliveryForm = ({
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Время доставки</label>
-          <select
+          <label className="block text-sm font-medium mb-1">
+            Желаемое время доставки
+          </label>
+          <Input
+            type="time"
             name="deliveryTime"
             value={deliveryTime}
             onChange={onChange}
-            className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-          >
-            {timeOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            placeholder="14:00"
+          />
+          {cityWorkHours && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Филиал работает с {cityWorkHours.from} до {cityWorkHours.to}
+            </p>
+          )}
         </div>
       </div>
     </div>
