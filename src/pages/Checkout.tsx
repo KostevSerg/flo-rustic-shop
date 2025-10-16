@@ -29,6 +29,9 @@ const Checkout = () => {
 
   const [settlements, setSettlements] = useState<Settlement[]>([]);
   const [loadingSettlements, setLoadingSettlements] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discount_percent: number } | null>(null);
+  const [checkingPromo, setCheckingPromo] = useState(false);
   
   const [formData, setFormData] = useState({
     recipientName: '',
@@ -88,6 +91,54 @@ const Checkout = () => {
     setFormData({
       ...formData,
       [e.target.name]: value
+    });
+  };
+
+  const handleApplyPromoCode = async () => {
+    if (!promoCode.trim()) {
+      toast({
+        title: 'Ошибка',
+        description: 'Введите промокод',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setCheckingPromo(true);
+    try {
+      const response = await fetch(`${API_ENDPOINTS.promoCodes}?code=${encodeURIComponent(promoCode.toUpperCase())}`);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Промокод не найден');
+      }
+
+      setAppliedPromo({
+        code: data.promo.code,
+        discount_percent: data.promo.discount_percent
+      });
+
+      toast({
+        title: 'Промокод применён',
+        description: `Скидка ${data.promo.discount_percent}% активирована`
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Ошибка',
+        description: error.message || 'Промокод не найден',
+        variant: 'destructive'
+      });
+    } finally {
+      setCheckingPromo(false);
+    }
+  };
+
+  const handleRemovePromoCode = () => {
+    setAppliedPromo(null);
+    setPromoCode('');
+    toast({
+      title: 'Промокод удален',
+      description: 'Скидка отменена'
     });
   };
 
@@ -192,7 +243,13 @@ const Checkout = () => {
 
   const selectedSettlement = settlements.find(s => s.id === parseInt(formData.settlementId));
   const deliveryPrice = selectedSettlement?.delivery_price || 0;
-  const finalPrice = totalPrice + deliveryPrice;
+  const subtotal = totalPrice + deliveryPrice;
+  
+  const discountAmount = appliedPromo 
+    ? Math.round(subtotal * (appliedPromo.discount_percent / 100))
+    : 0;
+  
+  const finalPrice = subtotal - discountAmount;
 
   const getTodayDate = () => {
     const today = new Date();
@@ -250,6 +307,47 @@ const Checkout = () => {
                   comment={formData.comment}
                   onChange={handleChange}
                 />
+
+                <div className="bg-card rounded-lg p-6">
+                  <h2 className="text-lg font-semibold mb-4">Промокод</h2>
+                  {appliedPromo ? (
+                    <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Icon name="Tag" size={20} className="text-green-600" />
+                        <div>
+                          <p className="font-semibold text-green-700">{appliedPromo.code}</p>
+                          <p className="text-sm text-green-600">Скидка {appliedPromo.discount_percent}%</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleRemovePromoCode}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Icon name="X" size={20} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                        placeholder="Введите промокод"
+                        className="flex-1 px-3 py-2 border rounded-lg uppercase"
+                        disabled={checkingPromo}
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleApplyPromoCode}
+                        disabled={checkingPromo || !promoCode.trim()}
+                        variant="outline"
+                      >
+                        {checkingPromo ? 'Проверка...' : 'Применить'}
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="lg:col-span-1">
@@ -260,6 +358,9 @@ const Checkout = () => {
                   finalPrice={finalPrice}
                   onUpdateQuantity={updateQuantity}
                   onRemove={removeFromCart}
+                  promoCode={appliedPromo?.code}
+                  promoDiscount={appliedPromo?.discount_percent}
+                  discountAmount={discountAmount}
                 />
               </div>
             </div>

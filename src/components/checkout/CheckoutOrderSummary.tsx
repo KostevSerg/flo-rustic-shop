@@ -16,6 +16,9 @@ interface CheckoutOrderSummaryProps {
   finalPrice: number;
   onUpdateQuantity: (id: number, quantity: number) => void;
   onRemove: (id: number) => void;
+  promoCode?: string;
+  promoDiscount?: number;
+  discountAmount?: number;
 }
 
 const CheckoutOrderSummary = ({
@@ -24,7 +27,10 @@ const CheckoutOrderSummary = ({
   deliveryPrice,
   finalPrice,
   onUpdateQuantity,
-  onRemove
+  onRemove,
+  promoCode,
+  promoDiscount,
+  discountAmount
 }: CheckoutOrderSummaryProps) => {
   return (
     <div className="bg-card rounded-lg p-6 sticky top-24">
@@ -83,6 +89,12 @@ const CheckoutOrderSummary = ({
             {deliveryPrice > 0 ? `${deliveryPrice} ₽` : 'Бесплатно'}
           </span>
         </div>
+        {promoCode && discountAmount && discountAmount > 0 && (
+          <div className="flex justify-between text-sm text-green-600">
+            <span>Скидка ({promoCode} -{promoDiscount}%):</span>
+            <span className="font-medium">-{discountAmount} ₽</span>
+          </div>
+        )}
         <div className="flex justify-between text-lg font-bold pt-2 border-t">
           <span>Итого:</span>
           <span>{finalPrice} ₽</span>
