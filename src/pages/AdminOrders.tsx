@@ -8,6 +8,8 @@ import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import { useCart } from '@/contexts/CartContext';
 import API_ENDPOINTS from '@/config/api';
+import OrderListItem from '@/components/admin/OrderListItem';
+import OrderDetailsModal from '@/components/admin/OrderDetailsModal';
 
 interface OrderItem {
   id: number;
@@ -235,80 +237,13 @@ const AdminOrders = () => {
           ) : (
             <div className="grid gap-4">
               {orders.map((order) => (
-                <div
+                <OrderListItem
                   key={order.id}
-                  className="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                  order={order}
+                  statusLabels={statusLabels}
+                  statusColors={statusColors}
                   onClick={() => setSelectedOrder(order)}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-bold">Заказ #{order.order_number}</h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[order.status]}`}>
-                          {statusLabels[order.status]}
-                        </span>
-                        {order.payment_status === 'paid' && (
-                          <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-green-500/20 text-green-700 border-green-500/30">
-                            ✅ Оплачен
-                          </span>
-                        )}
-                        {order.payment_status === 'pending' && (
-                          <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-yellow-500/20 text-yellow-700 border-yellow-500/30">
-                            ⏳ Ожидает оплаты
-                          </span>
-                        )}
-                        {order.payment_status === 'failed' && (
-                          <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-red-500/20 text-red-700 border-red-500/30">
-                            ❌ Не оплачен
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {new Date(order.created_at).toLocaleString('ru-RU')}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-2xl font-bold text-primary">{order.total_amount} ₽</p>
-                      {order.payment_status === 'paid' && (
-                        <p className="text-sm text-green-600 font-medium">Оплачено</p>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="grid md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">Клиент</p>
-                      <p className="font-semibold">{order.customer_name}</p>
-                      <p className="text-sm">{order.customer_phone}</p>
-                      {order.customer_email && (
-                        <p className="text-sm text-muted-foreground">{order.customer_email}</p>
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">Доставка</p>
-                      <p className="font-semibold">{order.city_name}, {order.region}</p>
-                      <p className="text-sm">{order.delivery_address}</p>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-border pt-4">
-                    <p className="text-sm text-muted-foreground mb-2">Товары:</p>
-                    <div className="space-y-1">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="flex justify-between text-sm">
-                          <span>{item.name} × {item.quantity}</span>
-                          <span className="font-semibold">{item.price * item.quantity} ₽</span>
-                        </div>
-                      ))}
-                      {order.promo_code && order.discount_amount && (
-                        <div className="flex justify-between text-sm pt-2 border-t border-border/50">
-                          <span className="text-green-600 font-medium">Промокод {order.promo_code} (-{order.promo_discount}%)</span>
-                          <span className="font-semibold text-green-600">-{order.discount_amount} ₽</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                />
               ))}
             </div>
           )}
@@ -317,220 +252,14 @@ const AdminOrders = () => {
       <Footer />
 
         {selectedOrder && (
-        <>
-          <div
-            className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
-            onClick={() => setSelectedOrder(null)}
+          <OrderDetailsModal
+            order={selectedOrder}
+            statusLabels={statusLabels}
+            onClose={() => setSelectedOrder(null)}
+            onUpdateStatus={handleUpdateStatus}
+            onUpdateNotes={handleUpdateNotes}
+            onDelete={handleDeleteOrder}
           />
-          <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-3xl bg-card border border-border rounded-xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-card border-b border-border p-6 flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">Заказ #{selectedOrder.order_number}</h2>
-                <p className="text-sm text-muted-foreground">
-                  {new Date(selectedOrder.created_at).toLocaleString('ru-RU')}
-                </p>
-              </div>
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className="hover:bg-accent/50 rounded-lg p-2 transition-colors"
-              >
-                <Icon name="X" size={24} />
-              </button>
-            </div>
-
-            <div className="p-6 space-y-6">
-              <div className="bg-accent/20 rounded-lg p-4">
-                <h3 className="font-bold mb-3 flex items-center">
-                  <Icon name="Settings" size={18} className="mr-2" />
-                  Статус заказа
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {Object.entries(statusLabels).map(([status, label]) => (
-                    <Button
-                      key={status}
-                      variant={selectedOrder.status === status ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => handleUpdateStatus(selectedOrder.id, status)}
-                    >
-                      {label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-accent/20 rounded-lg p-4">
-                  <h3 className="font-bold mb-3 flex items-center">
-                    <Icon name="UserCheck" size={18} className="mr-2" />
-                    Получатель
-                  </h3>
-                  <p className="font-semibold mb-1">{selectedOrder.recipient_name || selectedOrder.customer_name}</p>
-                  <p className="text-sm mb-1">{selectedOrder.recipient_phone || selectedOrder.customer_phone}</p>
-                  {selectedOrder.customer_email && (
-                    <p className="text-sm text-muted-foreground">{selectedOrder.customer_email}</p>
-                  )}
-                </div>
-
-                {(selectedOrder.sender_name || selectedOrder.sender_phone) && (
-                  <div className="bg-accent/20 rounded-lg p-4">
-                    <h3 className="font-bold mb-3 flex items-center">
-                      <Icon name="User" size={18} className="mr-2" />
-                      Отправитель
-                    </h3>
-                    {selectedOrder.sender_name && (
-                      <p className="font-semibold mb-1">{selectedOrder.sender_name}</p>
-                    )}
-                    {selectedOrder.sender_phone && (
-                      <p className="text-sm">{selectedOrder.sender_phone}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="bg-accent/20 rounded-lg p-4">
-                  <h3 className="font-bold mb-3 flex items-center">
-                    <Icon name="MapPin" size={18} className="mr-2" />
-                    Адрес доставки
-                  </h3>
-                  <p className="font-semibold mb-1">{selectedOrder.city_name}, {selectedOrder.region}</p>
-                  <p className="text-sm">{selectedOrder.delivery_address}</p>
-                </div>
-
-                {(selectedOrder.delivery_date || selectedOrder.delivery_time) && (
-                  <div className="bg-accent/20 rounded-lg p-4">
-                    <h3 className="font-bold mb-3 flex items-center">
-                      <Icon name="CalendarClock" size={18} className="mr-2" />
-                      Время доставки
-                    </h3>
-                    {selectedOrder.delivery_date && (
-                      <p className="font-semibold mb-1">
-                        {new Date(selectedOrder.delivery_date).toLocaleDateString('ru-RU', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric'
-                        })}
-                      </p>
-                    )}
-                    {selectedOrder.delivery_time && (
-                      <p className="text-sm">
-                        {selectedOrder.delivery_time === 'any' ? 'Любое время' : 
-                         selectedOrder.delivery_time === 'morning' ? 'Утро (9:00-12:00)' :
-                         selectedOrder.delivery_time === 'day' ? 'День (12:00-17:00)' :
-                         selectedOrder.delivery_time === 'evening' ? 'Вечер (17:00-21:00)' :
-                         selectedOrder.delivery_time}
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {selectedOrder.postcard_text && (
-                <div className="bg-accent/20 rounded-lg p-4">
-                  <h3 className="font-bold mb-3 flex items-center">
-                    <Icon name="MessageSquare" size={18} className="mr-2" />
-                    Текст открытки
-                  </h3>
-                  <p className="text-sm whitespace-pre-wrap">{selectedOrder.postcard_text}</p>
-                </div>
-              )}
-
-              <div className="grid md:grid-cols-2 gap-4">
-                {selectedOrder.payment_method && (
-                  <div className="bg-accent/20 rounded-lg p-4">
-                    <h3 className="font-bold mb-3 flex items-center">
-                      <Icon name="CreditCard" size={18} className="mr-2" />
-                      Способ оплаты
-                    </h3>
-                    <p className="text-sm">
-                      {selectedOrder.payment_method === 'online' ? 'Онлайн оплата' : 
-                       selectedOrder.payment_method === 'cash' ? 'Наличными курьеру' :
-                       selectedOrder.payment_method === 'card' ? 'Картой курьеру' :
-                       selectedOrder.payment_method}
-                    </p>
-                  </div>
-                )}
-
-                <div className="bg-accent/20 rounded-lg p-4">
-                  <h3 className="font-bold mb-3 flex items-center">
-                    <Icon name="CheckCircle" size={18} className="mr-2" />
-                    Статус оплаты
-                  </h3>
-                  {selectedOrder.payment_status === 'paid' ? (
-                    <p className="text-sm font-semibold text-green-600">✅ Оплачен</p>
-                  ) : selectedOrder.payment_status === 'pending' ? (
-                    <p className="text-sm font-semibold text-yellow-600">⏳ Ожидает оплаты</p>
-                  ) : selectedOrder.payment_status === 'failed' ? (
-                    <p className="text-sm font-semibold text-red-600">❌ Не оплачен</p>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">Статус не определён</p>
-                  )}
-                  {selectedOrder.payment_id && (
-                    <p className="text-xs text-muted-foreground mt-1">ID: {selectedOrder.payment_id}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="bg-accent/20 rounded-lg p-4">
-                <h3 className="font-bold mb-3 flex items-center">
-                  <Icon name="Package" size={18} className="mr-2" />
-                  Товары
-                </h3>
-                <div className="space-y-2">
-                  {selectedOrder.items.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center">
-                      <div>
-                        <p className="font-semibold">{item.name}</p>
-                        <p className="text-sm text-muted-foreground">{item.price} ₽ × {item.quantity}</p>
-                      </div>
-                      <p className="font-bold">{item.price * item.quantity} ₽</p>
-                    </div>
-                  ))}
-                  {selectedOrder.promo_code && selectedOrder.discount_amount && (
-                    <div className="flex justify-between items-center pt-2 border-t border-border/50">
-                      <div>
-                        <p className="font-semibold text-green-600">Промокод {selectedOrder.promo_code}</p>
-                        <p className="text-sm text-muted-foreground">Скидка {selectedOrder.promo_discount}%</p>
-                      </div>
-                      <p className="font-bold text-green-600">-{selectedOrder.discount_amount} ₽</p>
-                    </div>
-                  )}
-                  <div className="border-t border-border pt-2 mt-2">
-                    <div className="flex justify-between items-center">
-                      <p className="font-bold text-lg">Итого:</p>
-                      <p className="font-bold text-2xl text-primary">{selectedOrder.total_amount} ₽</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-accent/20 rounded-lg p-4">
-                <h3 className="font-bold mb-3 flex items-center">
-                  <Icon name="FileText" size={18} className="mr-2" />
-                  Примечания
-                </h3>
-                <textarea
-                  defaultValue={selectedOrder.notes || ''}
-                  onBlur={(e) => handleUpdateNotes(selectedOrder.id, e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-                  placeholder="Добавьте примечание к заказу..."
-                />
-              </div>
-
-              <div className="flex gap-3">
-                <Button
-                  variant="destructive"
-                  onClick={() => handleDeleteOrder(selectedOrder.id, selectedOrder.order_number)}
-                  className="flex-1"
-                >
-                  <Icon name="Trash2" size={18} className="mr-2" />
-                  Удалить заказ
-                </Button>
-              </div>
-            </div>
-          </div>
-        </>
         )}
       </div>
     </AdminAuth>
