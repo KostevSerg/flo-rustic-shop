@@ -243,7 +243,7 @@ const Checkout = () => {
           body: JSON.stringify({
             order: {
               order_number: orderId,
-              city: formData.city,
+              city: selectedCity || 'Не указан',
               address: formData.address,
               deliveryDate: formData.deliveryDate,
               deliveryTime: formData.deliveryTime,
