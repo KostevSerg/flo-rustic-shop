@@ -242,6 +242,7 @@ const Checkout = () => {
           },
           body: JSON.stringify({
             order: {
+              order_number: orderId,
               city: formData.city,
               address: formData.address,
               deliveryDate: formData.deliveryDate,
@@ -251,15 +252,17 @@ const Checkout = () => {
               comment: formData.postcard
             },
             customer: {
-              name: formData.recipientName,
-              phone: formData.recipientPhone,
-              email: formData.senderName
+              recipient_name: formData.recipientName,
+              recipient_phone: formData.recipientPhone,
+              sender_name: formData.senderName,
+              sender_phone: formData.senderPhone
             },
             items: items.map(item => ({
               id: item.id,
               name: item.name,
               quantity: item.quantity,
-              price: item.price
+              price: item.price,
+              image_url: item.image
             }))
           })
         });

@@ -95,21 +95,28 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 </tr>
             '''
         
+        order_number = order_data.get('order_number', 'Не указан')
+        recipient_name = customer.get('recipient_name', '')
+        recipient_phone = customer.get('recipient_phone', '')
+        sender_name = customer.get('sender_name', '')
+        sender_phone = customer.get('sender_phone', '')
+        
         html_body = f'''
         <html>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
                 <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
                     <h1 style="color: #2D5016; border-bottom: 3px solid #E8B4B8; padding-bottom: 10px;">
-                        🌸 Новый заказ FloRustic
+                        🌸 Новый заказ FloRustic #{order_number}
                     </h1>
                     
-                    <h2 style="color: #2D5016; margin-top: 30px;">Контактные данные</h2>
-                    <p><strong>Имя:</strong> {customer.get('name', '')}</p>
-                    <p><strong>Телефон:</strong> {customer.get('phone', '')}</p>
-                    <p><strong>Email:</strong> {customer.get('email', 'Не указан')}</p>
+                    <h2 style="color: #2D5016; margin-top: 30px;">Получатель</h2>
+                    <p><strong>Имя:</strong> {recipient_name}</p>
+                    <p><strong>Телефон:</strong> {recipient_phone}</p>
+                    
+                    {f'<h2 style="color: #2D5016; margin-top: 30px;">Отправитель</h2><p><strong>Имя:</strong> {sender_name}</p><p><strong>Телефон:</strong> {sender_phone}</p>' if sender_name or sender_phone else ''}
                     
                     <h2 style="color: #2D5016; margin-top: 30px;">Адрес доставки</h2>
-                    <p><strong>Город:</strong> {order_data.get('city', '')}</p>
+                    <p><strong>Город:</strong> {order_data.get('city', 'Не указан')}</p>
                     <p><strong>Адрес:</strong> {order_data.get('address', '')}</p>
                     <p><strong>Дата доставки:</strong> {order_data.get('deliveryDate', 'Не указана')}</p>
                     <p><strong>Время доставки:</strong> {order_data.get('deliveryTime', 'Не указано')}</p>
@@ -145,7 +152,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         '''
         
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = f'Новый заказ #{context.request_id[:8]} от {customer.get("name", "")}'
+        msg['Subject'] = f'Новый заказ #{order_number} от {recipient_name}'
         msg['From'] = smtp_user
         msg['To'] = 'florustic@yandex.ru'
         
