@@ -166,10 +166,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 )
                 
                 if response.status_code != 200:
+                    error_details = response.text
+                    print(f'YooKassa API error: {response.status_code} - {error_details}')
                     return {
                         'statusCode': 500,
                         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                        'body': json.dumps({'error': 'Payment creation failed'}),
+                        'body': json.dumps({'error': 'Payment creation failed', 'details': error_details}),
                         'isBase64Encoded': False
                     }
                 
