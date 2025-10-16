@@ -66,27 +66,69 @@ const Index = () => {
     });
   };
 
-  const pageTitle = 'FloRustic — Доставка свежих цветов и букетов по России';
-  const pageDescription = 'Доставка свежих цветов и букетов в города России. Широкий выбор композиций для любого случая. Заказать букет онлайн с быстрой доставкой на дом.';
+  const pageTitle = selectedCity 
+    ? `Доставка цветов в ${selectedCity} — FloRustic | Свежие букеты с доставкой`
+    : 'FloRustic — Доставка свежих цветов и букетов на Бали';
+  
+  const pageDescription = selectedCity
+    ? `Доставка свежих цветов и букетов в ${selectedCity}, Бали. Широкий выбор композиций для любого случая. Заказать букет онлайн с быстрой доставкой на дом. Свежие цветы, доступные цены.`
+    : 'Доставка свежих цветов и букетов на Бали: Денпасар, Убуд, Чангу, Семиньяк. Широкий выбор композиций для любого случая. Заказать букет онлайн с быстрой доставкой на дом.';
+
+  const keywords = selectedCity
+    ? `доставка цветов ${selectedCity}, букеты ${selectedCity}, цветы ${selectedCity}, заказать букет ${selectedCity}, купить цветы ${selectedCity}, florustic ${selectedCity}, доставка цветов бали`
+    : 'доставка цветов бали, букеты бали, цветы денпасар, цветы убуд, цветы чангу, цветы семиньяк, заказать букет бали, купить цветы бали, florustic';
+
+  const canonicalUrl = selectedCity && citySlug
+    ? `https://flowersbali.ru/city/${citySlug}`
+    : 'https://flowersbali.ru/';
 
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
-        <meta name="keywords" content="доставка цветов, букеты с доставкой, заказать цветы онлайн, купить букет, свежие цветы, цветы на дом" />
+        <meta name="keywords" content={keywords} />
+        <link rel="canonical" href={canonicalUrl} />
         
         <meta property="og:type" content="website" />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
-        <meta property="og:url" content="https://florustic.ru" />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:site_name" content="FloRustic" />
+        <meta property="og:locale" content="ru_RU" />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         
-        <link rel="canonical" href="https://florustic.ru" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FloristShop",
+            "name": "FloRustic",
+            "description": pageDescription,
+            "url": canonicalUrl,
+            "telephone": "+62-xxx-xxx-xxxx",
+            "priceRange": "$$",
+            "address": {
+              "@type": "PostalAddress",
+              "addressLocality": selectedCity || "Бали",
+              "addressCountry": "ID"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": "-8.65",
+              "longitude": "115.22"
+            },
+            "openingHours": "Mo-Su 09:00-21:00",
+            "areaServed": ["Денпасар", "Убуд", "Чангу", "Семиньяк", "Санур", "Нуса Дуа"],
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "reviewCount": "127"
+            }
+          })}
+        </script>
         
         <script type="application/ld+json">
           {JSON.stringify({

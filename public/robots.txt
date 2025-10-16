@@ -1,14 +1,35 @@
+# Основные правила для всех поисковых систем
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
+
+# Google
 User-agent: Googlebot
 Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
 
+# Яндекс
+User-agent: Yandex
+Allow: /
+Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
+
+# Bing
 User-agent: Bingbot
 Allow: /
+Disallow: /admin
 
+# Социальные сети (для превью)
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+# Sitemap
+Sitemap: https://flowersbali.ru/sitemap.xml
