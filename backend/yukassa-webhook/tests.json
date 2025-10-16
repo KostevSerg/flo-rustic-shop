@@ -1,0 +1,20 @@
+{
+  "tests": [
+    {
+      "name": "Webhook payment succeeded",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "event": "payment.succeeded",
+        "object": {
+          "id": "test-payment-id",
+          "status": "succeeded",
+          "metadata": {
+            "order_id": "1"
+          }
+        }
+      },
+      "expectedStatus": 200
+    }
+  ]
+}

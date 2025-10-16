@@ -6,6 +6,9 @@ from typing import Dict, Any
 from datetime import datetime
 import uuid
 import requests
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
@@ -236,7 +239,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             ))
             
             result = cursor.fetchone()
+            order_id = result['id']
+            
+            cursor.execute('SELECT * FROM orders WHERE id = %s', (order_id,))
+            created_order = cursor.fetchone()
+            
             conn.commit()
+            
+            send_order_notification(dict(created_order), 'pending')
             
             return {
                 'statusCode': 201,
@@ -354,3 +364,84 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cursor.close()
         if 'conn' in locals():
             conn.close()
+
+def send_order_notification(order: dict, payment_status: str):
+    smtp_user = os.environ.get('SMTP_USER')
+    smtp_password = os.environ.get('SMTP_PASSWORD')
+    smtp_port = os.environ.get('SMTP_PORT', '587')
+    
+    if not smtp_user or not smtp_password:
+        return
+    
+    status_emoji = '⏳' if payment_status == 'pending' else '✅'
+    status_text = 'ОЖИДАЕТ ОПЛАТЫ' if payment_status == 'pending' else 'ОПЛАЧЕН'
+    
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = f'Новый заказ #{order["order_number"]} - {status_text}'
+    msg['From'] = smtp_user
+    msg['To'] = smtp_user
+    
+    items_text = '\n'.join([
+        f"  - {item['name']} x {item['quantity']} = {item['price'] * item['quantity']} ₽"
+        for item in order.get('items', [])
+    ])
+    
+    discount_text = ''
+    if order.get('discount_amount'):
+        discount_text = f"\nСкидка: -{order['discount_amount']} ₽"
+    
+    delivery_info = ''
+    if order.get('delivery_date'):
+        delivery_info += f"\nДата доставки: {order['delivery_date']}"
+    if order.get('delivery_time'):
+        time_labels = {
+            'any': 'Любое время',
+            'morning': 'Утро (9:00-12:00)',
+            'day': 'День (12:00-17:00)',
+            'evening': 'Вечер (17:00-21:00)'
+        }
+        delivery_info += f"\nВремя доставки: {time_labels.get(order['delivery_time'], order['delivery_time'])}"
+    
+    sender_info = ''
+    if order.get('sender_name') or order.get('sender_phone'):
+        sender_info = f"\n\nОтправитель:\n{order.get('sender_name', '')}\n{order.get('sender_phone', '')}"
+    
+    postcard_info = ''
+    if order.get('postcard_text'):
+        postcard_info = f"\n\nТекст открытки:\n{order['postcard_text']}"
+    
+    text_content = f'''
+{status_emoji} Поступил новый заказ №{order["order_number"]}
+
+СТАТУС ОПЛАТЫ: {status_text}
+
+Получатель:
+{order.get('recipient_name', order.get('customer_name', ''))}
+{order.get('recipient_phone', order.get('customer_phone', ''))}
+{order.get('customer_email', '')}
+{sender_info}
+
+Адрес доставки:
+{order.get('delivery_address', '')}
+{delivery_info}
+{postcard_info}
+
+Товары:
+{items_text}
+{discount_text}
+
+Итого: {order["total_amount"]} ₽
+
+Способ оплаты: {order.get('payment_method', 'online')}
+'''
+    
+    msg.attach(MIMEText(text_content, 'plain', 'utf-8'))
+    
+    try:
+        server = smtplib.SMTP('smtp.yandex.ru', int(smtp_port))
+        server.starttls()
+        server.login(smtp_user, smtp_password)
+        server.send_message(msg)
+        server.quit()
+    except Exception as e:
+        pass

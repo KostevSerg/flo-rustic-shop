@@ -43,6 +43,8 @@ interface Order {
   delivery_time?: string | null;
   postcard_text?: string | null;
   payment_method?: string | null;
+  payment_status?: string | null;
+  payment_id?: string | null;
 }
 
 const statusLabels: Record<string, string> = {
@@ -245,6 +247,21 @@ const AdminOrders = () => {
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${statusColors[order.status]}`}>
                           {statusLabels[order.status]}
                         </span>
+                        {order.payment_status === 'paid' && (
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-green-500/20 text-green-700 border-green-500/30">
+                            ✅ Оплачен
+                          </span>
+                        )}
+                        {order.payment_status === 'pending' && (
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-yellow-500/20 text-yellow-700 border-yellow-500/30">
+                            ⏳ Ожидает оплаты
+                          </span>
+                        )}
+                        {order.payment_status === 'failed' && (
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold border bg-red-500/20 text-red-700 border-red-500/30">
+                            ❌ Не оплачен
+                          </span>
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {new Date(order.created_at).toLocaleString('ru-RU')}
@@ -252,6 +269,9 @@ const AdminOrders = () => {
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold text-primary">{order.total_amount} ₽</p>
+                      {order.payment_status === 'paid' && (
+                        <p className="text-sm text-green-600 font-medium">Оплачено</p>
+                      )}
                     </div>
                   </div>
                   
@@ -415,20 +435,41 @@ const AdminOrders = () => {
                 </div>
               )}
 
-              {selectedOrder.payment_method && (
+              <div className="grid md:grid-cols-2 gap-4">
+                {selectedOrder.payment_method && (
+                  <div className="bg-accent/20 rounded-lg p-4">
+                    <h3 className="font-bold mb-3 flex items-center">
+                      <Icon name="CreditCard" size={18} className="mr-2" />
+                      Способ оплаты
+                    </h3>
+                    <p className="text-sm">
+                      {selectedOrder.payment_method === 'online' ? 'Онлайн оплата' : 
+                       selectedOrder.payment_method === 'cash' ? 'Наличными курьеру' :
+                       selectedOrder.payment_method === 'card' ? 'Картой курьеру' :
+                       selectedOrder.payment_method}
+                    </p>
+                  </div>
+                )}
+
                 <div className="bg-accent/20 rounded-lg p-4">
                   <h3 className="font-bold mb-3 flex items-center">
-                    <Icon name="CreditCard" size={18} className="mr-2" />
-                    Способ оплаты
+                    <Icon name="CheckCircle" size={18} className="mr-2" />
+                    Статус оплаты
                   </h3>
-                  <p className="text-sm">
-                    {selectedOrder.payment_method === 'online' ? 'Онлайн оплата' : 
-                     selectedOrder.payment_method === 'cash' ? 'Наличными курьеру' :
-                     selectedOrder.payment_method === 'card' ? 'Картой курьеру' :
-                     selectedOrder.payment_method}
-                  </p>
+                  {selectedOrder.payment_status === 'paid' ? (
+                    <p className="text-sm font-semibold text-green-600">✅ Оплачен</p>
+                  ) : selectedOrder.payment_status === 'pending' ? (
+                    <p className="text-sm font-semibold text-yellow-600">⏳ Ожидает оплаты</p>
+                  ) : selectedOrder.payment_status === 'failed' ? (
+                    <p className="text-sm font-semibold text-red-600">❌ Не оплачен</p>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Статус не определён</p>
+                  )}
+                  {selectedOrder.payment_id && (
+                    <p className="text-xs text-muted-foreground mt-1">ID: {selectedOrder.payment_id}</p>
+                  )}
                 </div>
-              )}
+              </div>
 
               <div className="bg-accent/20 rounded-lg p-4">
                 <h3 className="font-bold mb-3 flex items-center">
