@@ -135,7 +135,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         msg = MIMEMultipart('alternative')
         msg['Subject'] = f'Новый заказ #{context.request_id[:8]} от {customer.get("name", "")}'
         msg['From'] = smtp_user
-        msg['To'] = 'sergkostev@yandex.ru'
+        msg['To'] = 'florustic@yandex.ru'
         
         html_part = MIMEText(html_body, 'html', 'utf-8')
         msg.attach(html_part)
