@@ -49,6 +49,12 @@ const Checkout = () => {
   });
 
   useEffect(() => {
+    if (items.length === 0) {
+      navigate('/cart');
+    }
+  }, [items.length, navigate]);
+
+  useEffect(() => {
     if (selectedCity) {
       fetchSettlements();
     }
@@ -245,7 +251,6 @@ const Checkout = () => {
   };
 
   if (items.length === 0) {
-    navigate('/cart');
     return null;
   }
 
