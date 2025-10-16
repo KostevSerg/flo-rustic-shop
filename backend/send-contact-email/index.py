@@ -88,12 +88,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     msg.attach(MIMEText(email_body, 'plain', 'utf-8'))
     
     try:
+        print(f'Попытка подключения к smtp.yandex.ru:{smtp_port}')
         server = smtplib.SMTP('smtp.yandex.ru', smtp_port, timeout=10)
-        server.set_debuglevel(0)
+        server.set_debuglevel(1)
+        print('Инициализация TLS...')
         server.starttls()
+        print(f'Попытка авторизации: {smtp_user}')
         server.login(smtp_user, smtp_password)
+        print('Авторизация успешна, отправка письма...')
         server.send_message(msg)
         server.quit()
+        print('Письмо успешно отправлено')
         
         return {
             'statusCode': 200,
@@ -105,6 +110,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'success': True, 'message': 'Сообщение успешно отправлено'})
         }
     except smtplib.SMTPAuthenticationError as e:
+        error_msg = f'Ошибка авторизации SMTP: {str(e)}'
+        print(error_msg)
         return {
             'statusCode': 500,
             'headers': {
@@ -112,9 +119,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Origin': '*'
             },
             'isBase64Encoded': False,
-            'body': json.dumps({'error': 'Ошибка авторизации SMTP. Проверьте логин и пароль приложения'})
+            'body': json.dumps({'error': error_msg})
         }
     except smtplib.SMTPException as e:
+        error_msg = f'Ошибка SMTP: {str(e)}'
+        print(error_msg)
         return {
             'statusCode': 500,
             'headers': {
@@ -122,9 +131,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Origin': '*'
             },
             'isBase64Encoded': False,
-            'body': json.dumps({'error': f'Ошибка SMTP: {str(e)}'})
+            'body': json.dumps({'error': error_msg})
         }
     except Exception as e:
+        error_msg = f'Ошибка отправки: {str(e)}'
+        print(error_msg)
         return {
             'statusCode': 500,
             'headers': {
@@ -132,5 +143,5 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Origin': '*'
             },
             'isBase64Encoded': False,
-            'body': json.dumps({'error': f'Ошибка отправки: {str(e)}'})
+            'body': json.dumps({'error': error_msg})
         }
