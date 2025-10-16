@@ -49,7 +49,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 if city_name:
                     if category:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.category,
+                            SELECT p.id, p.name, p.description, p.image_url, p.category, p.is_featured,
                                    COALESCE(pcp.price, p.base_price) as price
                             FROM products p
                             LEFT JOIN cities c ON c.name = %s AND c.is_active = true
@@ -59,7 +59,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''', (city_name, category))
                     else:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.category,
+                            SELECT p.id, p.name, p.description, p.image_url, p.category, p.is_featured,
                                    COALESCE(pcp.price, p.base_price) as price
                             FROM products p
                             LEFT JOIN cities c ON c.name = %s AND c.is_active = true
@@ -70,7 +70,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 else:
                     if category:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category
+                            SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category, p.is_featured
                             FROM products p
                             WHERE p.is_active = true AND p.category = %s
                             ORDER BY p.created_at DESC
