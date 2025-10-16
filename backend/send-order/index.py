@@ -40,6 +40,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     try:
         body_data = json.loads(event.get('body', '{}'))
+        print(f'Получены данные заказа: {body_data}')
         
         order_data = body_data.get('order', {})
         customer = body_data.get('customer', {})
@@ -51,7 +52,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         smtp_user = os.environ.get('SMTP_USER', '')
         smtp_password = os.environ.get('SMTP_PASSWORD', '')
         
+        print(f'SMTP настройки: host={smtp_host}, port={smtp_port}, user={smtp_user}, password={"***" if smtp_password else "НЕТ"}')
+        
         if not smtp_user or not smtp_password:
+            print('ОШИБКА: SMTP credentials не настроены')
             return {
                 'statusCode': 500,
                 'headers': {
@@ -130,10 +134,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         html_part = MIMEText(html_body, 'html', 'utf-8')
         msg.attach(html_part)
         
+        print(f'Отправка письма на {msg["To"]} от {msg["From"]}')
+        
         with smtplib.SMTP(smtp_host, smtp_port) as server:
             server.starttls()
+            print('TLS соединение установлено')
             server.login(smtp_user, smtp_password)
+            print('Авторизация успешна')
             server.send_message(msg)
+            print('Письмо отправлено успешно')
         
         return {
             'statusCode': 200,
@@ -146,6 +155,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
         
     except Exception as e:
+        print(f'ОШИБКА отправки письма: {str(e)}')
+        import traceback
+        print(f'Traceback: {traceback.format_exc()}')
         return {
             'statusCode': 500,
             'headers': {
