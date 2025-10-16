@@ -178,7 +178,9 @@ const Checkout = () => {
         quantity: item.quantity,
         price: item.price
       })),
-      total_amount: finalPrice
+      total_amount: finalPrice,
+      promo_code: appliedPromo?.code || null,
+      discount_amount: discountAmount
     };
 
     try {

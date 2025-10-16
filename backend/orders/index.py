@@ -186,11 +186,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             order_number = f"ORD-{datetime.now().strftime('%Y%m%d')}-{datetime.now().microsecond}"
             
+            promo_code = body_data.get('promo_code')
+            promo_code_id = None
+            
+            if promo_code:
+                cursor.execute('SELECT id FROM promo_codes WHERE code = %s AND is_active = true', (promo_code,))
+                promo_result = cursor.fetchone()
+                if promo_result:
+                    promo_code_id = promo_result['id']
+            
             cursor.execute('''
                 INSERT INTO orders (
                     order_number, customer_name, customer_phone, customer_email,
-                    city_id, delivery_address, items, total_amount, status
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    city_id, delivery_address, items, total_amount, status,
+                    promo_code_id, discount_amount
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING id, order_number
             ''', (
                 order_number,
@@ -201,7 +211,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 body_data.get('delivery_address'),
                 json.dumps(body_data.get('items', [])),
                 body_data.get('total_amount'),
-                'new'
+                'new',
+                promo_code_id,
+                body_data.get('discount_amount', 0)
             ))
             
             result = cursor.fetchone()
