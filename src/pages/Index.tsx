@@ -68,19 +68,19 @@ const Index = () => {
 
   const pageTitle = selectedCity 
     ? `Доставка цветов в ${selectedCity} — FloRustic | Свежие букеты с доставкой`
-    : 'FloRustic — Доставка свежих цветов и букетов на Бали';
+    : 'FloRustic — Доставка свежих цветов и букетов по России';
   
   const pageDescription = selectedCity
-    ? `Доставка свежих цветов и букетов в ${selectedCity}, Бали. Широкий выбор композиций для любого случая. Заказать букет онлайн с быстрой доставкой на дом. Свежие цветы, доступные цены.`
-    : 'Доставка свежих цветов и букетов на Бали: Денпасар, Убуд, Чангу, Семиньяк. Широкий выбор композиций для любого случая. Заказать букет онлайн с быстрой доставкой на дом.';
+    ? `Доставка свежих цветов и букетов в ${selectedCity}. Широкий выбор композиций для любого случая. Заказать букет онлайн с быстрой доставкой на дом. Свежие цветы, доступные цены.`
+    : 'Доставка свежих цветов и букетов по всей России. Широкий выбор композиций для любого случая. Заказать букет онлайн с быстрой доставкой на дом. Работаем ежедневно.';
 
   const keywords = selectedCity
-    ? `доставка цветов ${selectedCity}, букеты ${selectedCity}, цветы ${selectedCity}, заказать букет ${selectedCity}, купить цветы ${selectedCity}, florustic ${selectedCity}, доставка цветов бали`
-    : 'доставка цветов бали, букеты бали, цветы денпасар, цветы убуд, цветы чангу, цветы семиньяк, заказать букет бали, купить цветы бали, florustic';
+    ? `доставка цветов ${selectedCity}, букеты ${selectedCity}, цветы ${selectedCity}, заказать букет ${selectedCity}, купить цветы ${selectedCity}, florustic ${selectedCity}, доставка цветов россия`
+    : 'доставка цветов россия, букеты с доставкой, цветы онлайн, заказать букет россия, купить цветы с доставкой, florustic, интернет магазин цветов';
 
   const canonicalUrl = selectedCity && citySlug
-    ? `https://flowersbali.ru/city/${citySlug}`
-    : 'https://flowersbali.ru/';
+    ? `https://florustic.ru/city/${citySlug}`
+    : 'https://florustic.ru/';
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -108,20 +108,15 @@ const Index = () => {
             "name": "FloRustic",
             "description": pageDescription,
             "url": canonicalUrl,
-            "telephone": "+62-xxx-xxx-xxxx",
-            "priceRange": "$$",
+            "telephone": "+7-xxx-xxx-xxxx",
+            "priceRange": "₽₽",
             "address": {
               "@type": "PostalAddress",
-              "addressLocality": selectedCity || "Бали",
-              "addressCountry": "ID"
-            },
-            "geo": {
-              "@type": "GeoCoordinates",
-              "latitude": "-8.65",
-              "longitude": "115.22"
+              "addressLocality": selectedCity || "Россия",
+              "addressCountry": "RU"
             },
             "openingHours": "Mo-Su 09:00-21:00",
-            "areaServed": ["Денпасар", "Убуд", "Чангу", "Семиньяк", "Санур", "Нуса Дуа"],
+            "areaServed": ["Москва", "Санкт-Петербург", "Казань", "Екатеринбург", "Новосибирск", "Россия"],
             "aggregateRating": {
               "@type": "AggregateRating",
               "ratingValue": "4.9",
@@ -227,7 +222,7 @@ const Index = () => {
               Почему выбирают FloRustic
             </h2>
             <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
-              Мы — профессиональная флористическая студия на Бали с доставкой в {selectedCity || 'Денпасар, Убуд, Чангу, Семиньяк'}. 
+              Мы — профессиональная флористическая студия с доставкой по всей России{selectedCity ? `, включая ${selectedCity}` : ''}. 
               Создаём уникальные композиции из свежих цветов для любого повода.
             </p>
           </div>
@@ -279,7 +274,7 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-8">
-              Доставка цветов на Бали — это просто!
+              Доставка цветов — это просто!
             </h2>
             <div className="grid md:grid-cols-2 gap-8 mb-12">
               <div className="space-y-6">
@@ -289,7 +284,7 @@ const Index = () => {
                     Выберите букет
                   </h3>
                   <p className="text-muted-foreground pl-13">
-                    В каталоге более 50 композиций: розы, пионы, тюльпаны, орхидеи и экзотические цветы Бали.
+                    В каталоге более 50 композиций: розы, пионы, тюльпаны, орхидеи и другие цветы.
                   </p>
                 </div>
                 <div>
@@ -318,7 +313,7 @@ const Index = () => {
                     Доставим вовремя
                   </h3>
                   <p className="text-muted-foreground pl-13">
-                    Курьер привезёт букет точно в срок. Доставка: {selectedCity || 'Денпасар, Убуд, Чангу, Семиньяк, Санур, Нуса Дуа'}.
+                    Курьер привезёт букет точно в срок. Доставка по {selectedCity || 'всей России'}.
                   </p>
                 </div>
               </div>

@@ -32,4 +32,4 @@ User-agent: facebookexternalhit
 Allow: /
 
 # Sitemap
-Sitemap: https://flowersbali.ru/sitemap.xml
+Sitemap: https://florustic.ru/sitemap.xml

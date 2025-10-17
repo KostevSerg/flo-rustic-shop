@@ -137,9 +137,9 @@ const City = () => {
   }
 
   const pageTitle = `Доставка цветов в ${cityName} — FloRustic | Букеты с доставкой в ${cityName}`;
-  const pageDescription = `Доставка свежих цветов и букетов в ${cityName}, Бали. Большой выбор композиций для любого случая. Быстрая доставка по городу ${cityName}. Заказать букет онлайн с доставкой на дом. Свежие цветы, доступные цены.`;
-  const pageUrl = `https://flowersbali.ru/city/${citySlug}`;
-  const keywords = `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, доставка цветов бали, цветы бали`;
+  const pageDescription = `Доставка свежих цветов и букетов в ${cityName}. Большой выбор композиций для любого случая. Быстрая доставка по городу ${cityName}. Заказать букет онлайн с доставкой на дом. Свежие цветы, доступные цены.`;
+  const pageUrl = `https://florustic.ru/city/${citySlug}`;
+  const keywords = `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, доставка цветов россия`;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -203,11 +203,11 @@ const City = () => {
             Доставка цветов в {cityName}
           </h1>
           <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-4">
-            <strong>FloRustic</strong> — профессиональная доставка свежих букетов по городу {cityName}, Бали. 
+            <strong>FloRustic</strong> — профессиональная доставка свежих букетов по городу {cityName}. 
             Работаем ежедневно с 9:00 до 21:00, доставка за 2 часа.
           </p>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-            Розы, пионы, тюльпаны, орхидеи и экзотические тропические цветы Бали. 
+            Розы, пионы, тюльпаны, орхидеи и другие сезонные цветы. 
             Выберите готовый букет из каталога или закажите индивидуальную композицию.
           </p>
           

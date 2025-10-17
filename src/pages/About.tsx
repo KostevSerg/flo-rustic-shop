@@ -7,21 +7,21 @@ import Icon from '@/components/ui/icon';
 const About = () => {
   const { totalItems } = useCart();
 
-  const pageTitle = "О нас — FloRustic | Флористическая студия на Бали";
-  const pageDescription = "FloRustic — профессиональная флористическая студия с доставкой цветов по Бали. Опытные флористы, свежие цветы, уникальные композиции. Доставка букетов в Денпасар, Убуд, Чангу, Семиньяк с 2020 года.";
+  const pageTitle = "О нас — FloRustic | Флористическая студия";
+  const pageDescription = "FloRustic — профессиональная флористическая студия с доставкой цветов по всей России. Опытные флористы, свежие цветы, уникальные композиции. Доставка букетов в Москве, Санкт-Петербурге, Казани и других городах с 2020 года.";
 
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
-        <meta name="keywords" content="florustic бали, о нас, флористическая студия бали, доставка цветов бали, флористы бали" />
-        <link rel="canonical" href="https://flowersbali.ru/about" />
+        <meta name="keywords" content="florustic, о нас, флористическая студия, доставка цветов россия, флористы" />
+        <link rel="canonical" href="https://florustic.ru/about" />
         
         <meta property="og:type" content="website" />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
-        <meta property="og:url" content="https://flowersbali.ru/about" />
+        <meta property="og:url" content="https://florustic.ru/about" />
         
         <script type="application/ld+json">
           {JSON.stringify({
@@ -29,12 +29,12 @@ const About = () => {
             "@type": "AboutPage",
             "name": pageTitle,
             "description": pageDescription,
-            "url": "https://flowersbali.ru/about",
+            "url": "https://florustic.ru/about",
             "mainEntity": {
               "@type": "Organization",
               "name": "FloRustic",
               "foundingDate": "2020",
-              "description": "Флористическая студия на Бали"
+              "description": "Флористическая студия с доставкой по России"
             }
           })}
         </script>
@@ -43,12 +43,12 @@ const About = () => {
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold text-center mb-8">О FloRustic — флористической студии на Бали</h1>
+          <h1 className="text-5xl font-bold text-center mb-8">О FloRustic — флористической студии с доставкой по России</h1>
           
           <div className="space-y-6 text-lg leading-relaxed">
             <p>
-              <strong>FloRustic</strong> — это профессиональная флористическая студия на Бали, где каждый букет создается с любовью и вниманием к деталям. 
-              Мы работаем с 2020 года и специализируемся на доставке свежих цветов по всему острову: Денпасар, Убуд, Чангу, Семиньяк, Санур, Нуса Дуа.
+              <strong>FloRustic</strong> — это профессиональная флористическая студия, где каждый букет создается с любовью и вниманием к деталям. 
+              Мы работаем с 2020 года и специализируемся на доставке свежих цветов по всей России: Москва, Санкт-Петербург, Казань, Екатеринбург, Новосибирск и другие города.
             </p>
             
             <div className="bg-primary/5 p-6 rounded-lg border-l-4 border-primary my-8">
@@ -64,12 +64,12 @@ const About = () => {
             </p>
             <p>
               Флористы FloRustic постоянно обучаются новым техникам, следят за мировыми трендами во флористике и создают уникальные авторские композиции. 
-              Мы умеем работать с классическими букетами из роз и пионов, а также создаём экзотические тропические композиции из орхидей и местных балийских цветов.
+              Мы умеем работать с классическими букетами из роз и пионов, а также создаём необычные композиции из сезонных и экзотических цветов.
             </p>
 
             <h2 className="text-3xl font-bold mt-12 mb-4">Наша история</h2>
             <p>
-              С 2020 года мы дарим радость жителям и гостям Бали, и гордимся тем, что стали частью ваших важных моментов — 
+              С 2020 года мы дарим радость людям по всей России, и гордимся тем, что стали частью ваших важных моментов — 
               от романтических свиданий и свадеб до дней рождения, юбилеев и простых знаков внимания близким людям.
             </p>
             <p>
@@ -90,8 +90,8 @@ const About = () => {
               </div>
               <div className="text-center p-6 bg-accent/10 rounded-lg">
                 <Icon name="MapPin" size={48} className="text-primary mx-auto mb-3" />
-                <div className="text-3xl font-bold text-primary mb-2">6</div>
-                <div className="text-muted-foreground">Городов на Бали</div>
+                <div className="text-3xl font-bold text-primary mb-2">50+</div>
+                <div className="text-muted-foreground">Городов России</div>
               </div>
             </div>
 
@@ -101,7 +101,7 @@ const About = () => {
                 <Icon name="Flower2" size={32} className="text-primary mb-3" />
                 <h3 className="text-xl font-bold mb-2">Свежие букеты</h3>
                 <p className="text-muted-foreground">
-                  Розы, пионы, тюльпаны, орхидеи, гортензии и экзотические тропические цветы. 
+                  Розы, пионы, тюльпаны, орхидеи, гортензии и другие сезонные цветы. 
                   Более 50 готовых композиций и возможность индивидуального заказа.
                 </p>
               </div>
@@ -109,7 +109,7 @@ const About = () => {
                 <Icon name="Truck" size={32} className="text-primary mb-3" />
                 <h3 className="text-xl font-bold mb-2">Быстрая доставка</h3>
                 <p className="text-muted-foreground">
-                  Доставка букетов в течение 2 часов по всему Бали. 
+                  Доставка букетов в течение 2 часов по вашему городу. 
                   Работаем ежедневно с 9:00 до 21:00 без выходных и праздников.
                 </p>
               </div>
