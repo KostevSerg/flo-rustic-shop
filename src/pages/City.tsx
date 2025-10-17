@@ -200,10 +200,15 @@ const City = () => {
             Назад
           </Button>
           <h1 className="text-5xl font-bold mb-4">
-            Цветы в {cityName}
+            Доставка цветов в {cityName}
           </h1>
+          <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-4">
+            <strong>FloRustic</strong> — профессиональная доставка свежих букетов по городу {cityName}, Бали. 
+            Работаем ежедневно с 9:00 до 21:00, доставка за 2 часа.
+          </p>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
-            Доставка свежих букетов по городу {cityName}. Выберите идеальный букет для любого случая
+            Розы, пионы, тюльпаны, орхидеи и экзотические тропические цветы Бали. 
+            Выберите готовый букет из каталога или закажите индивидуальную композицию.
           </p>
           
           <div className="flex justify-center gap-4 flex-wrap">

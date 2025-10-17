@@ -220,8 +220,17 @@ const Index = () => {
 
       <ReviewsSection />
 
-      <section className="py-20 bg-accent/10">
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Почему выбирают FloRustic
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
+              Мы — профессиональная флористическая студия на Бали с доставкой в {selectedCity || 'Денпасар, Убуд, Чангу, Семиньяк'}. 
+              Создаём уникальные композиции из свежих цветов для любого повода.
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -229,7 +238,7 @@ const Index = () => {
               </div>
               <h3 className="font-semibold text-lg mb-2">Свежие цветы</h3>
               <p className="text-muted-foreground text-sm">
-                Прямые поставки от лучших производителей
+                Прямые поставки от лучших производителей. Гарантируем свежесть минимум 7 дней
               </p>
             </div>
             
@@ -237,9 +246,9 @@ const Index = () => {
               <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Icon name="Truck" size={32} className="text-primary" />
               </div>
-              <h3 className="font-semibold text-lg mb-2">Доставка</h3>
+              <h3 className="font-semibold text-lg mb-2">Быстрая доставка</h3>
               <p className="text-muted-foreground text-sm">
-                Бесплатная доставка в пределах центра
+                Доставляем за 2 часа по всему городу. Работаем ежедневно 9:00-21:00
               </p>
             </div>
             
@@ -247,20 +256,112 @@ const Index = () => {
               <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Icon name="Shield" size={32} className="text-primary" />
               </div>
-              <h3 className="font-semibold text-lg mb-2">Гарантия</h3>
+              <h3 className="font-semibold text-lg mb-2">100% Гарантия</h3>
               <p className="text-muted-foreground text-sm">
-                Свежесть букета минимум 7 дней
+                Если букет не понравится — вернём деньги или заменим бесплатно
               </p>
             </div>
             
             <div className="text-center">
               <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Icon name="Clock" size={32} className="text-primary" />
+                <Icon name="Heart" size={32} className="text-primary" />
               </div>
-              <h3 className="font-semibold text-lg mb-2">Работаем 24/7</h3>
+              <h3 className="font-semibold text-lg mb-2">С любовью</h3>
               <p className="text-muted-foreground text-sm">
-                Принимаем заказы круглосуточно
+                Каждый букет создаём вручную опытные флористы с многолетним стажем
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-center mb-8">
+              Доставка цветов на Бали — это просто!
+            </h2>
+            <div className="grid md:grid-cols-2 gap-8 mb-12">
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-2xl font-bold mb-3 flex items-center">
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground mr-3">1</span>
+                    Выберите букет
+                  </h3>
+                  <p className="text-muted-foreground pl-13">
+                    В каталоге более 50 композиций: розы, пионы, тюльпаны, орхидеи и экзотические цветы Бали.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-3 flex items-center">
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground mr-3">2</span>
+                    Оформите заказ
+                  </h3>
+                  <p className="text-muted-foreground pl-13">
+                    Укажите адрес доставки в {selectedCity || 'вашем городе'}, время и пожелания. Открытка в подарок бесплатно.
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-2xl font-bold mb-3 flex items-center">
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground mr-3">3</span>
+                    Мы соберём букет
+                  </h3>
+                  <p className="text-muted-foreground pl-13">
+                    Флористы составят композицию из свежих цветов в красивой дизайнерской упаковке.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-3 flex items-center">
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground mr-3">4</span>
+                    Доставим вовремя
+                  </h3>
+                  <p className="text-muted-foreground pl-13">
+                    Курьер привезёт букет точно в срок. Доставка: {selectedCity || 'Денпасар, Убуд, Чангу, Семиньяк, Санур, Нуса Дуа'}.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="text-center">
+              <Link to={`/city/${citySlug}`}>
+                <Button size="lg" className="text-lg px-8">
+                  Заказать букет сейчас
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-accent/10">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Цветы для любого повода
+            </h2>
+            <div className="grid md:grid-cols-3 gap-6 text-left">
+              <div className="bg-background p-6 rounded-lg">
+                <Icon name="Heart" size={40} className="text-primary mb-4" />
+                <h3 className="text-xl font-bold mb-2">Романтика</h3>
+                <p className="text-muted-foreground">
+                  Букеты роз для свиданий, признаний в любви, годовщин. Красные, белые, розовые розы.
+                </p>
+              </div>
+              <div className="bg-background p-6 rounded-lg">
+                <Icon name="Gift" size={40} className="text-primary mb-4" />
+                <h3 className="text-xl font-bold mb-2">Подарки</h3>
+                <p className="text-muted-foreground">
+                  День рождения, 8 марта, День матери. Яркие миксы, пионы, гортензии с доставкой.
+                </p>
+              </div>
+              <div className="bg-background p-6 rounded-lg">
+                <Icon name="Briefcase" size={40} className="text-primary mb-4" />
+                <h3 className="text-xl font-bold mb-2">Бизнес</h3>
+                <p className="text-muted-foreground">
+                  Корпоративные букеты для партнёров, оформление офисов и деловых мероприятий.
+                </p>
+              </div>
             </div>
           </div>
         </div>
