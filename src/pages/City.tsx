@@ -215,10 +215,7 @@ const City = () => {
             {cityData?.work_hours ? (
               (() => {
                 const hours = Object.values(cityData.work_hours);
-                const allSame = hours.every(h => h.from === hours[0].from && h.to === hours[0].to);
-                return allSame 
-                  ? `Работаем ежедневно с ${hours[0].from} до ${hours[0].to}, доставка за 2 часа.`
-                  : 'Работаем ежедневно, доставка за 2 часа.';
+                return `Работаем ежедневно с ${hours[0].from} до ${hours[0].to}, доставка за 2 часа.`;
               })()
             ) : 'Работаем ежедневно с 9:00 до 21:00, доставка за 2 часа.'}
           </p>
