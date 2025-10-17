@@ -30,6 +30,7 @@ import AdminCitySettlements from "./pages/AdminCitySettlements";
 import AdminReviews from "./pages/AdminReviews";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminPromoCodes from "./pages/AdminPromoCodes";
+import AdminPageContents from "./pages/AdminPageContents";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -67,6 +68,7 @@ const App = () => (
                     <Route path="/admin/city-settlements" element={<AdminCitySettlements />} />
                     <Route path="/admin/reviews" element={<AdminReviews />} />
                     <Route path="/admin/promo-codes" element={<AdminPromoCodes />} />
+                    <Route path="/admin/page-contents" element={<AdminPageContents />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
