@@ -1,0 +1,32 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS request for CORS",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "GET all pages",
+      "method": "GET",
+      "path": "/?list=true",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "pages": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "GET single page by key",
+      "method": "GET",
+      "path": "/?page_key=about",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "page_key": "about",
+        "title": "string",
+        "content": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
