@@ -51,7 +51,7 @@ const Footer = () => {
               />
             </div>
             <p className="text-primary-foreground/80 text-sm">
-              {getText('footer', 'description', 'Цветочная мастерская с душой. Создаем букеты, которые дарят радость.')}
+              {getText('footer', 'description', 'Служба доставки цветов. Доставляем цветы и подарки, которые дарят радость!')}
             </p>
           </div>
 
