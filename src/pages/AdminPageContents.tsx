@@ -41,6 +41,7 @@ const AdminPageContents = () => {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [showHtmlEditor, setShowHtmlEditor] = useState(false);
   const quillRef = useRef<ReactQuill>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -185,11 +186,16 @@ const AdminPageContents = () => {
   const modules = {
     toolbar: {
       container: [
-        [{ 'header': [1, 2, 3, false] }],
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'font': [] }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
         ['bold', 'italic', 'underline', 'strike'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
         [{ 'color': [] }, { 'background': [] }],
-        ['link'],
+        [{ 'script': 'sub'}, { 'script': 'super' }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'indent': '-1'}, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }, { 'align': [] }],
+        ['blockquote', 'code-block'],
+        ['link', 'image', 'video'],
         ['clean']
       ]
     }
@@ -285,16 +291,27 @@ const AdminPageContents = () => {
                       <label className="block text-sm font-medium">
                         Содержимое страницы
                       </label>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={handleImageUpload}
-                        disabled={uploading}
-                      >
-                        <Icon name="Image" size={16} className="mr-2" />
-                        {uploading ? 'Загрузка...' : 'Добавить изображение'}
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={handleImageUpload}
+                          disabled={uploading}
+                        >
+                          <Icon name="Image" size={16} className="mr-2" />
+                          {uploading ? 'Загрузка...' : 'Добавить изображение'}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setShowHtmlEditor(!showHtmlEditor)}
+                        >
+                          <Icon name="Code" size={16} className="mr-2" />
+                          {showHtmlEditor ? 'Визуальный редактор' : 'HTML код'}
+                        </Button>
+                      </div>
                     </div>
                     <input
                       ref={fileInputRef}
@@ -303,17 +320,27 @@ const AdminPageContents = () => {
                       onChange={handleFileChange}
                       className="hidden"
                     />
-                    <div className="border border-border rounded-lg overflow-hidden">
-                      <ReactQuill
-                        ref={quillRef}
-                        theme="snow"
+                    
+                    {showHtmlEditor ? (
+                      <textarea
                         value={editorContent}
-                        onChange={setEditorContent}
-                        modules={modules}
-                        className="bg-background"
-                        style={{ minHeight: '400px' }}
+                        onChange={(e) => setEditorContent(e.target.value)}
+                        className="w-full h-[500px] px-4 py-3 font-mono text-sm border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-muted/30"
+                        placeholder="Введите HTML код..."
                       />
-                    </div>
+                    ) : (
+                      <div className="border border-border rounded-lg overflow-hidden">
+                        <ReactQuill
+                          ref={quillRef}
+                          theme="snow"
+                          value={editorContent}
+                          onChange={setEditorContent}
+                          modules={modules}
+                          className="bg-background"
+                          style={{ minHeight: '400px' }}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex gap-3 pt-4">
@@ -350,6 +377,24 @@ const AdminPageContents = () => {
                       </div>
                     </div>
                   )}
+
+                  <div className="mt-6 p-4 bg-muted/30 rounded-lg">
+                    <h4 className="text-sm font-semibold mb-2 flex items-center">
+                      <Icon name="Info" size={16} className="mr-2" />
+                      Возможности редактора:
+                    </h4>
+                    <ul className="text-xs text-muted-foreground space-y-1 ml-6">
+                      <li>• Заголовки H1-H6 для структуры текста</li>
+                      <li>• Размеры шрифта: маленький, обычный, большой, огромный</li>
+                      <li>• Форматирование: жирный, курсив, подчёркивание, зачёркивание</li>
+                      <li>• Цвет текста и фона для акцентов</li>
+                      <li>• Списки (маркированные и нумерованные) с отступами</li>
+                      <li>• Выравнивание текста (лево, центр, право, по ширине)</li>
+                      <li>• Цитаты для выделения важных мыслей</li>
+                      <li>• Ссылки, изображения и видео</li>
+                      <li>• HTML код для продвинутых пользователей</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             ) : (
