@@ -16,6 +16,8 @@ interface PageContent {
   page_key: string;
   title: string;
   content: string;
+  meta_description?: string;
+  meta_keywords?: string;
   updated_at: string;
 }
 
@@ -34,6 +36,8 @@ const AdminPageContents = () => {
   const [editingPage, setEditingPage] = useState<PageContent | null>(null);
   const [editorContent, setEditorContent] = useState('');
   const [editorTitle, setEditorTitle] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  const [metaKeywords, setMetaKeywords] = useState('');
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
@@ -125,12 +129,16 @@ const AdminPageContents = () => {
     setEditingPage(page);
     setEditorTitle(page.title);
     setEditorContent(page.content);
+    setMetaDescription(page.meta_description || '');
+    setMetaKeywords(page.meta_keywords || '');
   };
 
   const cancelEdit = () => {
     setEditingPage(null);
     setEditorTitle('');
     setEditorContent('');
+    setMetaDescription('');
+    setMetaKeywords('');
   };
 
   const handleSave = async () => {
@@ -144,7 +152,9 @@ const AdminPageContents = () => {
         body: JSON.stringify({
           page_key: editingPage.page_key,
           title: editorTitle,
-          content: editorContent
+          content: editorContent,
+          meta_description: metaDescription,
+          meta_keywords: metaKeywords
         })
       });
 
@@ -233,6 +243,41 @@ const AdminPageContents = () => {
                       className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="Введите заголовок"
                     />
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Meta Description (SEO)
+                      </label>
+                      <textarea
+                        value={metaDescription}
+                        onChange={(e) => setMetaDescription(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                        placeholder="Краткое описание страницы для поисковиков (до 160 символов)"
+                        rows={3}
+                        maxLength={255}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {metaDescription.length}/255 символов
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Meta Keywords (SEO)
+                      </label>
+                      <textarea
+                        value={metaKeywords}
+                        onChange={(e) => setMetaKeywords(e.target.value)}
+                        className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                        placeholder="Ключевые слова через запятую"
+                        rows={3}
+                        maxLength={500}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {metaKeywords.length}/500 символов
+                      </p>
+                    </div>
                   </div>
 
                   <div>

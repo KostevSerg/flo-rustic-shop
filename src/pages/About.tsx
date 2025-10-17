@@ -7,7 +7,12 @@ import API_ENDPOINTS from '@/config/api';
 
 const About = () => {
   const { totalItems } = useCart();
-  const [content, setContent] = useState({ title: 'О нас', htmlContent: '' });
+  const [content, setContent] = useState({ 
+    title: 'О нас', 
+    htmlContent: '',
+    metaDescription: 'FloRustic — профессиональная флористическая студия с доставкой цветов по всей России.',
+    metaKeywords: 'florustic, о нас, флористическая студия'
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,7 +22,9 @@ const About = () => {
         const data = await response.json();
         setContent({
           title: data.title || 'О нас',
-          htmlContent: data.content || ''
+          htmlContent: data.content || '',
+          metaDescription: data.meta_description || 'FloRustic — профессиональная флористическая студия с доставкой цветов по всей России.',
+          metaKeywords: data.meta_keywords || 'florustic, о нас, флористическая студия'
         });
       } catch (error) {
         console.error('Failed to load page content:', error);
@@ -30,14 +37,14 @@ const About = () => {
   }, []);
 
   const pageTitle = `${content.title} — FloRustic | Флористическая студия`;
-  const pageDescription = "FloRustic — профессиональная флористическая студия с доставкой цветов по всей России. Опытные флористы, свежие цветы, уникальные композиции.";
+  const pageDescription = content.metaDescription;
 
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
-        <meta name="keywords" content="florustic, о нас, флористическая студия, доставка цветов россия, флористы" />
+        <meta name="keywords" content={content.metaKeywords} />
         <link rel="canonical" href="https://florustic.ru/about" />
         
         <meta property="og:type" content="website" />

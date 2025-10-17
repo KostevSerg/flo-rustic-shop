@@ -47,7 +47,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 if list_all:
                     cur.execute('''
-                        SELECT id, page_key, title, content, updated_at
+                        SELECT id, page_key, title, content, meta_description, meta_keywords, updated_at
                         FROM t_p90017259_flo_rustic_shop.page_contents
                         ORDER BY page_key
                     ''')
@@ -64,7 +64,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 if page_key:
                     cur.execute('''
-                        SELECT id, page_key, title, content, updated_at
+                        SELECT id, page_key, title, content, meta_description, meta_keywords, updated_at
                         FROM t_p90017259_flo_rustic_shop.page_contents
                         WHERE page_key = %s
                     ''', (page_key,))
@@ -106,6 +106,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             page_key = body_data.get('page_key')
             title = body_data.get('title')
             content = body_data.get('content')
+            meta_description = body_data.get('meta_description', '')
+            meta_keywords = body_data.get('meta_keywords', '')
             
             if not page_key or not title or content is None:
                 return {
@@ -121,10 +123,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             with conn.cursor() as cur:
                 cur.execute('''
                     UPDATE t_p90017259_flo_rustic_shop.page_contents
-                    SET title = %s, content = %s, updated_at = NOW()
+                    SET title = %s, content = %s, meta_description = %s, meta_keywords = %s, updated_at = NOW()
                     WHERE page_key = %s
                     RETURNING id
-                ''', (title, content, page_key))
+                ''', (title, content, meta_description, meta_keywords, page_key))
                 
                 result = cur.fetchone()
                 if not result:

@@ -1,76 +1,72 @@
 import { useCart } from '@/contexts/CartContext';
+import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import API_ENDPOINTS from '@/config/api';
 
 const Delivery = () => {
   const { totalItems } = useCart();
+  const [content, setContent] = useState({ 
+    title: 'Доставка', 
+    htmlContent: '',
+    metaDescription: 'Условия доставки цветов по России. Быстрая доставка за 2 часа, работаем ежедневно.',
+    metaKeywords: 'доставка цветов, условия доставки, доставка букетов'
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        const response = await fetch(`${API_ENDPOINTS.pageContents}?page_key=delivery`);
+        const data = await response.json();
+        setContent({
+          title: data.title || 'Доставка',
+          htmlContent: data.content || '',
+          metaDescription: data.meta_description || 'Условия доставки цветов по России. Быстрая доставка за 2 часа, работаем ежедневно.',
+          metaKeywords: data.meta_keywords || 'доставка цветов, условия доставки, доставка букетов'
+        });
+      } catch (error) {
+        console.error('Failed to load page content:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadContent();
+  }, []);
+
+  const pageTitle = `${content.title} — FloRustic | Доставка цветов`;
+  const pageDescription = content.metaDescription;
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={content.metaKeywords} />
+        <link rel="canonical" href="https://florustic.ru/delivery" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content="https://florustic.ru/delivery" />
+      </Helmet>
+      
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold text-center mb-8">Доставка</h1>
-          
-          <div className="space-y-8">
-            <section>
-              <h2 className="text-3xl font-bold mb-4">Условия доставки</h2>
-              <div className="space-y-4 text-lg">
-                <p>
-                  Мы доставляем цветы ежедневно с 9:00 до 21:00. Возможна срочная доставка в течение 2 часов.
-                </p>
-                <div className="bg-accent/30 p-6 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-3">Стоимость доставки:</h3>
-                  <ul className="space-y-2">
-                    <li className="flex justify-between">
-                      <span>В пределах центра города</span>
-                      <span className="font-semibold">Бесплатно</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>За пределами центра (до 10 км)</span>
-                      <span className="font-semibold">300 ₽</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>Пригород (10-20 км)</span>
-                      <span className="font-semibold">500 ₽</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>Срочная доставка (в течение 2 часов)</span>
-                      <span className="font-semibold">+500 ₽</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </section>
-
-            <section>
-              <h2 className="text-3xl font-bold mb-4">Как оформить заказ</h2>
-              <ol className="space-y-4 text-lg list-decimal list-inside">
-                <li>Выберите понравившийся букет в каталоге</li>
-                <li>Добавьте его в корзину и оформите заказ</li>
-                <li>Укажите адрес и удобное время доставки</li>
-                <li>Наш курьер привезет свежий букет точно в срок</li>
-              </ol>
-            </section>
-
-            <section className="bg-primary/5 p-8 rounded-lg">
-              <h2 className="text-3xl font-bold mb-4">Важная информация</h2>
-              <ul className="space-y-3 text-lg">
-                <li className="flex items-start">
-                  <span className="text-primary mr-3">•</span>
-                  <span>Доставка букетов осуществляется только при получателе</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-primary mr-3">•</span>
-                  <span>Возможна анонимная доставка</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-primary mr-3">•</span>
-                  <span>Фото букета отправляется перед доставкой</span>
-                </li>
-              </ul>
-            </section>
-          </div>
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin mx-auto mb-3 w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
+              <p className="text-muted-foreground">Загрузка...</p>
+            </div>
+          ) : (
+            <div 
+              className="prose prose-lg max-w-none"
+              dangerouslySetInnerHTML={{ __html: content.htmlContent }}
+            />
+          )}
         </div>
       </main>
       <Footer />
