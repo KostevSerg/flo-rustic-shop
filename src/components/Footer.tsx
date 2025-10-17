@@ -47,7 +47,7 @@ const Footer = () => {
               <img 
                 src="https://cdn.poehali.dev/files/9580fd38-7d54-40e5-9120-ff97a68d6c3b.png" 
                 alt="FloRustic" 
-                className="h-10 brightness-0 invert"
+                className="h-16"
               />
             </div>
             <p className="text-primary-foreground/80 text-sm">
