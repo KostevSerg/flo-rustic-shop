@@ -36,6 +36,7 @@ const AdminPageContents = () => {
   const [editorTitle, setEditorTitle] = useState('');
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const quillRef = useRef<ReactQuill>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -280,12 +281,30 @@ const AdminPageContents = () => {
                     </Button>
                     <Button
                       variant="outline"
+                      onClick={() => setShowPreview(!showPreview)}
+                      disabled={saving}
+                    >
+                      <Icon name="Eye" size={18} className="mr-2" />
+                      {showPreview ? 'Скрыть предпросмотр' : 'Предпросмотр'}
+                    </Button>
+                    <Button
+                      variant="outline"
                       onClick={cancelEdit}
                       disabled={saving}
                     >
                       Отмена
                     </Button>
                   </div>
+
+                  {showPreview && (
+                    <div className="mt-6 p-6 border border-border rounded-lg bg-background">
+                      <h3 className="text-xl font-bold mb-4 text-muted-foreground">Предпросмотр:</h3>
+                      <div className="prose prose-lg max-w-none">
+                        <h1 className="text-4xl font-bold mb-6">{editorTitle}</h1>
+                        <div dangerouslySetInnerHTML={{ __html: editorContent }} />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
