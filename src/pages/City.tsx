@@ -22,6 +22,12 @@ interface City {
   id: number;
   name: string;
   region: string;
+  work_hours?: {
+    [key: string]: {
+      from: string;
+      to: string;
+    }
+  };
 }
 
 const createSlug = (name: string): string => {
@@ -41,6 +47,7 @@ const City = () => {
   const { addToCart, totalItems } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [cityName, setCityName] = useState<string>('');
+  const [cityData, setCityData] = useState<City | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category>('Цветы');
@@ -73,6 +80,7 @@ const City = () => {
         
         foundCityName = foundCity.name;
         setCityName(foundCityName);
+        setCityData(foundCity);
         
         const productsUrl = `${API_ENDPOINTS.products}?city=${encodeURIComponent(foundCityName)}&category=${encodeURIComponent(activeCategory)}`;
         const productsResponse = await fetch(productsUrl);
@@ -204,7 +212,15 @@ const City = () => {
           </h1>
           <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-4">
             <strong>FloRustic</strong> — профессиональная доставка свежих букетов по городу {cityName}. 
-            Работаем ежедневно с 9:00 до 21:00, доставка за 2 часа.
+            {cityData?.work_hours ? (
+              (() => {
+                const hours = Object.values(cityData.work_hours);
+                const allSame = hours.every(h => h.from === hours[0].from && h.to === hours[0].to);
+                return allSame 
+                  ? `Работаем ежедневно с ${hours[0].from} до ${hours[0].to}, доставка за 2 часа.`
+                  : 'Работаем ежедневно, доставка за 2 часа.';
+              })()
+            ) : 'Работаем ежедневно с 9:00 до 21:00, доставка за 2 часа.'}
           </p>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
             Розы, пионы, тюльпаны, орхидеи и другие сезонные цветы. 
