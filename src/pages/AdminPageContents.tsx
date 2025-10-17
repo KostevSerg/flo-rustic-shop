@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -35,6 +35,9 @@ const AdminPageContents = () => {
   const [editorContent, setEditorContent] = useState('');
   const [editorTitle, setEditorTitle] = useState('');
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const quillRef = useRef<ReactQuill>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadPages = async () => {
     setLoading(true);
@@ -50,6 +53,70 @@ const AdminPageContents = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: 'Ошибка',
+        description: 'Пожалуйста, выберите изображение',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64Image = e.target?.result as string;
+
+        const response = await fetch(API_ENDPOINTS.uploadImage, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            image: base64Image,
+            filename: file.name
+          })
+        });
+
+        if (!response.ok) throw new Error('Upload failed');
+
+        const data = await response.json();
+        
+        const quill = quillRef.current?.getEditor();
+        if (quill) {
+          const range = quill.getSelection();
+          const position = range ? range.index : quill.getLength();
+          quill.insertEmbed(position, 'image', data.url);
+          quill.setSelection(position + 1, 0);
+        }
+
+        toast({
+          title: 'Успешно',
+          description: 'Изображение загружено'
+        });
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось загрузить изображение',
+        variant: 'destructive'
+      });
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -105,14 +172,16 @@ const AdminPageContents = () => {
   }, []);
 
   const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'color': [] }, { 'background': [] }],
-      ['link'],
-      ['clean']
-    ]
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'color': [] }, { 'background': [] }],
+        ['link'],
+        ['clean']
+      ]
+    }
   };
 
   return (
@@ -166,11 +235,31 @@ const AdminPageContents = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Содержимое страницы
-                    </label>
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block text-sm font-medium">
+                        Содержимое страницы
+                      </label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleImageUpload}
+                        disabled={uploading}
+                      >
+                        <Icon name="Image" size={16} className="mr-2" />
+                        {uploading ? 'Загрузка...' : 'Добавить изображение'}
+                      </Button>
+                    </div>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
                     <div className="border border-border rounded-lg overflow-hidden">
                       <ReactQuill
+                        ref={quillRef}
                         theme="snow"
                         value={editorContent}
                         onChange={setEditorContent}

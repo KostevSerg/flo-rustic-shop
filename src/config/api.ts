@@ -5,7 +5,9 @@ const API_ENDPOINTS = {
   siteTexts: 'https://functions.poehali.dev/9659db56-006e-4dec-892b-23c00b3eefeb',
   sendContactEmail: 'https://functions.poehali.dev/ce71fc50-13a2-44cb-b7c5-c5e182a4eb94',
   promoCodes: 'https://functions.poehali.dev/5a9c434d-e6ba-42ec-a45e-052fd140c0ba',
-  sendOrder: 'https://functions.poehali.dev/97825be8-1815-431a-99ba-3b3ed7c3f8a5'
+  sendOrder: 'https://functions.poehali.dev/97825be8-1815-431a-99ba-3b3ed7c3f8a5',
+  uploadImage: 'https://functions.poehali.dev/1a6c3d40-9259-4124-95d8-03422b03f786',
+  pageContents: 'https://functions.poehali.dev/0df81cd8-0ad4-4ab1-b4ed-aeb25b9bfa80'
 };
 
 export default API_ENDPOINTS;
