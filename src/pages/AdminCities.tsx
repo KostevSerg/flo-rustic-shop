@@ -13,9 +13,15 @@ import API_ENDPOINTS from '@/config/api';
 interface City {
   id: number;
   name: string;
-  region: string;
+  region_id: number;
+  region_name?: string;
   timezone: string;
   work_hours?: string;
+}
+
+interface Region {
+  id: number;
+  name: string;
 }
 
 const AdminCities = () => {
@@ -24,12 +30,13 @@ const AdminCities = () => {
   const { totalItems } = useCart();
   const { toast } = useToast();
   const [cities, setCities] = useState<Record<string, City[]>>({});
+  const [regions, setRegions] = useState<Region[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingCity, setEditingCity] = useState<City | null>(null);
   const [formData, setFormData] = useState({
     name: '',
-    region: '',
+    region_id: 0,
     timezone: 'Europe/Moscow',
     work_hours: ''
   });
@@ -37,21 +44,28 @@ const AdminCities = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchCities();
+      fetchData();
     }
   }, [isAuthenticated]);
 
-  const fetchCities = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await fetch(API_ENDPOINTS.cities);
-      const data = await response.json();
-      setCities(data.cities || {});
+      const [citiesRes, regionsRes] = await Promise.all([
+        fetch(API_ENDPOINTS.cities),
+        fetch(`${API_ENDPOINTS.cities}?action=regions`)
+      ]);
+      
+      const citiesData = await citiesRes.json();
+      const regionsData = await regionsRes.json();
+      
+      setCities(citiesData.cities || {});
+      setRegions(regionsData.regions || []);
     } catch (error) {
-      console.error('Failed to fetch cities:', error);
+      console.error('Failed to fetch data:', error);
       toast({
         title: 'Ошибка',
-        description: 'Не удалось загрузить города',
+        description: 'Не удалось загрузить данные',
         variant: 'destructive'
       });
     } finally {
@@ -60,10 +74,18 @@ const AdminCities = () => {
   };
 
   const openAddModal = () => {
+    if (regions.length === 0) {
+      toast({
+        title: 'Сначала создайте регион',
+        description: 'Перейдите в раздел "Регионы" и создайте хотя бы один регион',
+        variant: 'destructive'
+      });
+      return;
+    }
     setEditingCity(null);
     setFormData({
       name: '',
-      region: '',
+      region_id: regions[0]?.id || 0,
       timezone: 'Europe/Moscow',
       work_hours: ''
     });
@@ -74,7 +96,7 @@ const AdminCities = () => {
     setEditingCity(city);
     setFormData({
       name: city.name,
-      region: city.region,
+      region_id: city.region_id,
       timezone: city.timezone || 'Europe/Moscow',
       work_hours: city.work_hours || ''
     });
@@ -86,7 +108,7 @@ const AdminCities = () => {
     setEditingCity(null);
     setFormData({
       name: '',
-      region: '',
+      region_id: regions[0]?.id || 0,
       timezone: 'Europe/Moscow',
       work_hours: ''
     });
@@ -94,10 +116,10 @@ const AdminCities = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.region.trim()) {
+    if (!formData.name.trim() || !formData.region_id) {
       toast({
         title: 'Ошибка',
-        description: 'Заполните название города и региона',
+        description: 'Заполните название города и выберите регион',
         variant: 'destructive'
       });
       return;
@@ -114,7 +136,7 @@ const AdminCities = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name.trim(),
-          region: formData.region.trim(),
+          region_id: formData.region_id,
           timezone: formData.timezone,
           work_hours: formData.work_hours.trim()
         })
@@ -128,7 +150,7 @@ const AdminCities = () => {
           description: editingCity ? 'Город обновлен' : 'Город добавлен'
         });
         closeModal();
-        fetchCities();
+        fetchData();
       } else {
         throw new Error(data.error || 'Operation failed');
       }
@@ -159,7 +181,7 @@ const AdminCities = () => {
           title: 'Успешно',
           description: 'Город удален'
         });
-        fetchCities();
+        fetchData();
       } else {
         throw new Error(data.error || 'Delete failed');
       }
@@ -190,11 +212,25 @@ const AdminCities = () => {
               </Button>
               <h1 className="text-3xl font-bold">Управление городами</h1>
             </div>
-            <Button onClick={openAddModal}>
-              <Icon name="Plus" size={20} className="mr-2" />
-              Добавить город
-            </Button>
+            <div className="flex space-x-3">
+              <Button variant="outline" onClick={() => navigate('/admin/regions')}>
+                <Icon name="Map" size={20} className="mr-2" />
+                Регионы
+              </Button>
+              <Button onClick={openAddModal}>
+                <Icon name="Plus" size={20} className="mr-2" />
+                Добавить город
+              </Button>
+            </div>
           </div>
+
+          {regions.length === 0 && !loading && (
+            <div className="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <p className="text-sm text-yellow-800">
+                ⚠️ <strong>Сначала создайте регионы!</strong> Перейдите в раздел "Регионы" и создайте хотя бы один регион.
+              </p>
+            </div>
+          )}
 
           {loading ? (
             <div className="text-center py-12">
@@ -277,14 +313,18 @@ const AdminCities = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-2">Регион *</label>
-                <input
-                  type="text"
-                  value={formData.region}
-                  onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+                <select
+                  value={formData.region_id}
+                  onChange={(e) => setFormData({ ...formData, region_id: parseInt(e.target.value) })}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Москва и Московская область"
                   required
-                />
+                >
+                  {regions.map(region => (
+                    <option key={region.id} value={region.id}>
+                      {region.name}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>

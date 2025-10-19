@@ -160,20 +160,51 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'isBase64Encoded': False,
                             'body': json.dumps({'contacts': contacts}, ensure_ascii=False)
                         }
+            elif action == 'regions':
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('''
+                        SELECT r.id, r.name, r.is_active,
+                               COUNT(c.id) as cities_count
+                        FROM regions r
+                        LEFT JOIN cities c ON c.region_id = r.id AND c.is_active = true
+                        WHERE r.is_active = true
+                        GROUP BY r.id, r.name, r.is_active
+                        ORDER BY r.name
+                    ''')
+                    rows = cur.fetchall()
+                    regions = [dict(row) for row in rows]
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'regions': regions}, ensure_ascii=False)
+                    }
             else:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    cur.execute('SELECT id, name, region, is_active, work_hours, timezone FROM cities WHERE is_active = true ORDER BY region, name')
+                    cur.execute('''
+                        SELECT c.id, c.name, c.region_id, r.name as region_name, 
+                               c.timezone, c.work_hours
+                        FROM cities c
+                        JOIN regions r ON r.id = c.region_id
+                        WHERE c.is_active = true
+                        ORDER BY r.name, c.name
+                    ''')
                     cities = cur.fetchall()
                     
                     grouped_cities: Dict[str, List[Dict[str, Any]]] = {}
                     for city in cities:
-                        region = city['region']
+                        region = city['region_name']
                         if region not in grouped_cities:
                             grouped_cities[region] = []
                         grouped_cities[region].append({
                             'id': city['id'],
                             'name': city['name'],
-                            'region': city['region'],
+                            'region_id': city['region_id'],
+                            'region_name': city['region_name'],
                             'work_hours': city.get('work_hours'),
                             'timezone': city.get('timezone')
                         })
@@ -275,14 +306,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False,
                         'body': json.dumps({'message': 'Review submitted for approval', 'id': result['id']})
                     }
-            elif action == 'add':
+            elif action == 'add-region':
                 body_data = json.loads(event.get('body', '{}'))
                 name = body_data.get('name', '').strip()
-                region = body_data.get('region', '').strip()
-                timezone = body_data.get('timezone', 'Europe/Moscow').strip()
-                work_hours = body_data.get('work_hours', '').strip() or None
                 
-                if not name or not region:
+                if not name:
                     return {
                         'statusCode': 400,
                         'headers': {
@@ -290,13 +318,48 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'error': 'Name and region are required'})
+                        'body': json.dumps({'error': 'Region name is required'})
                     }
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute(
-                        'INSERT INTO cities (name, region, timezone, work_hours) VALUES (%s, %s, %s, %s) RETURNING id, name, region, timezone, work_hours',
-                        (name, region, timezone, work_hours)
+                        'INSERT INTO regions (name) VALUES (%s) RETURNING id, name',
+                        (name,)
+                    )
+                    new_region = cur.fetchone()
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 201,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'success': True, 'region': dict(new_region)}, ensure_ascii=False)
+                    }
+            elif action == 'add':
+                body_data = json.loads(event.get('body', '{}'))
+                name = body_data.get('name', '').strip()
+                region_id = body_data.get('region_id')
+                timezone = body_data.get('timezone', 'Europe/Moscow').strip()
+                work_hours = body_data.get('work_hours', '').strip() or None
+                
+                if not name or not region_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Name and region_id are required'})
+                    }
+                
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute(
+                        'INSERT INTO cities (name, region_id, timezone, work_hours) VALUES (%s, %s, %s, %s) RETURNING id, name, region_id, timezone, work_hours',
+                        (name, region_id, timezone, work_hours)
                     )
                     new_city = cur.fetchone()
                     city_id = new_city['id']
@@ -457,15 +520,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False,
                         'body': json.dumps({'success': True, 'contact': dict(updated)}, ensure_ascii=False)
                     }
-            elif action == 'update':
+            elif action == 'update-region':
                 body_data = json.loads(event.get('body', '{}'))
-                city_id = params.get('id')
+                region_id = params.get('id')
                 name = body_data.get('name', '').strip()
-                region = body_data.get('region', '').strip()
-                timezone = body_data.get('timezone', '').strip()
-                work_hours = body_data.get('work_hours', '').strip() or None
                 
-                if not city_id or not name or not region:
+                if not region_id or not name:
                     return {
                         'statusCode': 400,
                         'headers': {
@@ -473,16 +533,55 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'error': 'City ID, name and region are required'})
+                        'body': json.dumps({'error': 'Region ID and name are required'})
+                    }
+                
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('''
+                        UPDATE regions 
+                        SET name = %s
+                        WHERE id = %s
+                        RETURNING id, name
+                    ''', (name, region_id))
+                    
+                    updated = cur.fetchone()
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'success': True, 'region': dict(updated)}, ensure_ascii=False)
+                    }
+            elif action == 'update':
+                body_data = json.loads(event.get('body', '{}'))
+                city_id = params.get('id')
+                name = body_data.get('name', '').strip()
+                region_id = body_data.get('region_id')
+                timezone = body_data.get('timezone', '').strip()
+                work_hours = body_data.get('work_hours', '').strip() or None
+                
+                if not city_id or not name or not region_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'City ID, name and region_id are required'})
                     }
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute('''
                         UPDATE cities 
-                        SET name = %s, region = %s, timezone = %s, work_hours = %s 
+                        SET name = %s, region_id = %s, timezone = %s, work_hours = %s 
                         WHERE id = %s
-                        RETURNING id, name, region, timezone, work_hours
-                    ''', (name, region, timezone, work_hours, city_id))
+                        RETURNING id, name, region_id, timezone, work_hours
+                    ''', (name, region_id, timezone, work_hours, city_id))
                     
                     updated = cur.fetchone()
                     conn.commit()
@@ -551,6 +650,33 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         },
                         'isBase64Encoded': False,
                         'body': json.dumps({'message': 'Review deleted successfully'})
+                    }
+            elif action == 'delete-region':
+                region_id = params.get('id')
+                
+                if not region_id:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Region ID is required'})
+                    }
+                
+                with conn.cursor() as cur:
+                    cur.execute('UPDATE regions SET is_active = false WHERE id = %s', (region_id,))
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'success': True})
                     }
             elif action == 'delete':
                 city_id = params.get('id')
