@@ -358,7 +358,7 @@ const Index = () => {
                 <Icon name="Briefcase" size={40} className="text-primary mb-4" />
                 <h3 className="text-xl font-bold mb-2">Бизнес</h3>
                 <p className="text-muted-foreground">
-                  Корпоративные букеты для партнёров, оформление офисов и деловых мероприятий.
+                  Корпоративные букеты для партнёров и деловых мероприятий с доставкой.
                 </p>
               </div>
             </div>
