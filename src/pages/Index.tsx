@@ -34,10 +34,14 @@ const createSlug = (name: string): string => {
 const Index = () => {
   const { addToCart, totalItems } = useCart();
   const { getText } = useSiteTexts();
-  const { selectedCity } = useCity();
+  const { selectedCity, initAutoDetection } = useCity();
   const citySlug = createSlug(selectedCity);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    initAutoDetection();
+  }, []);
 
   useEffect(() => {
     const loadFeaturedProducts = async () => {

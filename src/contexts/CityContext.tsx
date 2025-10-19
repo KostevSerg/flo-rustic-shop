@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 interface CityContextType {
   selectedCity: string;
   selectedCityId: number;
   setCity: (city: string, cityId: number) => void;
+  initAutoDetection: () => void;
 }
 
 const CityContext = createContext<CityContextType | undefined>(undefined);
@@ -39,20 +39,23 @@ interface CityData {
 export const CityProvider = ({ children }: { children: ReactNode }) => {
   const [selectedCity, setSelectedCity] = useState('Москва');
   const [selectedCityId, setSelectedCityId] = useState(1);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const savedCity = localStorage.getItem('selectedCity');
     const savedCityId = localStorage.getItem('selectedCityId');
-    const hasDetectedLocation = localStorage.getItem('hasDetectedLocation');
     
     if (savedCity && savedCityId) {
       setSelectedCity(savedCity);
       setSelectedCityId(parseInt(savedCityId, 10));
-    } else if (!hasDetectedLocation) {
-      detectUserLocation();
     }
   }, []);
+
+  const initAutoDetection = async () => {
+    const hasDetectedLocation = localStorage.getItem('hasDetectedLocation');
+    if (hasDetectedLocation) return;
+    
+    await detectUserLocation();
+  };
 
   const detectUserLocation = async () => {
     if (!navigator.geolocation) return;
@@ -118,7 +121,7 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
           localStorage.setItem('hasDetectedLocation', 'true');
           
           const citySlug = createSlug(nearestCity.name);
-          navigate(`/city/${citySlug}`);
+          window.location.href = `/city/${citySlug}`;
         }
       }
     } catch (error) {
@@ -140,6 +143,7 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
         selectedCity,
         selectedCityId,
         setCity,
+        initAutoDetection,
       }}
     >
       {children}
