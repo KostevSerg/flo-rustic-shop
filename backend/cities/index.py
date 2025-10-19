@@ -361,9 +361,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute('SELECT name FROM regions WHERE id = %s', (region_id,))
+                    region_row = cur.fetchone()
+                    region_name = region_row['name'] if region_row else 'Неизвестный регион'
+                    
                     cur.execute(
-                        'INSERT INTO cities (name, region_id, timezone, work_hours) VALUES (%s, %s, %s, %s) RETURNING id, name, region_id, timezone, work_hours',
-                        (name, region_id, timezone, work_hours)
+                        'INSERT INTO cities (name, region, region_id, timezone, work_hours) VALUES (%s, %s, %s, %s, %s) RETURNING id, name, region_id, timezone, work_hours',
+                        (name, region_name, region_id, timezone, work_hours)
                     )
                     new_city = cur.fetchone()
                     city_id = new_city['id']
