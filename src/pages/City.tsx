@@ -257,7 +257,7 @@ const City = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {products.map(product => (
               <ProductCard 
                 key={product.id} 
@@ -273,6 +273,198 @@ const City = () => {
             ))}
           </div>
         )}
+
+        <div className="max-w-4xl mx-auto mt-16 space-y-12">
+          <section className="bg-card rounded-lg p-8 border">
+            <h2 className="text-3xl font-bold mb-6">Купить цветы в {cityName} с доставкой</h2>
+            <div className="space-y-4 text-muted-foreground">
+              <p>
+                <strong className="text-foreground">FloRustic</strong> — это профессиональная служба доставки цветов в {cityName}. 
+                Мы предлагаем широкий выбор свежих букетов для любого повода: дни рождения, свадьбы, юбилеи, 
+                корпоративные мероприятия или просто чтобы порадовать близких.
+              </p>
+              <p>
+                Когда вы хотите <strong className="text-foreground">заказать букет в {cityName}</strong>, важно выбрать надежного поставщика. 
+                Мы работаем только со свежими цветами от проверенных поставщиков и гарантируем качество каждой композиции. 
+                Наши флористы создают уникальные букеты, которые обязательно произведут впечатление.
+              </p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold mb-6">Почему выбирают нас для доставки цветов в {cityName}</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-card rounded-lg p-6 border">
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 rounded-full p-3">
+                    <Icon name="Clock" size={24} className="text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">Быстрая доставка</h3>
+                    <p className="text-muted-foreground text-sm">
+                      Доставим букет по {cityName} за 2-4 часа. Работаем ежедневно, включая выходные и праздники.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-card rounded-lg p-6 border">
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 rounded-full p-3">
+                    <Icon name="Flower2" size={24} className="text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">Свежие цветы</h3>
+                    <p className="text-muted-foreground text-sm">
+                      Только свежие цветы от проверенных поставщиков. Гарантируем свежесть каждого букета.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-card rounded-lg p-6 border">
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 rounded-full p-3">
+                    <Icon name="Star" size={24} className="text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">Опытные флористы</h3>
+                    <p className="text-muted-foreground text-sm">
+                      Наши флористы создают букеты с любовью и профессионализмом. Каждая композиция уникальна.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-card rounded-lg p-6 border">
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 rounded-full p-3">
+                    <Icon name="ShieldCheck" size={24} className="text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">Гарантия качества</h3>
+                    <p className="text-muted-foreground text-sm">
+                      Если букет не соответствует ожиданиям, мы заменим его или вернем деньги.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="bg-card rounded-lg p-8 border">
+            <h2 className="text-2xl font-bold mb-6">Как заказать цветы в {cityName}</h2>
+            <div className="space-y-4">
+              <div className="flex gap-4">
+                <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">
+                  1
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Выберите букет</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Просмотрите наш каталог и выберите понравившийся букет или композицию
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">
+                  2
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Оформите заказ</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Укажите адрес доставки, контактные данные и желаемое время доставки
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold">
+                  3
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1">Получите доставку</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Курьер доставит свежий букет точно в срок по указанному адресу в {cityName}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold mb-6">Популярные вопросы о доставке цветов в {cityName}</h2>
+            <div className="space-y-4">
+              <details className="bg-card rounded-lg border overflow-hidden group">
+                <summary className="p-6 cursor-pointer font-semibold hover:bg-accent/50 transition-colors flex items-center justify-between">
+                  Сколько стоит доставка цветов по {cityName}?
+                  <Icon name="ChevronDown" size={20} className="group-open:rotate-180 transition-transform" />
+                </summary>
+                <div className="px-6 pb-6 text-muted-foreground">
+                  Стоимость доставки зависит от адреса и времени. В пределах центра {cityName} доставка обычно 
+                  составляет 200-400 рублей. Уточняйте точную стоимость при оформлении заказа.
+                </div>
+              </details>
+
+              <details className="bg-card rounded-lg border overflow-hidden group">
+                <summary className="p-6 cursor-pointer font-semibold hover:bg-accent/50 transition-colors flex items-center justify-between">
+                  Как быстро можно доставить букет в {cityName}?
+                  <Icon name="ChevronDown" size={20} className="group-open:rotate-180 transition-transform" />
+                </summary>
+                <div className="px-6 pb-6 text-muted-foreground">
+                  Мы доставляем цветы по {cityName} за 2-4 часа с момента оформления заказа. 
+                  Также доступна срочная доставка за 1-2 часа за дополнительную плату.
+                </div>
+              </details>
+
+              <details className="bg-card rounded-lg border overflow-hidden group">
+                <summary className="p-6 cursor-pointer font-semibold hover:bg-accent/50 transition-colors flex items-center justify-between">
+                  Можно ли заказать цветы с доставкой на определенное время?
+                  <Icon name="ChevronDown" size={20} className="group-open:rotate-180 transition-transform" />
+                </summary>
+                <div className="px-6 pb-6 text-muted-foreground">
+                  Да, при оформлении заказа вы можете указать желаемое время доставки. 
+                  Мы постараемся доставить букет точно в указанное время.
+                </div>
+              </details>
+
+              <details className="bg-card rounded-lg border overflow-hidden group">
+                <summary className="p-6 cursor-pointer font-semibold hover:bg-accent/50 transition-colors flex items-center justify-between">
+                  Какие способы оплаты доступны?
+                  <Icon name="ChevronDown" size={20} className="group-open:rotate-180 transition-transform" />
+                </summary>
+                <div className="px-6 pb-6 text-muted-foreground">
+                  Вы можете оплатить заказ онлайн картой при оформлении или наличными/картой курьеру при получении. 
+                  Также принимаем оплату через СБП.
+                </div>
+              </details>
+
+              <details className="bg-card rounded-lg border overflow-hidden group">
+                <summary className="p-6 cursor-pointer font-semibold hover:bg-accent/50 transition-colors flex items-center justify-between">
+                  Что делать, если получатель не на месте?
+                  <Icon name="ChevronDown" size={20} className="group-open:rotate-180 transition-transform" />
+                </summary>
+                <div className="px-6 pb-6 text-muted-foreground">
+                  Курьер свяжется с получателем или с вами, чтобы договориться о времени повторной доставки. 
+                  Также можно оставить букет соседям или на ресепшн (по согласованию).
+                </div>
+              </details>
+            </div>
+          </section>
+
+          <section className="bg-card rounded-lg p-8 border text-center">
+            <h2 className="text-2xl font-bold mb-4">Готовы купить цветы в {cityName}?</h2>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              Выберите букет из нашего каталога и оформите заказ прямо сейчас. 
+              Доставим свежие цветы по {cityName} в удобное для вас время.
+            </p>
+            <Button size="lg" className="text-lg px-8" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              <Icon name="Flower2" size={20} className="mr-2" />
+              Выбрать букет
+            </Button>
+          </section>
+        </div>
       </main>
       <Footer />
     </div>
