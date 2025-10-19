@@ -368,6 +368,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     new_city = cur.fetchone()
                     city_id = new_city['id']
                     
+                    working_hours_text = 'Круглосуточно'
+                    if work_hours:
+                        try:
+                            wh_obj = json.loads(work_hours) if isinstance(work_hours, str) else work_hours
+                            if isinstance(wh_obj, dict) and 'monday' in wh_obj:
+                                working_hours_text = f"{wh_obj['monday']['from']} - {wh_obj['monday']['to']}"
+                        except:
+                            pass
+                    
                     cur.execute('''
                         INSERT INTO city_contacts (city_id, phone, email, address, working_hours, delivery_info)
                         VALUES (%s, %s, %s, %s, %s, %s)
@@ -376,7 +385,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         '+7 (999) 123-45-67',
                         'info@florustic.ru',
                         f'г. {name}, ул. Цветочная, 15',
-                        work_hours or 'Круглосуточно',
+                        working_hours_text,
                         'Бесплатная доставка в пределах центра'
                     ))
                     
