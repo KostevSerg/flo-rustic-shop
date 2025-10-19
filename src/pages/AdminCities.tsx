@@ -25,8 +25,10 @@ interface Region {
 }
 
 const AdminCities = () => {
+  console.log('🏁 AdminCities component rendering');
   const navigate = useNavigate();
   const { isAuthenticated } = useAdminAuth();
+  console.log('🔐 isAuthenticated:', isAuthenticated);
   const { totalItems } = useCart();
   const { toast } = useToast();
   const [cities, setCities] = useState<Record<string, City[]>>({});
@@ -49,20 +51,28 @@ const AdminCities = () => {
   }, [isAuthenticated]);
 
   const fetchData = async () => {
+    console.log('🚀 fetchData started');
     setLoading(true);
     try {
+      console.log('📡 Fetching from:', API_ENDPOINTS.cities);
       const [citiesRes, regionsRes] = await Promise.all([
         fetch(API_ENDPOINTS.cities),
         fetch(`${API_ENDPOINTS.cities}?action=regions`)
       ]);
       
+      console.log('📦 Cities response:', citiesRes.status);
+      console.log('📦 Regions response:', regionsRes.status);
+      
       const citiesData = await citiesRes.json();
       const regionsData = await regionsRes.json();
+      
+      console.log('✅ Cities data:', citiesData);
+      console.log('✅ Regions data:', regionsData);
       
       setCities(citiesData.cities || {});
       setRegions(regionsData.regions || []);
     } catch (error) {
-      console.error('Failed to fetch data:', error);
+      console.error('❌ Failed to fetch data:', error);
       toast({
         title: 'Ошибка',
         description: 'Не удалось загрузить данные',
@@ -70,6 +80,7 @@ const AdminCities = () => {
       });
     } finally {
       setLoading(false);
+      console.log('✅ fetchData finished');
     }
   };
 
