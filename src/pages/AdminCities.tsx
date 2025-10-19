@@ -31,6 +31,10 @@ const AdminCities = () => {
   const regionModal = useRegionModal(refetchData);
   const cityModal = useCityModal(refetchData);
 
+  const handleManageSettlements = (cityId: number, cityName: string) => {
+    navigate(`/admin/city-settlements?city_id=${cityId}&city_name=${encodeURIComponent(cityName)}`);
+  };
+
   return (
     <AdminAuth>
       <div className="min-h-screen flex flex-col bg-background">
@@ -81,6 +85,7 @@ const AdminCities = () => {
                   onDelete={() => deleteRegion(region.id, region.name)}
                   onEditCity={cityModal.openEditModal}
                   onDeleteCity={deleteCity}
+                  onManageSettlements={handleManageSettlements}
                 />
               ))}
             </div>

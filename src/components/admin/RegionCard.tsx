@@ -25,6 +25,7 @@ interface RegionCardProps {
   onDelete: () => void;
   onEditCity: (city: City) => void;
   onDeleteCity: (cityId: number, cityName: string) => void;
+  onManageSettlements: (cityId: number, cityName: string) => void;
 }
 
 const RegionCard = ({
@@ -35,7 +36,8 @@ const RegionCard = ({
   onEdit,
   onDelete,
   onEditCity,
-  onDeleteCity
+  onDeleteCity,
+  onManageSettlements
 }: RegionCardProps) => {
   return (
     <div className="bg-card rounded-lg border overflow-hidden">
@@ -100,6 +102,14 @@ const RegionCard = ({
                     <p className="text-sm text-muted-foreground">{city.timezone}</p>
                   </div>
                   <div className="flex space-x-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onManageSettlements(city.id, city.name)}
+                      title="Населённые пункты"
+                    >
+                      <Icon name="MapPin" size={14} />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="sm"
