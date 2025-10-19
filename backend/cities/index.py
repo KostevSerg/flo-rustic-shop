@@ -343,7 +343,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 name = body_data.get('name', '').strip()
                 region_id = body_data.get('region_id')
                 timezone = body_data.get('timezone', 'Europe/Moscow').strip()
-                work_hours = body_data.get('work_hours', '').strip() or None
+                work_hours = body_data.get('work_hours') or None
+                if work_hours and isinstance(work_hours, dict):
+                    work_hours = json.dumps(work_hours, ensure_ascii=False)
+                elif work_hours and isinstance(work_hours, str):
+                    work_hours = work_hours.strip() or None
                 
                 if not name or not region_id:
                     return {
@@ -562,7 +566,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 name = body_data.get('name', '').strip()
                 region_id = body_data.get('region_id')
                 timezone = body_data.get('timezone', '').strip()
-                work_hours = body_data.get('work_hours', '').strip() or None
+                work_hours = body_data.get('work_hours') or None
+                if work_hours and isinstance(work_hours, dict):
+                    work_hours = json.dumps(work_hours, ensure_ascii=False)
+                elif work_hours and isinstance(work_hours, str):
+                    work_hours = work_hours.strip() or None
                 
                 if not city_id or not name or not region_id:
                     return {
