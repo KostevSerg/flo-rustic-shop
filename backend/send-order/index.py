@@ -71,7 +71,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             item_id = item.get('id', '')
             item_name = item.get('name', '')
             item_image = item.get('image_url', '')
-            product_link = f'https://flowersbali.ru/product/{item_id}' if item_id else ''
+            product_link = f'https://florustic.ru/product/{item_id}' if item_id else ''
             
             name_with_link = f'<a href="{product_link}" style="color: #2D5016; text-decoration: none; font-weight: 600;">{item_name}</a>' if product_link else item_name
             
