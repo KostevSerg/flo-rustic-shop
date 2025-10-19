@@ -25,6 +25,7 @@ import Admin from "./pages/Admin";
 import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
 import AdminTexts from "./pages/AdminTexts";
+import AdminCities from "./pages/AdminCities";
 import AdminCityContacts from "./pages/AdminCityContacts";
 import AdminCitySettlements from "./pages/AdminCitySettlements";
 import AdminReviews from "./pages/AdminReviews";
@@ -60,7 +61,7 @@ const App = () => (
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/admin" element={<AdminDashboard />} />
-                    <Route path="/admin/cities" element={<Admin />} />
+                    <Route path="/admin/cities" element={<AdminCities />} />
                     <Route path="/admin/products" element={<AdminProducts />} />
                     <Route path="/admin/orders" element={<AdminOrders />} />
                     <Route path="/admin/texts" element={<AdminTexts />} />

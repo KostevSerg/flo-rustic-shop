@@ -162,7 +162,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         }
             else:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    cur.execute('SELECT id, name, region, is_active, work_hours FROM cities WHERE is_active = true ORDER BY region, name')
+                    cur.execute('SELECT id, name, region, is_active, work_hours, timezone FROM cities WHERE is_active = true ORDER BY region, name')
                     cities = cur.fetchall()
                     
                     grouped_cities: Dict[str, List[Dict[str, Any]]] = {}
@@ -174,7 +174,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'id': city['id'],
                             'name': city['name'],
                             'region': city['region'],
-                            'work_hours': city.get('work_hours')
+                            'work_hours': city.get('work_hours'),
+                            'timezone': city.get('timezone')
                         })
                     
                     return {
@@ -274,10 +275,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False,
                         'body': json.dumps({'message': 'Review submitted for approval', 'id': result['id']})
                     }
-            else:
+            elif action == 'add':
                 body_data = json.loads(event.get('body', '{}'))
                 name = body_data.get('name', '').strip()
                 region = body_data.get('region', '').strip()
+                timezone = body_data.get('timezone', 'Europe/Moscow').strip()
+                work_hours = body_data.get('work_hours', '').strip() or None
                 
                 if not name or not region:
                     return {
@@ -292,8 +295,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute(
-                        'INSERT INTO cities (name, region) VALUES (%s, %s) RETURNING id, name, region',
-                        (name, region)
+                        'INSERT INTO cities (name, region, timezone, work_hours) VALUES (%s, %s, %s, %s) RETURNING id, name, region, timezone, work_hours',
+                        (name, region, timezone, work_hours)
                     )
                     new_city = cur.fetchone()
                     city_id = new_city['id']
@@ -306,7 +309,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         '+7 (999) 123-45-67',
                         'info@florustic.ru',
                         f'г. {name}, ул. Цветочная, 15',
-                        'Круглосуточно',
+                        work_hours or 'Круглосуточно',
                         'Бесплатная доставка в пределах центра'
                     ))
                     
@@ -319,8 +322,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'city': dict(new_city)}, ensure_ascii=False)
+                        'body': json.dumps({'success': True, 'city': dict(new_city)}, ensure_ascii=False)
                     }
+            else:
+                return {
+                    'statusCode': 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'isBase64Encoded': False,
+                    'body': json.dumps({'error': 'Unknown action'})
+                }
         
         elif method == 'PUT':
             if action == 'settlements':
@@ -444,14 +457,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False,
                         'body': json.dumps({'success': True, 'contact': dict(updated)}, ensure_ascii=False)
                     }
-            else:
+            elif action == 'update':
                 body_data = json.loads(event.get('body', '{}'))
-                city_id = body_data.get('id')
-                name = body_data.get('name', '').strip() if body_data.get('name') else None
-                region = body_data.get('region', '').strip() if body_data.get('region') else None
-                work_hours = body_data.get('work_hours')
+                city_id = params.get('id')
+                name = body_data.get('name', '').strip()
+                region = body_data.get('region', '').strip()
+                timezone = body_data.get('timezone', '').strip()
+                work_hours = body_data.get('work_hours', '').strip() or None
                 
-                if not city_id:
+                if not city_id or not name or not region:
                     return {
                         'statusCode': 400,
                         'headers': {
@@ -459,34 +473,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'error': 'City ID is required'})
+                        'body': json.dumps({'error': 'City ID, name and region are required'})
                     }
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    if work_hours is not None:
-                        cur.execute('''
-                            UPDATE cities 
-                            SET work_hours = %s 
-                            WHERE id = %s
-                            RETURNING id, name, region, work_hours
-                        ''', (json.dumps(work_hours), city_id))
-                    elif name and region:
-                        cur.execute('''
-                            UPDATE cities 
-                            SET name = %s, region = %s 
-                            WHERE id = %s
-                            RETURNING id, name, region, work_hours
-                        ''', (name, region, city_id))
-                    else:
-                        return {
-                            'statusCode': 400,
-                            'headers': {
-                                'Content-Type': 'application/json',
-                                'Access-Control-Allow-Origin': '*'
-                            },
-                            'isBase64Encoded': False,
-                            'body': json.dumps({'error': 'Name and region, or work_hours are required'})
-                        }
+                    cur.execute('''
+                        UPDATE cities 
+                        SET name = %s, region = %s, timezone = %s, work_hours = %s 
+                        WHERE id = %s
+                        RETURNING id, name, region, timezone, work_hours
+                    ''', (name, region, timezone, work_hours, city_id))
                     
                     updated = cur.fetchone()
                     conn.commit()
@@ -556,9 +552,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False,
                         'body': json.dumps({'message': 'Review deleted successfully'})
                     }
-            else:
-                body_data = json.loads(event.get('body', '{}'))
-                city_id = body_data.get('id')
+            elif action == 'delete':
+                city_id = params.get('id')
                 
                 if not city_id:
                     return {
@@ -584,6 +579,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'isBase64Encoded': False,
                         'body': json.dumps({'success': True})
                     }
+            else:
+                return {
+                    'statusCode': 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'isBase64Encoded': False,
+                    'body': json.dumps({'error': 'Unknown action for DELETE'})
+                }
         
         return {
             'statusCode': 405,
