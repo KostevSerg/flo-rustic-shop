@@ -1,12 +1,23 @@
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import WorkHoursInput from '@/components/admin/WorkHoursInput';
+
+interface WorkHours {
+  monday?: { from: string; to: string };
+  tuesday?: { from: string; to: string };
+  wednesday?: { from: string; to: string };
+  thursday?: { from: string; to: string };
+  friday?: { from: string; to: string };
+  saturday?: { from: string; to: string };
+  sunday?: { from: string; to: string };
+}
 
 interface City {
   id: number;
   name: string;
   region_id: number;
   timezone: string;
-  work_hours?: any;
+  work_hours?: WorkHours;
 }
 
 interface CityModalProps {
@@ -15,12 +26,12 @@ interface CityModalProps {
   formData: {
     name: string;
     timezone: string;
-    work_hours: string;
+    work_hours: WorkHours | null;
   };
   saving: boolean;
   onClose: () => void;
   onSubmit: (e: React.FormEvent) => void;
-  onChange: (field: string, value: string) => void;
+  onChange: (field: string, value: any) => void;
 }
 
 const CityModal = ({
@@ -86,16 +97,10 @@ const CityModal = ({
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Часы работы</label>
-            <input
-              type="text"
-              value={formData.work_hours}
-              onChange={(e) => onChange('work_hours', e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="09:00 - 21:00"
-            />
-          </div>
+          <WorkHoursInput
+            value={formData.work_hours}
+            onChange={(value) => onChange('work_hours', value)}
+          />
 
           <div className="flex space-x-3 pt-4">
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">

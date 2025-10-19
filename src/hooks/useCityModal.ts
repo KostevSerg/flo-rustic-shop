@@ -2,12 +2,22 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import API_ENDPOINTS from '@/config/api';
 
+interface WorkHours {
+  monday?: { from: string; to: string };
+  tuesday?: { from: string; to: string };
+  wednesday?: { from: string; to: string };
+  thursday?: { from: string; to: string };
+  friday?: { from: string; to: string };
+  saturday?: { from: string; to: string };
+  sunday?: { from: string; to: string };
+}
+
 interface City {
   id: number;
   name: string;
   region_id: number;
   timezone: string;
-  work_hours?: any;
+  work_hours?: WorkHours;
 }
 
 export const useCityModal = (refetchData: () => void) => {
@@ -15,10 +25,14 @@ export const useCityModal = (refetchData: () => void) => {
   const [showModal, setShowModal] = useState(false);
   const [editingCity, setEditingCity] = useState<City | null>(null);
   const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    timezone: string;
+    work_hours: WorkHours | null;
+  }>({
     name: '',
     timezone: 'Europe/Moscow',
-    work_hours: ''
+    work_hours: null
   });
   const [saving, setSaving] = useState(false);
 
@@ -28,7 +42,7 @@ export const useCityModal = (refetchData: () => void) => {
     setFormData({
       name: '',
       timezone: 'Europe/Moscow',
-      work_hours: ''
+      work_hours: null
     });
     setShowModal(true);
   };
@@ -39,7 +53,7 @@ export const useCityModal = (refetchData: () => void) => {
     setFormData({
       name: city.name,
       timezone: city.timezone || 'Europe/Moscow',
-      work_hours: city.work_hours || ''
+      work_hours: city.work_hours || null
     });
     setShowModal(true);
   };
@@ -51,7 +65,7 @@ export const useCityModal = (refetchData: () => void) => {
     setFormData({
       name: '',
       timezone: 'Europe/Moscow',
-      work_hours: ''
+      work_hours: null
     });
   };
 
@@ -79,7 +93,7 @@ export const useCityModal = (refetchData: () => void) => {
           name: formData.name.trim(),
           region_id: selectedRegionId,
           timezone: formData.timezone,
-          work_hours: formData.work_hours.trim()
+          work_hours: formData.work_hours
         })
       });
 
