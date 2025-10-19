@@ -203,8 +203,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         grouped_cities[region].append({
                             'id': city['id'],
                             'name': city['name'],
+                            'region': city['region_name'],
                             'region_id': city['region_id'],
-                            'region_name': city['region_name'],
                             'work_hours': city.get('work_hours'),
                             'timezone': city.get('timezone')
                         })
