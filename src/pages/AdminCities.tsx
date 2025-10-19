@@ -14,34 +14,39 @@ interface City {
   id: number;
   name: string;
   region_id: number;
-  region_name?: string;
   timezone: string;
-  work_hours?: string;
+  work_hours?: any;
 }
 
 interface Region {
   id: number;
   name: string;
+  is_active: boolean;
+  cities?: City[];
 }
 
 const AdminCities = () => {
-  console.log('🏁 AdminCities component rendering');
   const navigate = useNavigate();
   const { isAuthenticated } = useAdminAuth();
-  console.log('🔐 isAuthenticated:', isAuthenticated);
   const { totalItems } = useCart();
   const { toast } = useToast();
-  const [cities, setCities] = useState<Record<string, City[]>>({});
   const [regions, setRegions] = useState<Region[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [expandedRegions, setExpandedRegions] = useState<number[]>([]);
+  
+  const [showRegionModal, setShowRegionModal] = useState(false);
+  const [editingRegion, setEditingRegion] = useState<Region | null>(null);
+  const [regionForm, setRegionForm] = useState({ name: '' });
+  
+  const [showCityModal, setShowCityModal] = useState(false);
   const [editingCity, setEditingCity] = useState<City | null>(null);
-  const [formData, setFormData] = useState({
+  const [selectedRegionId, setSelectedRegionId] = useState<number | null>(null);
+  const [cityForm, setCityForm] = useState({
     name: '',
-    region_id: 0,
     timezone: 'Europe/Moscow',
     work_hours: ''
   });
+  
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -51,28 +56,31 @@ const AdminCities = () => {
   }, [isAuthenticated]);
 
   const fetchData = async () => {
-    console.log('🚀 fetchData started');
     setLoading(true);
     try {
-      console.log('📡 Fetching from:', API_ENDPOINTS.cities);
-      const [citiesRes, regionsRes] = await Promise.all([
-        fetch(API_ENDPOINTS.cities),
-        fetch(`${API_ENDPOINTS.cities}?action=regions`)
+      const [regionsRes, citiesRes] = await Promise.all([
+        fetch(`${API_ENDPOINTS.cities}?action=regions`),
+        fetch(API_ENDPOINTS.cities)
       ]);
       
-      console.log('📦 Cities response:', citiesRes.status);
-      console.log('📦 Regions response:', regionsRes.status);
-      
-      const citiesData = await citiesRes.json();
       const regionsData = await regionsRes.json();
+      const citiesData = await citiesRes.json();
       
-      console.log('✅ Cities data:', citiesData);
-      console.log('✅ Regions data:', regionsData);
+      const regionsWithCities = (regionsData.regions || []).map((region: Region) => {
+        const regionCities: City[] = [];
+        Object.values(citiesData.cities || {}).forEach((cityList: any) => {
+          cityList.forEach((city: any) => {
+            if (city.region_id === region.id) {
+              regionCities.push(city);
+            }
+          });
+        });
+        return { ...region, cities: regionCities };
+      });
       
-      setCities(citiesData.cities || {});
-      setRegions(regionsData.regions || []);
+      setRegions(regionsWithCities);
     } catch (error) {
-      console.error('❌ Failed to fetch data:', error);
+      console.error('Failed to fetch data:', error);
       toast({
         title: 'Ошибка',
         description: 'Не удалось загрузить данные',
@@ -80,57 +88,150 @@ const AdminCities = () => {
       });
     } finally {
       setLoading(false);
-      console.log('✅ fetchData finished');
     }
   };
 
-  const openAddModal = () => {
-    if (regions.length === 0) {
+  const toggleRegion = (regionId: number) => {
+    setExpandedRegions(prev =>
+      prev.includes(regionId)
+        ? prev.filter(id => id !== regionId)
+        : [...prev, regionId]
+    );
+  };
+
+  const openAddRegionModal = () => {
+    setEditingRegion(null);
+    setRegionForm({ name: '' });
+    setShowRegionModal(true);
+  };
+
+  const openEditRegionModal = (region: Region) => {
+    setEditingRegion(region);
+    setRegionForm({ name: region.name });
+    setShowRegionModal(true);
+  };
+
+  const closeRegionModal = () => {
+    setShowRegionModal(false);
+    setEditingRegion(null);
+    setRegionForm({ name: '' });
+  };
+
+  const handleRegionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!regionForm.name.trim()) {
       toast({
-        title: 'Сначала создайте регион',
-        description: 'Перейдите в раздел "Регионы" и создайте хотя бы один регион',
+        title: 'Ошибка',
+        description: 'Введите название региона',
         variant: 'destructive'
       });
       return;
     }
+
+    setSaving(true);
+    try {
+      const url = editingRegion
+        ? `${API_ENDPOINTS.cities}?action=update-region&id=${editingRegion.id}`
+        : `${API_ENDPOINTS.cities}?action=add-region`;
+
+      const response = await fetch(url, {
+        method: editingRegion ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: regionForm.name.trim() })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast({
+          title: 'Успешно',
+          description: editingRegion ? 'Регион обновлен' : 'Регион создан'
+        });
+        closeRegionModal();
+        fetchData();
+      } else {
+        throw new Error(data.error || 'Operation failed');
+      }
+    } catch (error) {
+      console.error('Failed to save region:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось сохранить регион',
+        variant: 'destructive'
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteRegion = async (regionId: number, regionName: string) => {
+    if (!confirm(`Удалить регион "${regionName}"? Все города в нём также будут удалены.`)) return;
+
+    try {
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=delete-region&id=${regionId}`, {
+        method: 'DELETE'
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast({
+          title: 'Успешно',
+          description: 'Регион удален'
+        });
+        fetchData();
+      } else {
+        throw new Error(data.error || 'Delete failed');
+      }
+    } catch (error) {
+      console.error('Failed to delete region:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось удалить регион',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const openAddCityModal = (regionId: number) => {
     setEditingCity(null);
-    setFormData({
+    setSelectedRegionId(regionId);
+    setCityForm({
       name: '',
-      region_id: regions[0]?.id || 0,
       timezone: 'Europe/Moscow',
       work_hours: ''
     });
-    setShowAddModal(true);
+    setShowCityModal(true);
   };
 
-  const openEditModal = (city: City) => {
+  const openEditCityModal = (city: City) => {
     setEditingCity(city);
-    setFormData({
+    setSelectedRegionId(city.region_id);
+    setCityForm({
       name: city.name,
-      region_id: city.region_id,
       timezone: city.timezone || 'Europe/Moscow',
       work_hours: city.work_hours || ''
     });
-    setShowAddModal(true);
+    setShowCityModal(true);
   };
 
-  const closeModal = () => {
-    setShowAddModal(false);
+  const closeCityModal = () => {
+    setShowCityModal(false);
     setEditingCity(null);
-    setFormData({
+    setSelectedRegionId(null);
+    setCityForm({
       name: '',
-      region_id: regions[0]?.id || 0,
       timezone: 'Europe/Moscow',
       work_hours: ''
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleCitySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.region_id) {
+    if (!cityForm.name.trim() || !selectedRegionId) {
       toast({
         title: 'Ошибка',
-        description: 'Заполните название города и выберите регион',
+        description: 'Заполните все обязательные поля',
         variant: 'destructive'
       });
       return;
@@ -146,10 +247,10 @@ const AdminCities = () => {
         method: editingCity ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: formData.name.trim(),
-          region_id: formData.region_id,
-          timezone: formData.timezone,
-          work_hours: formData.work_hours.trim()
+          name: cityForm.name.trim(),
+          region_id: selectedRegionId,
+          timezone: cityForm.timezone,
+          work_hours: cityForm.work_hours.trim()
         })
       });
 
@@ -160,7 +261,7 @@ const AdminCities = () => {
           title: 'Успешно',
           description: editingCity ? 'Город обновлен' : 'Город добавлен'
         });
-        closeModal();
+        closeCityModal();
         fetchData();
       } else {
         throw new Error(data.error || 'Operation failed');
@@ -177,7 +278,7 @@ const AdminCities = () => {
     }
   };
 
-  const handleDelete = async (cityId: number, cityName: string) => {
+  const handleDeleteCity = async (cityId: number, cityName: string) => {
     if (!confirm(`Удалить город "${cityName}"?`)) return;
 
     try {
@@ -221,70 +322,126 @@ const AdminCities = () => {
                 <Icon name="ArrowLeft" size={20} className="mr-2" />
                 Назад
               </Button>
-              <h1 className="text-3xl font-bold">Управление городами</h1>
+              <h1 className="text-3xl font-bold">Регионы и города</h1>
             </div>
-            <div className="flex space-x-3">
-              <Button variant="outline" onClick={() => navigate('/admin/regions')}>
-                <Icon name="Map" size={20} className="mr-2" />
-                Регионы
-              </Button>
-              <Button onClick={openAddModal}>
-                <Icon name="Plus" size={20} className="mr-2" />
-                Добавить город
-              </Button>
-            </div>
+            <Button onClick={openAddRegionModal}>
+              <Icon name="Plus" size={20} className="mr-2" />
+              Добавить регион
+            </Button>
           </div>
-
-          {regions.length === 0 && !loading && (
-            <div className="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-              <p className="text-sm text-yellow-800">
-                ⚠️ <strong>Сначала создайте регионы!</strong> Перейдите в раздел "Регионы" и создайте хотя бы один регион.
-              </p>
-            </div>
-          )}
 
           {loading ? (
             <div className="text-center py-12">
               <div className="animate-spin mx-auto mb-3 w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
-              <p className="text-muted-foreground">Загрузка городов...</p>
+              <p className="text-muted-foreground">Загрузка...</p>
+            </div>
+          ) : regions.length === 0 ? (
+            <div className="text-center py-12 bg-card rounded-lg border">
+              <Icon name="MapPin" size={48} className="mx-auto mb-4 text-muted-foreground" />
+              <p className="text-lg text-muted-foreground mb-4">Регионов пока нет</p>
+              <Button onClick={openAddRegionModal}>
+                <Icon name="Plus" size={20} className="mr-2" />
+                Создать первый регион
+              </Button>
             </div>
           ) : (
-            <div className="space-y-6">
-              {Object.entries(cities).map(([region, regionCities]) => (
-                <div key={region} className="bg-card rounded-lg border p-6">
-                  <h2 className="text-xl font-semibold mb-4 flex items-center">
-                    <Icon name="MapPin" size={24} className="mr-2 text-primary" />
-                    {region}
-                  </h2>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {regionCities.map(city => (
-                      <div key={city.id} className="bg-accent/20 rounded-lg p-4 flex items-center justify-between">
-                        <div className="flex-1">
-                          <p className="font-medium">{city.name}</p>
-                          <p className="text-sm text-muted-foreground">{city.timezone}</p>
-                          {city.work_hours && (
-                            <p className="text-sm text-muted-foreground mt-1">{city.work_hours}</p>
-                          )}
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => openEditModal(city)}
-                          >
-                            <Icon name="Pencil" size={16} />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDelete(city.id, city.name)}
-                          >
-                            <Icon name="Trash2" size={16} />
-                          </Button>
-                        </div>
+            <div className="space-y-4">
+              {regions.map(region => (
+                <div key={region.id} className="bg-card rounded-lg border overflow-hidden">
+                  <div className="p-4 flex items-center justify-between bg-accent/20">
+                    <div className="flex items-center space-x-3 flex-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleRegion(region.id)}
+                        className="p-1"
+                      >
+                        <Icon
+                          name={expandedRegions.includes(region.id) ? 'ChevronDown' : 'ChevronRight'}
+                          size={20}
+                        />
+                      </Button>
+                      <Icon name="Map" size={24} className="text-primary" />
+                      <div>
+                        <h3 className="font-semibold text-lg">{region.name}</h3>
+                        <p className="text-sm text-muted-foreground">
+                          {region.cities?.length || 0} {region.cities?.length === 1 ? 'город' : 'городов'}
+                        </p>
                       </div>
-                    ))}
+                    </div>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openAddCityModal(region.id)}
+                      >
+                        <Icon name="Plus" size={16} className="mr-1" />
+                        Город
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEditRegionModal(region)}
+                      >
+                        <Icon name="Pencil" size={16} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteRegion(region.id, region.name)}
+                      >
+                        <Icon name="Trash2" size={16} />
+                      </Button>
+                    </div>
                   </div>
+
+                  {expandedRegions.includes(region.id) && (
+                    <div className="p-4 border-t">
+                      {region.cities && region.cities.length > 0 ? (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {region.cities.map(city => (
+                            <div
+                              key={city.id}
+                              className="bg-background rounded-lg p-3 border flex items-center justify-between"
+                            >
+                              <div className="flex-1">
+                                <p className="font-medium">{city.name}</p>
+                                <p className="text-sm text-muted-foreground">{city.timezone}</p>
+                              </div>
+                              <div className="flex space-x-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => openEditCityModal(city)}
+                                >
+                                  <Icon name="Pencil" size={14} />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDeleteCity(city.id, city.name)}
+                                >
+                                  <Icon name="Trash2" size={14} />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <p className="mb-3">В этом регионе пока нет городов</p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openAddCityModal(region.id)}
+                          >
+                            <Icon name="Plus" size={16} className="mr-1" />
+                            Добавить город
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -293,29 +450,71 @@ const AdminCities = () => {
         <Footer />
       </div>
 
-      {showAddModal && (
+      {showRegionModal && (
         <>
           <div
             className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
-            onClick={closeModal}
+            onClick={closeRegionModal}
           />
-          <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-md bg-card border border-border rounded-xl shadow-2xl p-6 animate-fade-in">
+          <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-md bg-card border rounded-xl shadow-2xl p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold">
-                {editingCity ? 'Редактировать город' : 'Добавить город'}
+                {editingRegion ? 'Редактировать регион' : 'Добавить регион'}
               </h3>
-              <button onClick={closeModal} className="hover:bg-accent/50 rounded-lg p-2 transition-colors">
+              <button onClick={closeRegionModal} className="hover:bg-accent/50 rounded-lg p-2">
                 <Icon name="X" size={24} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleRegionSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Название региона *</label>
+                <input
+                  type="text"
+                  value={regionForm.name}
+                  onChange={(e) => setRegionForm({ name: e.target.value })}
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Московская область"
+                  required
+                />
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <Button type="button" variant="outline" onClick={closeRegionModal} className="flex-1">
+                  Отмена
+                </Button>
+                <Button type="submit" disabled={saving} className="flex-1">
+                  {saving ? 'Сохранение...' : editingRegion ? 'Обновить' : 'Создать'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </>
+      )}
+
+      {showCityModal && (
+        <>
+          <div
+            className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
+            onClick={closeCityModal}
+          />
+          <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-md bg-card border rounded-xl shadow-2xl p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold">
+                {editingCity ? 'Редактировать город' : 'Добавить город'}
+              </h3>
+              <button onClick={closeCityModal} className="hover:bg-accent/50 rounded-lg p-2">
+                <Icon name="X" size={24} />
+              </button>
+            </div>
+
+            <form onSubmit={handleCitySubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-2">Название города *</label>
                 <input
                   type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={cityForm.name}
+                  onChange={(e) => setCityForm({ ...cityForm, name: e.target.value })}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Москва"
                   required
@@ -323,31 +522,15 @@ const AdminCities = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Регион *</label>
-                <select
-                  value={formData.region_id}
-                  onChange={(e) => setFormData({ ...formData, region_id: parseInt(e.target.value) })}
-                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  required
-                >
-                  {regions.map(region => (
-                    <option key={region.id} value={region.id}>
-                      {region.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
                 <label className="block text-sm font-medium mb-2">Часовой пояс *</label>
                 <select
-                  value={formData.timezone}
-                  onChange={(e) => setFormData({ ...formData, timezone: e.target.value })}
+                  value={cityForm.timezone}
+                  onChange={(e) => setCityForm({ ...cityForm, timezone: e.target.value })}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   required
                 >
                   <option value="Europe/Moscow">Europe/Moscow (МСК)</option>
-                  <option value="Asia/Barnaul">Asia/Barnaul (МСК+4)</option>
+                  <option value="Europe/Kaliningrad">Europe/Kaliningrad (МСК-1)</option>
                   <option value="Europe/Samara">Europe/Samara (МСК+1)</option>
                   <option value="Asia/Yekaterinburg">Asia/Yekaterinburg (МСК+2)</option>
                   <option value="Asia/Omsk">Asia/Omsk (МСК+3)</option>
@@ -365,15 +548,15 @@ const AdminCities = () => {
                 <label className="block text-sm font-medium mb-2">Часы работы</label>
                 <input
                   type="text"
-                  value={formData.work_hours}
-                  onChange={(e) => setFormData({ ...formData, work_hours: e.target.value })}
+                  value={cityForm.work_hours}
+                  onChange={(e) => setCityForm({ ...cityForm, work_hours: e.target.value })}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="09:00 - 21:00"
                 />
               </div>
 
               <div className="flex space-x-3 pt-4">
-                <Button type="button" variant="outline" onClick={closeModal} className="flex-1">
+                <Button type="button" variant="outline" onClick={closeCityModal} className="flex-1">
                   Отмена
                 </Button>
                 <Button type="submit" disabled={saving} className="flex-1">
