@@ -86,18 +86,23 @@ export const useCityModal = (refetchData: () => void) => {
         ? `${API_ENDPOINTS.cities}?action=update&id=${editingCity.id}`
         : `${API_ENDPOINTS.cities}?action=add`;
 
+      const payload = {
+        name: formData.name.trim(),
+        region_id: selectedRegionId,
+        timezone: formData.timezone,
+        work_hours: formData.work_hours
+      };
+      
+      console.log('Sending city data:', payload);
+
       const response = await fetch(url, {
         method: editingCity ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name.trim(),
-          region_id: selectedRegionId,
-          timezone: formData.timezone,
-          work_hours: formData.work_hours
-        })
+        body: JSON.stringify(payload)
       });
 
       const data = await response.json();
+      console.log('Backend response:', response.status, data);
 
       if (response.ok && data.success) {
         toast({
