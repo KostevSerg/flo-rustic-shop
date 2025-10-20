@@ -51,6 +51,9 @@ const Header = ({ cartCount }: HeaderProps) => {
             <Link to="/guarantees" className="hover:text-primary transition">
               Гарантии
             </Link>
+            <Link to="/contacts" className="hover:text-primary transition">
+              Контакты
+            </Link>
             <Link to="/about" className="hover:text-primary transition">
               О нас
             </Link>
@@ -106,6 +109,9 @@ const Header = ({ cartCount }: HeaderProps) => {
             </Link>
             <Link to="/guarantees" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
               Гарантии
+            </Link>
+            <Link to="/contacts" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
+              Контакты
             </Link>
             <Link to="/about" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
               О нас
