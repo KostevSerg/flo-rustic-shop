@@ -68,10 +68,22 @@ const Header = ({ cartCount }: HeaderProps) => {
               <Icon name="Settings" size={24} />
             </Link>
 
-            <a href="tel:+79952151096" className="flex items-center gap-2 hover:text-primary transition font-medium">
-              <Icon name="Phone" size={20} />
-              <span className="whitespace-nowrap">+7 995 215-10-96</span>
-            </a>
+            <div className="flex items-center gap-4">
+              <a href="tel:+79952151096" className="flex items-center gap-2 hover:text-primary transition font-medium">
+                <Icon name="Phone" size={20} />
+                <span className="whitespace-nowrap">+7 995 215-10-96</span>
+              </a>
+              <a 
+                href="https://wa.me/79952151096" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-2 hover:text-primary transition bg-green-500 text-white px-3 py-2 rounded-lg"
+                title="Написать в WhatsApp"
+              >
+                <Icon name="MessageCircle" size={20} />
+                <span className="whitespace-nowrap">WhatsApp</span>
+              </a>
+            </div>
 
             <Link to="/cart" className="relative hover:text-primary transition">
               <Icon name="ShoppingCart" size={24} />
@@ -111,6 +123,15 @@ const Header = ({ cartCount }: HeaderProps) => {
               <a href="tel:+79952151096" className="flex items-center gap-2 hover:text-primary transition font-medium">
                 <Icon name="Phone" size={20} />
                 <span>+7 995 215-10-96</span>
+              </a>
+              <a 
+                href="https://wa.me/79952151096" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-2 hover:text-primary transition bg-green-500 text-white px-3 py-2 rounded-lg"
+              >
+                <Icon name="MessageCircle" size={20} />
+                <span>WhatsApp</span>
               </a>
               <div className="flex items-center justify-end space-x-4">
                 <Link to="/admin" className="hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
