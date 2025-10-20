@@ -8,6 +8,7 @@ interface City {
   timezone: string;
   work_hours?: any;
   is_active?: boolean;
+  price_markup_percent?: number;
 }
 
 interface Region {
@@ -127,6 +128,11 @@ const RegionCard = ({
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground">{city.timezone}</p>
+                    {city.price_markup_percent !== undefined && city.price_markup_percent > 0 && (
+                      <p className="text-xs text-primary font-medium mt-1">
+                        Наценка: +{city.price_markup_percent}%
+                      </p>
+                    )}
                   </div>
                   <div className="flex space-x-1">
                     <Button

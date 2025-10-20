@@ -19,6 +19,7 @@ interface City {
   timezone: string;
   work_hours?: WorkHours;
   address?: string;
+  price_markup_percent?: number;
 }
 
 interface CityModalProps {
@@ -29,6 +30,7 @@ interface CityModalProps {
     timezone: string;
     work_hours: WorkHours | null;
     address: string;
+    price_markup_percent: number;
   };
   saving: boolean;
   onClose: () => void;
@@ -101,18 +103,39 @@ const CityModal = ({
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Адрес офиса/магазина</label>
-            <input
-              type="text"
-              value={formData.address}
-              onChange={(e) => onChange('address', e.target.value)}
-              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="г. Москва, ул. Примерная, д. 1"
-            />
-            <p className="text-xs text-muted-foreground mt-1">
-              Этот адрес будет отображаться на странице контактов и в футере
-            </p>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Адрес офиса/магазина</label>
+              <input
+                type="text"
+                value={formData.address}
+                onChange={(e) => onChange('address', e.target.value)}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="г. Москва, ул. Примерная, д. 1"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Этот адрес будет отображаться на странице контактов и в футере
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Наценка на товары (%)
+              </label>
+              <input
+                type="number"
+                min="0"
+                max="999.99"
+                step="0.01"
+                value={formData.price_markup_percent}
+                onChange={(e) => onChange('price_markup_percent', parseFloat(e.target.value) || 0)}
+                className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="0"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Процент наценки от базовой цены (например, 10 = +10%)
+              </p>
+            </div>
           </div>
 
           <div className="border-t pt-4">

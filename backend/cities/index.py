@@ -200,7 +200,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     if show_all:
                         cur.execute('''
                             SELECT c.id, c.name, c.region_id, r.name as region_name, 
-                                   c.timezone, c.work_hours, c.address, c.is_active
+                                   c.timezone, c.work_hours, c.address, c.is_active, c.price_markup_percent
                             FROM cities c
                             JOIN regions r ON r.id = c.region_id
                             ORDER BY r.name, c.name
@@ -208,7 +208,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     else:
                         cur.execute('''
                             SELECT c.id, c.name, c.region_id, r.name as region_name, 
-                                   c.timezone, c.work_hours, c.address
+                                   c.timezone, c.work_hours, c.address, c.price_markup_percent
                             FROM cities c
                             JOIN regions r ON r.id = c.region_id
                             WHERE c.is_active = true AND r.is_active = true
@@ -639,13 +639,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             UPDATE cities 
                             SET is_active = %s
                             WHERE id = %s
-                            RETURNING id, name, region_id, timezone, work_hours, address, is_active
+                            RETURNING id, name, region_id, timezone, work_hours, address, is_active, price_markup_percent
                         ''', (is_active, city_id))
                     else:
                         name = body_data.get('name', '').strip()
                         region_id = body_data.get('region_id')
                         timezone = body_data.get('timezone', '').strip()
                         address = body_data.get('address', '').strip()
+                        price_markup_percent = body_data.get('price_markup_percent')
                         work_hours = body_data.get('work_hours') or None
                         if work_hours and isinstance(work_hours, dict):
                             work_hours = json.dumps(work_hours, ensure_ascii=False)
@@ -665,10 +666,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         
                         cur.execute('''
                             UPDATE cities 
-                            SET name = %s, region_id = %s, timezone = %s, work_hours = %s, address = %s 
+                            SET name = %s, region_id = %s, timezone = %s, work_hours = %s, address = %s, price_markup_percent = %s 
                             WHERE id = %s
-                            RETURNING id, name, region_id, timezone, work_hours, address, is_active
-                        ''', (name, region_id, timezone, work_hours, address, city_id))
+                            RETURNING id, name, region_id, timezone, work_hours, address, is_active, price_markup_percent
+                        ''', (name, region_id, timezone, work_hours, address, price_markup_percent, city_id))
                         
                         updated = cur.fetchone()
                         

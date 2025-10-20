@@ -84,7 +84,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         cur.execute(f'''
                             SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name,
-                                   COALESCE(pcp.price, p.base_price) as price
+                                   COALESCE(pcp.price, 
+                                           ROUND(p.base_price * (1 + COALESCE(c.price_markup_percent, 0) / 100), 2)
+                                   ) as price
                             FROM products p
                             LEFT JOIN cities c ON c.name = '{safe_city_name}' AND c.is_active = true
                             LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
@@ -98,7 +100,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         cur.execute(f'''
                             SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name,
-                                   COALESCE(pcp.price, p.base_price) as price
+                                   COALESCE(pcp.price, 
+                                           ROUND(p.base_price * (1 + COALESCE(c.price_markup_percent, 0) / 100), 2)
+                                   ) as price
                             FROM products p
                             LEFT JOIN cities c ON c.name = '{safe_city_name}' AND c.is_active = true
                             LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
@@ -111,7 +115,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         cur.execute(f'''
                             SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name,
-                                   COALESCE(pcp.price, p.base_price) as price
+                                   COALESCE(pcp.price, 
+                                           ROUND(p.base_price * (1 + COALESCE(c.price_markup_percent, 0) / 100), 2)
+                                   ) as price
                             FROM products p
                             LEFT JOIN cities c ON c.name = '{safe_city_name}' AND c.is_active = true
                             LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
