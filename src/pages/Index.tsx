@@ -237,7 +237,7 @@ const Index = () => {
               </div>
               <h3 className="font-semibold text-lg mb-2">Свежие цветы</h3>
               <p className="text-muted-foreground text-sm">
-                Прямые поставки от лучших производителей. Гарантируем свежесть минимум 7 дней
+                Прямые поставки от лучших производителей каждый день
               </p>
             </div>
             
@@ -255,9 +255,9 @@ const Index = () => {
               <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Icon name="Shield" size={32} className="text-primary" />
               </div>
-              <h3 className="font-semibold text-lg mb-2">100% Гарантия</h3>
+              <h3 className="font-semibold text-lg mb-2">100% Качество</h3>
               <p className="text-muted-foreground text-sm">
-                Если букет не понравится — вернём деньги или заменим бесплатно
+                Каждый букет проходит контроль качества перед доставкой
               </p>
             </div>
             

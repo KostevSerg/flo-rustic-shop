@@ -342,9 +342,9 @@ const City = () => {
                     <Icon name="ShieldCheck" size={24} className="text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg mb-2">Гарантия качества</h3>
+                    <h3 className="font-semibold text-lg mb-2">Контроль качества</h3>
                     <p className="text-muted-foreground text-sm">
-                      Если букет не соответствует ожиданиям, мы заменим его или вернем деньги.
+                      Каждый букет проверяется перед отправкой, чтобы соответствовать высоким стандартам.
                     </p>
                   </div>
                 </div>

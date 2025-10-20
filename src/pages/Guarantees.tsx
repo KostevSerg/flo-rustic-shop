@@ -10,8 +10,8 @@ const Guarantees = () => {
   const [content, setContent] = useState({ 
     title: 'Гарантии', 
     htmlContent: '',
-    metaDescription: 'Гарантии качества цветов и доставки. Свежесть букетов минимум 7 дней, возврат денег.',
-    metaKeywords: 'гарантии качества, гарантия свежести цветов, возврат денег'
+    metaDescription: 'Гарантии качества цветов и доставки FloRustic. Свежие букеты и профессиональный сервис.',
+    metaKeywords: 'гарантии качества, свежие цветы, доставка цветов'
   });
   const [loading, setLoading] = useState(true);
 
@@ -23,8 +23,8 @@ const Guarantees = () => {
         setContent({
           title: data.title || 'Гарантии',
           htmlContent: data.content || '',
-          metaDescription: data.meta_description || 'Гарантии качества цветов и доставки. Свежесть букетов минимум 7 дней, возврат денег.',
-          metaKeywords: data.meta_keywords || 'гарантии качества, гарантия свежести цветов, возврат денег'
+          metaDescription: data.meta_description || 'Гарантии качества цветов и доставки FloRustic. Свежие букеты и профессиональный сервис.',
+          metaKeywords: data.meta_keywords || 'гарантии качества, свежие цветы, доставка цветов'
         });
       } catch (error) {
         console.error('Failed to load page content:', error);
