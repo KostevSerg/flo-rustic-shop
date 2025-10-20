@@ -14,6 +14,7 @@ interface Product {
   id: number;
   name: string;
   description: string;
+  composition?: string;
   image_url: string;
   base_price: number;
   category: string;
@@ -147,7 +148,17 @@ const ProductFormEdit = ({ editingProduct, setEditingProduct, onSubmit, onCancel
                 value={editingProduct.description}
                 onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                rows={3}
+                rows={2}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">Состав</label>
+              <textarea
+                value={editingProduct.composition || ''}
+                onChange={(e) => setEditingProduct({ ...editingProduct, composition: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                rows={2}
+                placeholder="Например: 5 роз, 3 эвкалипта, зелень..."
               />
             </div>
           </div>

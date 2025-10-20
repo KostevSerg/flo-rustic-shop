@@ -14,6 +14,7 @@ interface ProductFormAddProps {
   newProduct: {
     name: string;
     description: string;
+    composition: string;
     image_url: string;
     base_price: string;
     category: string;
@@ -124,8 +125,18 @@ const ProductFormAdd = ({ newProduct, setNewProduct, onSubmit, onCancel }: Produ
               value={newProduct.description}
               onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
               className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-              rows={3}
+              rows={2}
               placeholder="Описание букета..."
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-2">Состав</label>
+            <textarea
+              value={newProduct.composition}
+              onChange={(e) => setNewProduct({ ...newProduct, composition: e.target.value })}
+              className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+              rows={2}
+              placeholder="Например: 5 роз, 3 эвкалипта, зелень..."
             />
           </div>
         </div>

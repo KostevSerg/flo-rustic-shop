@@ -80,7 +80,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 if city_name:
                     if subcategory_id:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name,
                                    COALESCE(pcp.price, p.base_price) as price
                             FROM products p
@@ -92,7 +92,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''', (city_name, subcategory_id))
                     elif category:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name,
                                    COALESCE(pcp.price, p.base_price) as price
                             FROM products p
@@ -104,7 +104,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''', (city_name, category))
                     else:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name,
                                    COALESCE(pcp.price, p.base_price) as price
                             FROM products p
@@ -117,7 +117,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 else:
                     if subcategory_id:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
@@ -126,7 +126,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''', (subcategory_id,))
                     elif category:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
@@ -135,7 +135,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''', (category,))
                     else:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
@@ -162,6 +162,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if action == 'create':
                 name = body_data.get('name', '').strip()
                 description = body_data.get('description', '').strip()
+                composition = body_data.get('composition', '').strip()
                 image_url = body_data.get('image_url', '').strip()
                 base_price = body_data.get('base_price')
                 category = body_data.get('category', '').strip()
@@ -180,9 +181,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute(
-                        '''INSERT INTO products (name, description, image_url, base_price, category, subcategory_id)
-                           VALUES (%s, %s, %s, %s, %s, %s) RETURNING id, name, description, image_url, base_price, category, subcategory_id''',
-                        (name, description, image_url, base_price, category, subcategory_id)
+                        '''INSERT INTO products (name, description, composition, image_url, base_price, category, subcategory_id)
+                           VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id, name, description, composition, image_url, base_price, category, subcategory_id''',
+                        (name, description, composition, image_url, base_price, category, subcategory_id)
                     )
                     new_product = dict(cur.fetchone())
                     conn.commit()
@@ -257,6 +258,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if 'description' in body_data:
                 update_fields.append('description = %s')
                 params.append(body_data['description'])
+            if 'composition' in body_data:
+                update_fields.append('composition = %s')
+                params.append(body_data['composition'])
             if 'image_url' in body_data:
                 update_fields.append('image_url = %s')
                 params.append(body_data['image_url'])
@@ -289,7 +293,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
                 cur.execute(
                     f'''UPDATE products SET {', '.join(update_fields)}, updated_at = CURRENT_TIMESTAMP
-                        WHERE id = %s RETURNING id, name, description, image_url, base_price, category, subcategory_id, is_featured''',
+                        WHERE id = %s RETURNING id, name, description, composition, image_url, base_price, category, subcategory_id, is_featured''',
                     params
                 )
                 updated_product = dict(cur.fetchone())

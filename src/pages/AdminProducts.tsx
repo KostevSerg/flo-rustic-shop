@@ -17,6 +17,7 @@ interface Product {
   id: number;
   name: string;
   description: string;
+  composition?: string;
   image_url: string;
   base_price: number;
   category: string;
@@ -45,6 +46,7 @@ const AdminProducts = () => {
   const [newProduct, setNewProduct] = useState({
     name: '',
     description: '',
+    composition: '',
     image_url: '',
     base_price: '',
     category: 'Цветы',
@@ -108,7 +110,7 @@ const AdminProducts = () => {
         description: `Товар "${newProduct.name}" добавлен`
       });
 
-      setNewProduct({ name: '', description: '', image_url: '', base_price: '', category: 'Цветы' });
+      setNewProduct({ name: '', description: '', composition: '', image_url: '', base_price: '', category: 'Цветы', subcategory_id: null });
       setShowAddForm(false);
       loadProducts();
     } catch (error) {
@@ -141,6 +143,7 @@ const AdminProducts = () => {
           id: editingProduct.id,
           name: editingProduct.name,
           description: editingProduct.description,
+          composition: editingProduct.composition,
           image_url: editingProduct.image_url,
           base_price: Number(editingProduct.base_price),
           category: editingProduct.category,

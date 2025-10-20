@@ -7,6 +7,7 @@ interface Product {
   id: number;
   name: string;
   description: string;
+  composition?: string;
   price: number;
   image: string;
 }
@@ -41,7 +42,12 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
         </div>
         <div className="p-6">
           <h3 className="text-2xl font-bold mb-2">{product.name}</h3>
-          <p className="text-muted-foreground mb-4 text-sm">{product.description}</p>
+          <p className="text-muted-foreground mb-2 text-sm">{product.description}</p>
+          {product.composition && (
+            <p className="text-muted-foreground/80 mb-4 text-xs italic">
+              Состав: {product.composition}
+            </p>
+          )}
           <div className="flex items-center justify-between">
             <span className="text-2xl font-bold">{product.price} ₽</span>
             <Button 

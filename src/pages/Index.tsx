@@ -65,6 +65,7 @@ const Index = () => {
       id: product.id,
       name: product.name,
       description: product.description,
+      composition: product.composition,
       price: product.price,
       image: product.image_url
     });
