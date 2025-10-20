@@ -32,4 +32,4 @@ User-agent: facebookexternalhit
 Allow: /
 
 # Sitemap
-Sitemap: https://functions.poehali.dev/58b61451-ee69-439e-b94c-195335bd5057
+Sitemap: https://florustic.ru/sitemap.xml
