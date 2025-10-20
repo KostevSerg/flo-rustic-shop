@@ -212,12 +212,7 @@ const City = () => {
           </h1>
           <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-4">
             <strong>FloRustic</strong> — профессиональная доставка свежих букетов по городу {cityName}. 
-            {cityData?.work_hours ? (
-              (() => {
-                const hours = Object.values(cityData.work_hours);
-                return `Работаем ежедневно с ${hours[0].from} до ${hours[0].to}, доставка за 2 часа.`;
-              })()
-            ) : 'Работаем ежедневно с 9:00 до 21:00, доставка за 2 часа.'}
+            Работаем ежедневно с 9:00 до 21:00, доставка за 2 часа.
           </p>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
             Розы, пионы, тюльпаны, орхидеи и другие сезонные цветы. 
