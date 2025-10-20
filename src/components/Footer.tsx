@@ -116,7 +116,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-sm text-primary-foreground/60">
-          <p>&copy; 2024 FloRustic. Все права защищены.</p>
+          <p>&copy; 2025 FloRustic. Все права защищены.</p>
         </div>
       </div>
     </footer>
