@@ -10,7 +10,11 @@
       "name": "Test get cities list",
       "method": "GET",
       "path": "/",
-      "expectedStatus": 200
+      "expectedStatus": 200,
+      "expectedBody": {
+        "cities": "object"
+      },
+      "bodyMatcher": "partial"
     }
   ]
 }

@@ -18,9 +18,6 @@ interface City {
   region_id: number;
   timezone: string;
   work_hours?: WorkHours;
-  seo_title?: string;
-  seo_description?: string;
-  seo_keywords?: string;
 }
 
 export const useCityModal = (refetchData: () => void) => {
@@ -32,16 +29,10 @@ export const useCityModal = (refetchData: () => void) => {
     name: string;
     timezone: string;
     work_hours: WorkHours | null;
-    seo_title: string;
-    seo_description: string;
-    seo_keywords: string;
   }>({
     name: '',
     timezone: 'Europe/Moscow',
-    work_hours: null,
-    seo_title: '',
-    seo_description: '',
-    seo_keywords: ''
+    work_hours: null
   });
   const [saving, setSaving] = useState(false);
 
@@ -51,10 +42,7 @@ export const useCityModal = (refetchData: () => void) => {
     setFormData({
       name: '',
       timezone: 'Europe/Moscow',
-      work_hours: null,
-      seo_title: '',
-      seo_description: '',
-      seo_keywords: ''
+      work_hours: null
     });
     setShowModal(true);
   };
@@ -65,10 +53,7 @@ export const useCityModal = (refetchData: () => void) => {
     setFormData({
       name: city.name,
       timezone: city.timezone || 'Europe/Moscow',
-      work_hours: city.work_hours || null,
-      seo_title: city.seo_title || '',
-      seo_description: city.seo_description || '',
-      seo_keywords: city.seo_keywords || ''
+      work_hours: city.work_hours || null
     });
     setShowModal(true);
   };
@@ -80,10 +65,7 @@ export const useCityModal = (refetchData: () => void) => {
     setFormData({
       name: '',
       timezone: 'Europe/Moscow',
-      work_hours: null,
-      seo_title: '',
-      seo_description: '',
-      seo_keywords: ''
+      work_hours: null
     });
   };
 
@@ -108,10 +90,7 @@ export const useCityModal = (refetchData: () => void) => {
         name: formData.name.trim(),
         region_id: selectedRegionId,
         timezone: formData.timezone,
-        work_hours: formData.work_hours,
-        seo_title: formData.seo_title.trim() || null,
-        seo_description: formData.seo_description.trim() || null,
-        seo_keywords: formData.seo_keywords.trim() || null
+        work_hours: formData.work_hours
       };
       
       console.log('Sending city data:', payload);

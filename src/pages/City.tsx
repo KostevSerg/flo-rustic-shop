@@ -28,9 +28,6 @@ interface City {
       to: string;
     }
   };
-  seo_title?: string;
-  seo_description?: string;
-  seo_keywords?: string;
 }
 
 const createSlug = (name: string): string => {
@@ -147,10 +144,10 @@ const City = () => {
     );
   }
 
-  const pageTitle = cityData?.seo_title || `Доставка цветов в ${cityName} — FloRustic | Букеты с доставкой в ${cityName}`;
-  const pageDescription = cityData?.seo_description || `Доставка свежих цветов и букетов в ${cityName}. Большой выбор композиций для любого случая. Быстрая доставка по городу ${cityName}. Заказать букет онлайн с доставкой на дом. Свежие цветы, доступные цены.`;
+  const pageTitle = `Доставка цветов в ${cityName} — FloRustic | Букеты с доставкой в ${cityName}`;
+  const pageDescription = `Доставка свежих цветов и букетов в ${cityName}. Большой выбор композиций для любого случая. Быстрая доставка по городу ${cityName}. Заказать букет онлайн с доставкой на дом. Свежие цветы, доступные цены.`;
   const pageUrl = `https://florustic.ru/city/${citySlug}`;
-  const keywords = cityData?.seo_keywords || `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, доставка цветов россия`;
+  const keywords = `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, доставка цветов россия`;
 
   return (
     <div className="min-h-screen flex flex-col">
