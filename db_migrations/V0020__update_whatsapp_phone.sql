@@ -1,0 +1,1 @@
+UPDATE site_texts SET value = 'https://wa.me/79952151096' WHERE page = 'social' AND key = 'whatsapp';

@@ -87,7 +87,7 @@ const Contacts = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Телефон</h3>
-                  <p className="text-muted-foreground">{cityContact?.phone || getText('contacts', 'phone', '+7 (999) 123-45-67')}</p>
+                  <p className="text-muted-foreground">{cityContact?.phone || getText('contacts', 'phone', '+7 995 215-10-96')}</p>
                   <p className="text-sm text-muted-foreground">Ежедневно с 9:00 до 21:00</p>
                 </div>
               </div>
@@ -98,7 +98,7 @@ const Contacts = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg mb-1">Email</h3>
-                  <p className="text-muted-foreground">{cityContact?.email || getText('contacts', 'email', 'info@florustic.ru')}</p>
+                  <p className="text-muted-foreground">{cityContact?.email || getText('contacts', 'email', 'florustic@yandex.ru')}</p>
                   <p className="text-sm text-muted-foreground">Ответим в течение часа</p>
                 </div>
               </div>

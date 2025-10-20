@@ -185,7 +185,7 @@ const AdminCityContacts = () => {
                           value={editForm.phone || ''}
                           onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
                           className="w-full p-2 border rounded-md"
-                          placeholder="+7 (999) 123-45-67"
+                          placeholder="+7 995 215-10-96"
                         />
                       </div>
                       <div>
@@ -195,7 +195,7 @@ const AdminCityContacts = () => {
                           value={editForm.email || ''}
                           onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                           className="w-full p-2 border rounded-md"
-                          placeholder="info@florustic.ru"
+                          placeholder="florustic@yandex.ru"
                         />
                       </div>
                       <div>

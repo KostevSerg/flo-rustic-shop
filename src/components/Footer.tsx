@@ -86,11 +86,11 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-primary-foreground/80">
               <li className="flex items-center space-x-2">
                 <Icon name="Phone" size={16} />
-                <span>{cityContact?.phone || getText('contacts', 'phone', '+7 (999) 123-45-67')}</span>
+                <span>{cityContact?.phone || getText('contacts', 'phone', '+7 995 215-10-96')}</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Icon name="Mail" size={16} />
-                <span>{cityContact?.email || getText('contacts', 'email', 'info@florustic.ru')}</span>
+                <span>{cityContact?.email || getText('contacts', 'email', 'florustic@yandex.ru')}</span>
               </li>
               <li className="flex items-center space-x-2">
                 <Icon name="MapPin" size={16} />
