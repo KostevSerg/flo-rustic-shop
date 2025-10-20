@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import ImageUpload from '@/components/ui/image-upload';
 import API_ENDPOINTS from '@/config/api';
 
 interface Subcategory {
@@ -130,12 +131,9 @@ const ProductFormEdit = ({ editingProduct, setEditingProduct, onSubmit, onCancel
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">URL изображения</label>
-              <input
-                type="url"
-                value={editingProduct.image_url}
-                onChange={(e) => setEditingProduct({ ...editingProduct, image_url: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+              <ImageUpload
+                currentImage={editingProduct.image_url}
+                onImageChange={(url) => setEditingProduct({ ...editingProduct, image_url: url })}
               />
             </div>
             <div>
