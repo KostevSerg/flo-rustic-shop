@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { useSiteTexts } from '@/contexts/SiteTextsContext';
+import { useCity } from '@/contexts/CityContext';
 
 const Footer = () => {
   const { getText } = useSiteTexts();
+  const { selectedCity } = useCity();
   
   return (
     <footer className="bg-primary text-primary-foreground mt-auto">
@@ -61,7 +63,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-2">
                 <Icon name="MapPin" size={16} />
-                <span>{getText('contacts', 'address', 'Россия')}</span>
+                <span>г. {selectedCity}</span>
               </li>
             </ul>
           </div>
