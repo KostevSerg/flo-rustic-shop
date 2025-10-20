@@ -158,7 +158,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                                 'Access-Control-Allow-Origin': '*'
                             },
                             'isBase64Encoded': False,
-                            'body': json.dumps({'contacts': contacts}, ensure_ascii=False)
+                            'body': json.dumps({'contacts': contacts}, ensure_ascii=False, default=decimal_default)
                         }
             elif action == 'regions':
                 show_all = params.get('all') == 'true'
@@ -192,7 +192,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'regions': regions}, ensure_ascii=False)
+                        'body': json.dumps({'regions': regions}, ensure_ascii=False, default=decimal_default)
                     }
             else:
                 show_all = params.get('all') == 'true'
@@ -238,7 +238,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'cities': grouped_cities}, ensure_ascii=False)
+                        'body': json.dumps({'cities': grouped_cities}, ensure_ascii=False, default=decimal_default)
                     }
         
         elif method == 'POST':
@@ -427,7 +427,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'success': True, 'city': dict(new_city)}, ensure_ascii=False)
+                        'body': json.dumps({'success': True, 'city': dict(new_city)}, ensure_ascii=False, default=decimal_default)
                     }
             else:
                 return {
@@ -689,7 +689,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'success': True, 'city': dict(updated)}, ensure_ascii=False)
+                        'body': json.dumps({'success': True, 'city': dict(updated)}, ensure_ascii=False, default=decimal_default)
                     }
         
         elif method == 'DELETE':
