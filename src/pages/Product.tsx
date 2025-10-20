@@ -5,6 +5,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import BreadcrumbsNav from '@/components/BreadcrumbsNav';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
@@ -90,25 +91,93 @@ const Product = () => {
     return null;
   }
 
-  const pageTitle = `${product.name} | FloRustic`;
-  const pageDescription = product.description || `Купить ${product.name} с доставкой в ${selectedCity}. Цена ${product.price} ₽`;
+  const pageTitle = `${product.name} — купить в ${selectedCity} | FloRustic`;
+  const pageDescription = product.description || `Купить ${product.name} с доставкой в ${selectedCity}. Цена ${product.price} ₽. Свежие цветы, быстрая доставка. Заказать онлайн в FloRustic.`;
+  const productUrl = `https://florustic.ru/product/${id}`;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Главная",
+        "item": "https://florustic.ru/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Каталог",
+        "item": "https://florustic.ru/catalog"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": product.name
+      }
+    ]
+  };
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.name,
+    "description": product.description,
+    "image": product.image_url,
+    "offers": {
+      "@type": "Offer",
+      "url": productUrl,
+      "priceCurrency": "RUB",
+      "price": product.price,
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "FloRustic"
+      }
+    },
+    "category": product.category || "Букеты"
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
+        <meta name="keywords" content={`${product.name}, купить ${product.name} ${selectedCity}, букет ${selectedCity}, цветы ${selectedCity}, florustic`} />
+        <link rel="canonical" href={productUrl} />
+        
         <meta property="og:type" content="product" />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:image" content={product.image_url} />
+        <meta property="og:url" content={productUrl} />
         <meta property="product:price:amount" content={product.price.toString()} />
         <meta property="product:price:currency" content="RUB" />
+        
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={product.image_url} />
+        
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(productSchema)}
+        </script>
       </Helmet>
 
       <Header cartCount={totalItems} />
       
       <main className="flex-1 container mx-auto px-4 py-8">
+        <BreadcrumbsNav 
+          items={[
+            { name: 'Каталог', path: '/catalog' },
+            { name: product.name }
+          ]} 
+        />
+        
         <Link 
           to="/catalog" 
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary mb-6 transition-colors"

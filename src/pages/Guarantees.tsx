@@ -51,6 +51,39 @@ const Guarantees = () => {
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content="https://florustic.ru/guarantees" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Какие гарантии качества цветов?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Мы гарантируем свежесть всех цветов. Если вы получили несвежие цветы, мы заменим букет бесплатно или вернём деньги."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Что делать, если букет не понравился?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Свяжитесь с нами в течение 24 часов после получения. Мы заменим букет или вернём деньги."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Гарантируете ли вы доставку вовремя?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Да, мы гарантируем доставку в указанное время. При опоздании более чем на 1 час доставка будет бесплатной."
+                }
+              }
+            ]
+          })}
+        </script>
       </Helmet>
       
       <Header cartCount={totalItems} />

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
@@ -346,6 +347,13 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-accent/5">
+      <Helmet>
+        <title>Оформление заказа — FloRustic | Доставка цветов</title>
+        <meta name="description" content="Оформите заказ цветов с доставкой. Укажите данные получателя, выберите способ оплаты. Быстрое оформление в FloRustic." />
+        <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href="https://florustic.ru/checkout" />
+      </Helmet>
+
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">

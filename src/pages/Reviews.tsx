@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -51,8 +52,56 @@ const Reviews = () => {
     }
   ];
 
+  const reviewsSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "FloRustic",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": reviews.length.toString(),
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "review": reviews.map(review => ({
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": review.name
+      },
+      "datePublished": review.date,
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": review.rating.toString(),
+        "bestRating": "5"
+      },
+      "reviewBody": review.text
+    }))
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>Отзывы о FloRustic — Реальные мнения клиентов о доставке цветов</title>
+        <meta name="description" content="Читайте отзывы клиентов о FloRustic. Реальные мнения покупателей о качестве цветов, скорости доставки и сервисе. Более 1000+ положительных отзывов." />
+        <meta name="keywords" content="отзывы florustic, отзывы о доставке цветов, качество цветов отзывы, букеты отзывы, florustic мнения клиентов" />
+        <link rel="canonical" href="https://florustic.ru/reviews" />
+        
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Отзывы о FloRustic — Реальные мнения клиентов" />
+        <meta property="og:description" content="Читайте отзывы клиентов о FloRustic. Реальные мнения о качестве цветов и доставке." />
+        <meta property="og:url" content="https://florustic.ru/reviews" />
+        <meta property="og:image" content="https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png" />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="Отзывы о FloRustic" />
+        <meta name="twitter:description" content="Читайте отзывы клиентов о FloRustic" />
+        
+        <script type="application/ld+json">
+          {JSON.stringify(reviewsSchema)}
+        </script>
+      </Helmet>
+
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -11,6 +12,12 @@ const Cart = () => {
   if (items.length === 0) {
     return (
       <div className="min-h-screen flex flex-col">
+        <Helmet>
+          <title>Корзина — FloRustic | Оформление заказа цветов</title>
+          <meta name="description" content="Оформите заказ цветов в FloRustic. Ваша корзина с букетами и композициями. Быстрое оформление и доставка по России." />
+          <meta name="robots" content="noindex, follow" />
+          <link rel="canonical" href="https://florustic.ru/cart" />
+        </Helmet>
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
           <div className="max-w-2xl mx-auto text-center">
@@ -35,6 +42,13 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Helmet>
+        <title>Корзина ({totalItems}) — FloRustic | Оформление заказа</title>
+        <meta name="description" content={`В вашей корзине ${totalItems} товаров на сумму ${totalPrice.toLocaleString('ru-RU')} ₽. Оформите заказ цветов с доставкой.`} />
+        <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href="https://florustic.ru/cart" />
+      </Helmet>
+
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <h1 className="text-5xl font-bold text-center mb-12">Корзина</h1>
