@@ -117,7 +117,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 else:
                     if subcategory_id:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
@@ -126,7 +126,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''', (subcategory_id,))
                     elif category:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
@@ -135,7 +135,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''', (category,))
                     else:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.image_url, p.base_price as price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
