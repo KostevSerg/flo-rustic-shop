@@ -16,8 +16,9 @@ interface Product {
   id: number;
   name: string;
   description: string;
+  composition?: string;
   price: number;
-  image_url: string;
+  image_url?: string;
   category: string;
   is_featured?: boolean;
 }
@@ -195,8 +196,9 @@ const Index = () => {
                     id: product.id,
                     name: product.name,
                     description: product.description,
+                    composition: product.composition,
                     price: product.price,
-                    image: product.image_url
+                    image: product.image_url || 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=800&fit=crop'
                   }} 
                   onAddToCart={() => handleAddToCart(product)} 
                 />
