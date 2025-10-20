@@ -8,10 +8,14 @@ const prebuild = async () => {
   
   try {
     console.log('📋 Generating sitemap...');
-    const { stdout, stderr } = await execPromise('node scripts/generate-sitemap.js');
+    const sitemap = await execPromise('node scripts/generate-sitemap.js');
+    if (sitemap.stdout) console.log(sitemap.stdout);
+    if (sitemap.stderr) console.error(sitemap.stderr);
     
-    if (stdout) console.log(stdout);
-    if (stderr) console.error(stderr);
+    console.log('🤖 Generating robots.txt...');
+    const robots = await execPromise('node scripts/generate-robots.js');
+    if (robots.stdout) console.log(robots.stdout);
+    if (robots.stderr) console.error(robots.stderr);
     
     console.log('\n✅ Prebuild completed successfully!\n');
   } catch (error) {

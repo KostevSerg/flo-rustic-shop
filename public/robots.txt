@@ -2,27 +2,45 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /admin/*
 Disallow: /cart
 Disallow: /checkout
+
+# Разрешаем индексацию основных разделов
+Allow: /catalog
+Allow: /city/*
+Allow: /product/*
+Allow: /about
+Allow: /delivery
+Allow: /guarantees
+Allow: /contacts
+Allow: /reviews
 
 # Google
 User-agent: Googlebot
 Allow: /
 Disallow: /admin
+Disallow: /admin/*
 Disallow: /cart
 Disallow: /checkout
+Crawl-delay: 0
 
 # Яндекс
 User-agent: Yandex
 Allow: /
 Disallow: /admin
+Disallow: /admin/*
 Disallow: /cart
 Disallow: /checkout
+Crawl-delay: 0
 
 # Bing
 User-agent: Bingbot
 Allow: /
 Disallow: /admin
+Disallow: /admin/*
+Disallow: /cart
+Disallow: /checkout
 
 # Социальные сети (для превью)
 User-agent: Twitterbot
@@ -31,5 +49,12 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: TelegramBot
+Allow: /
+
 # Sitemap
 Sitemap: https://florustic.ru/sitemap.xml
+
+# Дополнительная информация
+# Обновлено: 2025-10-20
+# Домен: https://florustic.ru
