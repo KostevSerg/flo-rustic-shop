@@ -679,7 +679,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                                 WHERE city_id = %s
                             ''', (address, city_id))
                     
-                    updated = cur.fetchone()
                     conn.commit()
                     
                     return {
