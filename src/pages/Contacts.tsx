@@ -171,16 +171,17 @@ const Contacts = () => {
                   <p className="text-xs text-muted-foreground mt-1">Без выходных</p>
                 </div>
 
-                <div className="bg-card border rounded-lg p-6 text-center">
-                  <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                    <Icon name="Timer" size={32} className="text-primary" />
+                {selectedContact.delivery_info && (
+                  <div className="bg-card border rounded-lg p-6 text-center">
+                    <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                      <Icon name="Timer" size={32} className="text-primary" />
+                    </div>
+                    <h3 className="font-semibold text-lg mb-2">Информация о доставке</h3>
+                    <p className="text-muted-foreground text-sm">
+                      {selectedContact.delivery_info}
+                    </p>
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Доставка</h3>
-                  <p className="text-muted-foreground text-sm">
-                    От 1.5 часов по городу
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">Срочная доставка доступна</p>
-                </div>
+                )}
               </div>
             </>
           )}
