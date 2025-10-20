@@ -11,26 +11,10 @@ interface CityContact {
   address: string;
 }
 
-interface City {
-  id: number;
-  name: string;
-  region: string;
-}
-
-const createSlug = (name: string): string => {
-  return name
-    .toLowerCase()
-    .replace(/ё/g, 'e')
-    .replace(/[^\u0430-\u044f\u0410-\u042fa-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-');
-};
-
 const Footer = () => {
   const { getText } = useSiteTexts();
   const { selectedCity } = useCity();
   const [cityContact, setCityContact] = useState<CityContact | null>(null);
-  const [cities, setCities] = useState<City[]>([]);
 
   useEffect(() => {
     const fetchCityContact = async () => {
@@ -53,24 +37,6 @@ const Footer = () => {
       fetchCityContact();
     }
   }, [selectedCity]);
-
-  useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        const response = await fetch(API_ENDPOINTS.cities);
-        const data = await response.json();
-        const allCities: City[] = [];
-        Object.values(data.cities || {}).forEach((regionCities: any) => {
-          allCities.push(...regionCities);
-        });
-        setCities(allCities.slice(0, 20));
-      } catch (error) {
-        console.error('Failed to fetch cities:', error);
-      }
-    };
-
-    fetchCities();
-  }, []);
   
   return (
     <footer className="bg-primary text-primary-foreground mt-auto">
@@ -148,23 +114,6 @@ const Footer = () => {
             </div>
           </div>
         </div>
-
-        {cities.length > 0 && (
-          <div className="border-t border-primary-foreground/20 mt-8 pt-8">
-            <h3 className="font-semibold mb-4 text-lg text-center">Доставка цветов по городам России</h3>
-            <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm text-primary-foreground/80">
-              {cities.map((city) => (
-                <Link
-                  key={city.id}
-                  to={`/city/${createSlug(city.name)}`}
-                  className="hover:text-primary-foreground transition"
-                >
-                  {city.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-sm text-primary-foreground/60">
           <p>&copy; 2025 FloRustic. Все права защищены.</p>
