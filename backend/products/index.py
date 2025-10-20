@@ -1,6 +1,7 @@
 import json
 import os
 from typing import Dict, Any, List, Optional
+from decimal import Decimal
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
@@ -161,6 +162,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 products = [dict(row) for row in cur.fetchall()]
                 
+                def decimal_default(obj):
+                    if isinstance(obj, Decimal):
+                        return float(obj)
+                    raise TypeError
+                
                 return {
                     'statusCode': 200,
                     'headers': {
@@ -168,7 +174,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'Access-Control-Allow-Origin': '*'
                     },
                     'isBase64Encoded': False,
-                    'body': json.dumps({'products': products}, ensure_ascii=False)
+                    'body': json.dumps({'products': products}, ensure_ascii=False, default=decimal_default)
                 }
         
         elif method == 'POST':
