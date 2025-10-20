@@ -31,24 +31,23 @@ const ImageUpload = ({ currentImage, onImageChange, label = 'Изображен�
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch('https://tmpfiles.org/api/v1/upload', {
-        method: 'POST',
-        body: formData
-      });
-
-      if (!response.ok) throw new Error('Upload failed');
-
-      const data = await response.json();
-      const uploadedUrl = data.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+      const reader = new FileReader();
       
-      onImageChange(uploadedUrl);
+      reader.onload = (event) => {
+        const base64String = event.target?.result as string;
+        onImageChange(base64String);
+        setUploading(false);
+      };
+
+      reader.onerror = () => {
+        setError('Не удалось прочитать файл');
+        setUploading(false);
+      };
+
+      reader.readAsDataURL(file);
     } catch (err) {
       console.error('Upload error:', err);
       setError('Не удалось загрузить изображение');
-    } finally {
       setUploading(false);
     }
   };
@@ -63,6 +62,10 @@ const ImageUpload = ({ currentImage, onImageChange, label = 'Изображен�
             src={currentImage}
             alt="Preview"
             className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=600';
+            }}
           />
           <Button
             type="button"
