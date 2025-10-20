@@ -21,28 +21,27 @@ interface CityContactData {
 const Contacts = () => {
   const { totalItems } = useCart();
   const { selectedCity } = useCity();
-  const [cityContacts, setCityContacts] = useState<CityContactData[]>([]);
+
   const [selectedContact, setSelectedContact] = useState<CityContactData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCityContacts = async () => {
+    const fetchCityContact = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(`${API_ENDPOINTS.cities}?action=contacts`);
+        const response = await fetch(`${API_ENDPOINTS.cities}?action=contacts&city=${encodeURIComponent(selectedCity)}`);
         const data = await response.json();
-        if (data.contacts) {
-          setCityContacts(data.contacts);
-          const currentCityContact = data.contacts.find((c: CityContactData) => c.city_name === selectedCity);
-          setSelectedContact(currentCityContact || data.contacts[0]);
+        if (data.contact) {
+          setSelectedContact(data.contact);
         }
       } catch (error) {
-        console.error('Failed to fetch city contacts:', error);
+        console.error('Failed to fetch city contact:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCityContacts();
+    fetchCityContact();
   }, [selectedCity]);
 
   const getMapUrl = (address: string) => {
@@ -74,23 +73,7 @@ const Contacts = () => {
             Свяжитесь с нами удобным способом — работаем во всех городах присутствия
           </p>
 
-          {cityContacts.length > 1 && (
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-center">Выберите город</h2>
-              <div className="flex flex-wrap justify-center gap-2">
-                {cityContacts.map((contact) => (
-                  <Button
-                    key={contact.id}
-                    variant={selectedContact?.id === contact.id ? "default" : "outline"}
-                    onClick={() => setSelectedContact(contact)}
-                    className="min-w-[120px]"
-                  >
-                    {contact.city_name}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
+
 
           {selectedContact && (
             <>
