@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
+import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Icon from '@/components/ui/icon';
@@ -21,6 +22,7 @@ interface CityContactData {
 const Contacts = () => {
   const { totalItems } = useCart();
   const { selectedCity } = useCity();
+  const { getText } = useSiteTexts();
 
   const [selectedContact, setSelectedContact] = useState<CityContactData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -197,14 +199,40 @@ const Contacts = () => {
           <div className="bg-primary/5 rounded-lg p-8 mb-12">
             <h2 className="text-2xl font-bold mb-6 text-center">Мы в социальных сетях</h2>
             <div className="flex justify-center gap-4 mb-6">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition">
-                <Icon name="Instagram" size={32} />
-              </a>
-              <a href="https://vk.com" target="_blank" rel="noopener noreferrer" className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition">
+              <a 
+                href={getText('social', 'whatsapp', 'https://wa.me/79991234567')} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition"
+                title="WhatsApp"
+              >
                 <Icon name="MessageCircle" size={32} />
               </a>
-              <a href="https://t.me" target="_blank" rel="noopener noreferrer" className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition">
+              <a 
+                href={getText('social', 'telegram', 'https://t.me/florustic')} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition"
+                title="Telegram"
+              >
                 <Icon name="Send" size={32} />
+              </a>
+              <a 
+                href={getText('social', 'vk', 'https://vk.com/florustic')} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition"
+                title="VK"
+              >
+                <svg 
+                  viewBox="0 0 24 24" 
+                  width="32" 
+                  height="32" 
+                  fill="currentColor"
+                  className="inline-block"
+                >
+                  <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.18 14.23h-1.8c-.68 0-.89-.54-2.11-1.76-1.06-1.02-1.53-1.16-1.8-1.16-.37 0-.48.11-.48.63v1.61c0 .43-.14.69-1.27.69-1.89 0-3.99-1.15-5.47-3.3-2.22-3.17-2.83-5.56-2.83-6.05 0-.27.11-.52.63-.52h1.8c.47 0 .65.21.83.72.96 2.58 2.57 4.84 3.23 4.84.25 0 .36-.11.36-.74v-2.88c-.09-1.55-.91-1.68-.91-2.23 0-.22.18-.43.47-.43h2.83c.4 0 .54.21.54.68v3.88c0 .4.18.54.3.54.25 0 .45-.14.9-.59 1.38-1.56 2.37-3.96 2.37-3.96.13-.27.34-.52.81-.52h1.8c.54 0 .66.28.54.68-.21.98-2.23 3.7-2.23 3.7-.21.34-.29.49 0 .88.21.29.9.88 1.36 1.41.84.94 1.49 1.73 1.67 2.28.17.56-.1.84-.65.84z"/>
+                </svg>
               </a>
             </div>
             <p className="text-center text-muted-foreground">
