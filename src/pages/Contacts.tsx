@@ -1,200 +1,253 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
-import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
+import { Button } from '@/components/ui/button';
 
-interface CityContact {
+interface CityContactData {
+  id: number;
+  city_id: number;
+  city_name: string;
   phone: string;
   email: string;
   address: string;
+  working_hours: string;
+  delivery_info: string;
 }
 
 const Contacts = () => {
   const { totalItems } = useCart();
   const { selectedCity } = useCity();
-  const { getText } = useSiteTexts();
-  const [cityContact, setCityContact] = useState<CityContact | null>(null);
-  const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
+  const [cityContacts, setCityContacts] = useState<CityContactData[]>([]);
+  const [selectedContact, setSelectedContact] = useState<CityContactData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCityContact = async () => {
+    const fetchCityContacts = async () => {
       try {
-        const response = await fetch(`${API_ENDPOINTS.cities}?action=contacts&city=${encodeURIComponent(selectedCity)}`);
+        const response = await fetch(`${API_ENDPOINTS.cities}?action=contacts`);
         const data = await response.json();
-        if (data.contact) {
-          setCityContact({
-            phone: data.contact.phone,
-            email: data.contact.email,
-            address: data.contact.address
-          });
+        if (data.contacts) {
+          setCityContacts(data.contacts);
+          const currentCityContact = data.contacts.find((c: CityContactData) => c.city_name === selectedCity);
+          setSelectedContact(currentCityContact || data.contacts[0]);
         }
       } catch (error) {
-        console.error('Failed to fetch city contact:', error);
+        console.error('Failed to fetch city contacts:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (selectedCity) {
-      fetchCityContact();
-    }
+    fetchCityContacts();
   }, [selectedCity]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-
-    try {
-      const response = await fetch(API_ENDPOINTS.sendContactEmail, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        setSubmitStatus('success');
-        setFormData({ name: '', phone: '', message: '' });
-      } else {
-        setSubmitStatus('error');
-      }
-    } catch (error) {
-      console.error('Failed to send message:', error);
-      setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
-    }
+  const getMapUrl = (address: string) => {
+    return `https://yandex.ru/maps/?text=${encodeURIComponent(address)}`;
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header cartCount={totalItems} />
+        <main className="flex-1 container mx-auto px-4 py-16 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Загрузка контактов...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold text-center mb-8">Контакты</h1>
-          
-          <div className="grid md:grid-cols-2 gap-8 mb-12">
-            <div className="space-y-6">
-              <div className="flex items-start space-x-4">
-                <div className="bg-accent/30 p-3 rounded-lg">
-                  <Icon name="Phone" size={24} className="text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Телефон</h3>
-                  <p className="text-muted-foreground">{cityContact?.phone || getText('contacts', 'phone', '+7 995 215-10-96')}</p>
-                  <p className="text-sm text-muted-foreground">Ежедневно с 9:00 до 21:00</p>
-                </div>
-              </div>
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-5xl font-bold text-center mb-4">Контакты</h1>
+          <p className="text-center text-muted-foreground text-lg mb-12">
+            Свяжитесь с нами удобным способом — работаем во всех городах присутствия
+          </p>
 
-              <div className="flex items-start space-x-4">
-                <div className="bg-accent/30 p-3 rounded-lg">
-                  <Icon name="Mail" size={24} className="text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Email</h3>
-                  <p className="text-muted-foreground">{cityContact?.email || getText('contacts', 'email', 'florustic@yandex.ru')}</p>
-                  <p className="text-sm text-muted-foreground">Ответим в течение часа</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-accent/30 p-3 rounded-lg">
-                  <Icon name="MapPin" size={24} className="text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Адрес</h3>
-                  <p className="text-muted-foreground">{cityContact?.address || getText('contacts', 'address', 'г. Москва, ул. Цветочная, 15')}</p>
-                  <p className="text-sm text-muted-foreground">Город: {selectedCity}</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-accent/30 p-3 rounded-lg">
-                  <Icon name="Clock" size={24} className="text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg mb-1">Режим работы</h3>
-                  <p className="text-muted-foreground">Понедельник - Воскресенье</p>
-                  <p className="text-sm text-muted-foreground">9:00 - 21:00, без выходных</p>
-                </div>
+          {cityContacts.length > 1 && (
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-4 text-center">Выберите город</h2>
+              <div className="flex flex-wrap justify-center gap-2">
+                {cityContacts.map((contact) => (
+                  <Button
+                    key={contact.id}
+                    variant={selectedContact?.id === contact.id ? "default" : "outline"}
+                    onClick={() => setSelectedContact(contact)}
+                    className="min-w-[120px]"
+                  >
+                    {contact.city_name}
+                  </Button>
+                ))}
               </div>
             </div>
+          )}
 
-            <div className="bg-accent/20 p-8 rounded-lg">
-              <h2 className="text-2xl font-bold mb-4">Напишите нам</h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Ваше имя</label>
-                  <input 
-                    type="text" 
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Иван Иванов"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Телефон</label>
-                  <input 
-                    type="tel" 
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="+7 (999) 123-45-67"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Сообщение</label>
-                  <textarea 
-                    rows={4}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Ваше сообщение..."
-                    required
-                  />
-                </div>
-                {submitStatus === 'success' && (
-                  <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg">
-                    Сообщение успешно отправлено!
+          {selectedContact && (
+            <>
+              <div className="grid md:grid-cols-2 gap-8 mb-12">
+                <div className="space-y-6">
+                  <div className="text-center md:text-left mb-8">
+                    <h2 className="text-3xl font-bold mb-2">г. {selectedContact.city_name}</h2>
+                    <p className="text-muted-foreground">Контактная информация</p>
                   </div>
-                )}
-                {submitStatus === 'error' && (
-                  <div className="bg-red-100 text-red-800 px-4 py-2 rounded-lg">
-                    Ошибка отправки. Попробуйте позже.
-                  </div>
-                )}
-                <button 
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
-                >
-                  {isSubmitting ? 'Отправка...' : 'Отправить'}
-                </button>
-              </form>
-            </div>
-          </div>
 
-          <div className="bg-primary/5 p-8 rounded-lg">
-            <h2 className="text-2xl font-bold mb-4 text-center">Мы в социальных сетях</h2>
-            <div className="flex justify-center space-x-6">
-              <a href="#" className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-accent/30 p-3 rounded-lg flex-shrink-0">
+                      <Icon name="Phone" size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-1">Телефон</h3>
+                      <a href={`tel:${selectedContact.phone}`} className="text-muted-foreground hover:text-primary transition">
+                        {selectedContact.phone}
+                      </a>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {selectedContact.working_hours || 'Ежедневно с 9:00 до 21:00'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-accent/30 p-3 rounded-lg flex-shrink-0">
+                      <Icon name="Mail" size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-1">Email</h3>
+                      <a href={`mailto:${selectedContact.email}`} className="text-muted-foreground hover:text-primary transition">
+                        {selectedContact.email}
+                      </a>
+                      <p className="text-sm text-muted-foreground mt-1">Ответим в течение часа</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-accent/30 p-3 rounded-lg flex-shrink-0">
+                      <Icon name="MapPin" size={24} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg mb-1">Адрес</h3>
+                      <p className="text-muted-foreground">{selectedContact.address}</p>
+                      <a 
+                        href={getMapUrl(selectedContact.address)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-primary hover:underline mt-2 inline-flex items-center gap-1"
+                      >
+                        Открыть на карте
+                        <Icon name="ExternalLink" size={14} />
+                      </a>
+                    </div>
+                  </div>
+
+                  {selectedContact.delivery_info && (
+                    <div className="flex items-start space-x-4">
+                      <div className="bg-accent/30 p-3 rounded-lg flex-shrink-0">
+                        <Icon name="Truck" size={24} className="text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg mb-1">Доставка</h3>
+                        <p className="text-muted-foreground text-sm">{selectedContact.delivery_info}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="bg-card border rounded-lg overflow-hidden h-[500px]">
+                  <iframe
+                    src={`https://yandex.ru/map-widget/v1/?ll=37.617635,55.755814&mode=search&text=${encodeURIComponent(selectedContact.address)}&z=15`}
+                    width="100%"
+                    height="100%"
+                    frameBorder="0"
+                    allowFullScreen
+                    style={{ position: 'relative' }}
+                    title={`Карта ${selectedContact.city_name}`}
+                  ></iframe>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6 mb-12">
+                <div className="bg-card border rounded-lg p-6 text-center">
+                  <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <Icon name="Clock" size={32} className="text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Режим работы</h3>
+                  <p className="text-muted-foreground text-sm">
+                    {selectedContact.working_hours || 'Ежедневно с 9:00 до 21:00'}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">Без выходных</p>
+                </div>
+
+                <div className="bg-card border rounded-lg p-6 text-center">
+                  <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <Icon name="Timer" size={32} className="text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Быстрая доставка</h3>
+                  <p className="text-muted-foreground text-sm">
+                    За 2 часа по городу
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">Срочная доставка за 1 час</p>
+                </div>
+
+                <div className="bg-card border rounded-lg p-6 text-center">
+                  <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                    <Icon name="ShieldCheck" size={32} className="text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Гарантия качества</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Свежесть цветов 7 дней
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">Или вернём деньги</p>
+                </div>
+              </div>
+            </>
+          )}
+
+          <div className="bg-primary/5 rounded-lg p-8 mb-12">
+            <h2 className="text-2xl font-bold mb-6 text-center">Мы в социальных сетях</h2>
+            <div className="flex justify-center gap-4 mb-6">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition">
                 <Icon name="Instagram" size={32} />
               </a>
-              <a href="#" className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition">
-                <Icon name="Facebook" size={32} />
-              </a>
-              <a href="#" className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition">
+              <a href="https://vk.com" target="_blank" rel="noopener noreferrer" className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition">
                 <Icon name="MessageCircle" size={32} />
               </a>
+              <a href="https://t.me" target="_blank" rel="noopener noreferrer" className="bg-accent/30 p-4 rounded-lg hover:bg-accent/50 transition">
+                <Icon name="Send" size={32} />
+              </a>
+            </div>
+            <p className="text-center text-muted-foreground">
+              Следите за новинками и специальными предложениями в наших социальных сетях
+            </p>
+          </div>
+
+          <div className="bg-card border rounded-lg p-8 text-center">
+            <h2 className="text-2xl font-bold mb-4">Остались вопросы?</h2>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              Позвоните нам или напишите в мессенджер — наши флористы с удовольствием проконсультируют 
+              вас по выбору букета и условиям доставки.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button size="lg" asChild>
+                <a href={`tel:${selectedContact?.phone}`}>
+                  <Icon name="Phone" size={20} className="mr-2" />
+                  Позвонить
+                </a>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <a href={`mailto:${selectedContact?.email}`}>
+                  <Icon name="Mail" size={20} className="mr-2" />
+                  Написать
+                </a>
+              </Button>
             </div>
           </div>
         </div>
