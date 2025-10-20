@@ -127,7 +127,22 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-sm text-primary-foreground/60">
-          <p>&copy; 2025 FloRustic. Все права защищены.</p>
+          <div className="flex flex-col items-center gap-4">
+            <p>&copy; 2025 FloRustic. Все права защищены.</p>
+            <a 
+              href="https://webmaster.yandex.ru/siteinfo/?site=https://florustic.ru"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img 
+                width="88" 
+                height="31" 
+                alt="Яндекс.Вебмастер" 
+                style={{ borderRadius: '8px' }}
+                src="https://yandex.ru/cycounter?https://florustic.ru&theme=light&lang=ru"
+              />
+            </a>
+          </div>
         </div>
       </div>
     </footer>
