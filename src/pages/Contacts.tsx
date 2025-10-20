@@ -166,9 +166,11 @@ const Contacts = () => {
                   </div>
                   <h3 className="font-semibold text-lg mb-2">Режим работы</h3>
                   <p className="text-muted-foreground text-sm">
-                    {selectedContact.working_hours || 'Ежедневно с 9:00 до 21:00'}
+                    Заказы принимаются круглосуточно
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">Без выходных</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Доставка осуществляется ежедневно {selectedContact.working_hours || 'с 9:00 до 21:00'}
+                  </p>
                 </div>
 
                 <div className="bg-card border rounded-lg p-6 text-center">
