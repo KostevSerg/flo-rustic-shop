@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
-import ImageUpload from '@/components/ui/image-upload';
 import API_ENDPOINTS from '@/config/api';
 
 interface Subcategory {
@@ -114,10 +113,28 @@ const ProductFormAdd = ({ newProduct, setNewProduct, onSubmit, onCancel }: Produ
             </div>
           )}
           <div className="md:col-span-2">
-            <ImageUpload
-              currentImage={newProduct.image_url}
-              onImageChange={(url) => setNewProduct({ ...newProduct, image_url: url })}
+            <label className="block text-sm font-medium mb-2">
+              Ссылка на изображение
+            </label>
+            <input
+              type="url"
+              value={newProduct.image_url}
+              onChange={(e) => setNewProduct({ ...newProduct, image_url: e.target.value })}
+              className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="https://example.com/image.jpg"
             />
+            {newProduct.image_url && (
+              <div className="mt-3">
+                <img 
+                  src={newProduct.image_url} 
+                  alt="Предпросмотр" 
+                  className="max-w-xs rounded-lg border border-border"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              </div>
+            )}
           </div>
           <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-2">Описание</label>

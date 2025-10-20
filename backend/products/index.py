@@ -82,7 +82,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     safe_city_name = city_name.replace("'", "''")
                     if subcategory_id:
                         cur.execute(f'''
-                            SELECT p.id, p.name, p.description, p.composition, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name,
                                    COALESCE(pcp.price, p.base_price) as price
                             FROM products p
@@ -96,7 +96,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     elif category:
                         safe_category = category.replace("'", "''")
                         cur.execute(f'''
-                            SELECT p.id, p.name, p.description, p.composition, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name,
                                    COALESCE(pcp.price, p.base_price) as price
                             FROM products p
@@ -109,7 +109,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''')
                     else:
                         cur.execute(f'''
-                            SELECT p.id, p.name, p.description, p.composition, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name,
                                    COALESCE(pcp.price, p.base_price) as price
                             FROM products p
@@ -123,7 +123,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 else:
                     if subcategory_id:
                         cur.execute(f'''
-                            SELECT p.id, p.name, p.description, p.composition, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
@@ -134,7 +134,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     elif category:
                         safe_category = category.replace("'", "''")
                         cur.execute(f'''
-                            SELECT p.id, p.name, p.description, p.composition, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
@@ -144,7 +144,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''')
                     else:
                         cur.execute('''
-                            SELECT p.id, p.name, p.description, p.composition, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
