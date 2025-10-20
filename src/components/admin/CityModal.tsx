@@ -18,6 +18,9 @@ interface City {
   region_id: number;
   timezone: string;
   work_hours?: WorkHours;
+  seo_title?: string;
+  seo_description?: string;
+  seo_keywords?: string;
 }
 
 interface CityModalProps {
@@ -27,6 +30,9 @@ interface CityModalProps {
     name: string;
     timezone: string;
     work_hours: WorkHours | null;
+    seo_title: string;
+    seo_description: string;
+    seo_keywords: string;
   };
   saving: boolean;
   onClose: () => void;
@@ -101,6 +107,50 @@ const CityModal = ({
             value={formData.work_hours}
             onChange={(value) => onChange('work_hours', value)}
           />
+
+          <div className="border-t pt-4 mt-4">
+            <h4 className="font-semibold mb-3 flex items-center">
+              <Icon name="Search" size={18} className="mr-2" />
+              SEO настройки
+            </h4>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">SEO Title</label>
+                <input
+                  type="text"
+                  value={formData.seo_title}
+                  onChange={(e) => onChange('seo_title', e.target.value)}
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Доставка цветов в Барнауле — FloRustic"
+                />
+                <p className="text-xs text-muted-foreground mt-1">Заголовок страницы в поисковиках (рекомендуется 50-60 символов)</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">SEO Description</label>
+                <textarea
+                  value={formData.seo_description}
+                  onChange={(e) => onChange('seo_description', e.target.value)}
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary h-20"
+                  placeholder="Быстрая доставка цветов в Барнауле. Букеты ручной сборки от флористов. Доставка в день заказа."
+                />
+                <p className="text-xs text-muted-foreground mt-1">Описание для поисковых результатов (рекомендуется 150-160 символов)</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">SEO Keywords</label>
+                <input
+                  type="text"
+                  value={formData.seo_keywords}
+                  onChange={(e) => onChange('seo_keywords', e.target.value)}
+                  className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="цветы барнаул, доставка цветов барнаул, букеты барнаул"
+                />
+                <p className="text-xs text-muted-foreground mt-1">Ключевые слова через запятую для поисковой оптимизации</p>
+              </div>
+            </div>
+          </div>
 
           <div className="flex space-x-3 pt-4">
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">

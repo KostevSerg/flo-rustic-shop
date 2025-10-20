@@ -187,7 +187,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute('''
                         SELECT c.id, c.name, c.region_id, r.name as region_name, 
-                               c.timezone, c.work_hours
+                               c.timezone, c.work_hours, c.seo_title, c.seo_description, c.seo_keywords
                         FROM cities c
                         JOIN regions r ON r.id = c.region_id
                         WHERE c.is_active = true
@@ -206,7 +206,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'region': city['region_name'],
                             'region_id': city['region_id'],
                             'work_hours': city.get('work_hours'),
-                            'timezone': city.get('timezone')
+                            'timezone': city.get('timezone'),
+                            'seo_title': city.get('seo_title'),
+                            'seo_description': city.get('seo_description'),
+                            'seo_keywords': city.get('seo_keywords')
                         })
                     
                     return {
@@ -344,6 +347,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 region_id = body_data.get('region_id')
                 timezone = body_data.get('timezone', 'Europe/Moscow').strip()
                 work_hours = body_data.get('work_hours') or None
+                seo_title = body_data.get('seo_title', '').strip() or None
+                seo_description = body_data.get('seo_description', '').strip() or None
+                seo_keywords = body_data.get('seo_keywords', '').strip() or None
+                
                 if work_hours and isinstance(work_hours, dict):
                     work_hours = json.dumps(work_hours, ensure_ascii=False)
                 elif work_hours and isinstance(work_hours, str):
@@ -366,8 +373,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     region_name = region_row['name'] if region_row else 'Неизвестный регион'
                     
                     cur.execute(
-                        'INSERT INTO cities (name, region, region_id, timezone, work_hours) VALUES (%s, %s, %s, %s, %s) RETURNING id, name, region_id, timezone, work_hours',
-                        (name, region_name, region_id, timezone, work_hours)
+                        'INSERT INTO cities (name, region, region_id, timezone, work_hours, seo_title, seo_description, seo_keywords) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id, name, region_id, timezone, work_hours, seo_title, seo_description, seo_keywords',
+                        (name, region_name, region_id, timezone, work_hours, seo_title, seo_description, seo_keywords)
                     )
                     new_city = cur.fetchone()
                     city_id = new_city['id']
@@ -580,6 +587,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 region_id = body_data.get('region_id')
                 timezone = body_data.get('timezone', '').strip()
                 work_hours = body_data.get('work_hours') or None
+                seo_title = body_data.get('seo_title', '').strip() or None
+                seo_description = body_data.get('seo_description', '').strip() or None
+                seo_keywords = body_data.get('seo_keywords', '').strip() or None
+                
                 if work_hours and isinstance(work_hours, dict):
                     work_hours = json.dumps(work_hours, ensure_ascii=False)
                 elif work_hours and isinstance(work_hours, str):
@@ -599,10 +610,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute('''
                         UPDATE cities 
-                        SET name = %s, region_id = %s, timezone = %s, work_hours = %s 
+                        SET name = %s, region_id = %s, timezone = %s, work_hours = %s, 
+                            seo_title = %s, seo_description = %s, seo_keywords = %s
                         WHERE id = %s
-                        RETURNING id, name, region_id, timezone, work_hours
-                    ''', (name, region_id, timezone, work_hours, city_id))
+                        RETURNING id, name, region_id, timezone, work_hours, seo_title, seo_description, seo_keywords
+                    ''', (name, region_id, timezone, work_hours, seo_title, seo_description, seo_keywords, city_id))
                     
                     updated = cur.fetchone()
                     conn.commit()
