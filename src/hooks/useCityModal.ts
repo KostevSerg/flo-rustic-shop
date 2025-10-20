@@ -18,6 +18,7 @@ interface City {
   region_id: number;
   timezone: string;
   work_hours?: WorkHours;
+  address?: string;
 }
 
 export const useCityModal = (refetchData: () => void) => {
@@ -29,10 +30,12 @@ export const useCityModal = (refetchData: () => void) => {
     name: string;
     timezone: string;
     work_hours: WorkHours | null;
+    address: string;
   }>({
     name: '',
     timezone: 'Europe/Moscow',
-    work_hours: null
+    work_hours: null,
+    address: ''
   });
   const [saving, setSaving] = useState(false);
 
@@ -42,7 +45,8 @@ export const useCityModal = (refetchData: () => void) => {
     setFormData({
       name: '',
       timezone: 'Europe/Moscow',
-      work_hours: null
+      work_hours: null,
+      address: ''
     });
     setShowModal(true);
   };
@@ -53,7 +57,8 @@ export const useCityModal = (refetchData: () => void) => {
     setFormData({
       name: city.name,
       timezone: city.timezone || 'Europe/Moscow',
-      work_hours: city.work_hours || null
+      work_hours: city.work_hours || null,
+      address: city.address || ''
     });
     setShowModal(true);
   };
@@ -65,7 +70,8 @@ export const useCityModal = (refetchData: () => void) => {
     setFormData({
       name: '',
       timezone: 'Europe/Moscow',
-      work_hours: null
+      work_hours: null,
+      address: ''
     });
   };
 
@@ -90,7 +96,8 @@ export const useCityModal = (refetchData: () => void) => {
         name: formData.name.trim(),
         region_id: selectedRegionId,
         timezone: formData.timezone,
-        work_hours: formData.work_hours
+        work_hours: formData.work_hours,
+        address: formData.address.trim()
       };
       
       console.log('Sending city data:', payload);

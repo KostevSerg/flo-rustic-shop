@@ -1,11 +1,30 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
 import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import { useCity } from '@/contexts/CityContext';
+import API_ENDPOINTS from '@/config/api';
 
 const Footer = () => {
   const { getText } = useSiteTexts();
   const { selectedCity } = useCity();
+  const [cityAddress, setCityAddress] = useState<string>('');
+
+  useEffect(() => {
+    const fetchCityAddress = async () => {
+      try {
+        const response = await fetch(`${API_ENDPOINTS.cities}?action=contacts&city=${encodeURIComponent(selectedCity)}`);
+        const data = await response.json();
+        if (data.contact && data.contact.address) {
+          setCityAddress(data.contact.address);
+        }
+      } catch (error) {
+        console.error('Failed to fetch city address:', error);
+      }
+    };
+
+    fetchCityAddress();
+  }, [selectedCity]);
   
   return (
     <footer className="bg-primary text-primary-foreground mt-auto">
@@ -63,7 +82,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-2">
                 <Icon name="MapPin" size={16} />
-                <span>г. {selectedCity}</span>
+                <span>{cityAddress || `г. ${selectedCity}`}</span>
               </li>
             </ul>
           </div>

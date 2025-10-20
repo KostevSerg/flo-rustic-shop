@@ -187,7 +187,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute('''
                         SELECT c.id, c.name, c.region_id, r.name as region_name, 
-                               c.timezone, c.work_hours
+                               c.timezone, c.work_hours, c.address
                         FROM cities c
                         JOIN regions r ON r.id = c.region_id
                         WHERE c.is_active = true
@@ -206,7 +206,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'region': city['region_name'],
                             'region_id': city['region_id'],
                             'work_hours': city.get('work_hours'),
-                            'timezone': city.get('timezone')
+                            'timezone': city.get('timezone'),
+                            'address': city.get('address')
                         })
                     
                     return {
@@ -343,6 +344,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 name = body_data.get('name', '').strip()
                 region_id = body_data.get('region_id')
                 timezone = body_data.get('timezone', 'Europe/Moscow').strip()
+                address = body_data.get('address', '').strip()
                 work_hours = body_data.get('work_hours') or None
                 if work_hours and isinstance(work_hours, dict):
                     work_hours = json.dumps(work_hours, ensure_ascii=False)
@@ -366,8 +368,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     region_name = region_row['name'] if region_row else 'Неизвестный регион'
                     
                     cur.execute(
-                        'INSERT INTO cities (name, region, region_id, timezone, work_hours) VALUES (%s, %s, %s, %s, %s) RETURNING id, name, region_id, timezone, work_hours',
-                        (name, region_name, region_id, timezone, work_hours)
+                        'INSERT INTO cities (name, region, region_id, timezone, work_hours, address) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id, name, region_id, timezone, work_hours, address',
+                        (name, region_name, region_id, timezone, work_hours, address)
                     )
                     new_city = cur.fetchone()
                     city_id = new_city['id']
@@ -579,6 +581,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 name = body_data.get('name', '').strip()
                 region_id = body_data.get('region_id')
                 timezone = body_data.get('timezone', '').strip()
+                address = body_data.get('address', '').strip()
                 work_hours = body_data.get('work_hours') or None
                 if work_hours and isinstance(work_hours, dict):
                     work_hours = json.dumps(work_hours, ensure_ascii=False)
@@ -599,10 +602,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute('''
                         UPDATE cities 
-                        SET name = %s, region_id = %s, timezone = %s, work_hours = %s 
+                        SET name = %s, region_id = %s, timezone = %s, work_hours = %s, address = %s 
                         WHERE id = %s
-                        RETURNING id, name, region_id, timezone, work_hours
-                    ''', (name, region_id, timezone, work_hours, city_id))
+                        RETURNING id, name, region_id, timezone, work_hours, address
+                    ''', (name, region_id, timezone, work_hours, address, city_id))
                     
                     updated = cur.fetchone()
                     conn.commit()

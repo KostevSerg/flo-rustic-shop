@@ -18,6 +18,7 @@ interface City {
   region_id: number;
   timezone: string;
   work_hours?: WorkHours;
+  address?: string;
 }
 
 interface CityModalProps {
@@ -27,6 +28,7 @@ interface CityModalProps {
     name: string;
     timezone: string;
     work_hours: WorkHours | null;
+    address: string;
   };
   saving: boolean;
   onClose: () => void;
@@ -95,6 +97,17 @@ const CityModal = ({
               <option value="Asia/Magadan">Asia/Magadan (МСК+8)</option>
               <option value="Asia/Kamchatka">Asia/Kamchatka (МСК+9)</option>
             </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Адрес</label>
+            <input
+              type="text"
+              value={formData.address}
+              onChange={(e) => onChange('address', e.target.value)}
+              className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="г. Москва, ул. Примерная, д. 1"
+            />
           </div>
 
           <WorkHoursInput
