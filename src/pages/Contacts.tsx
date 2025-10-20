@@ -159,7 +159,7 @@ const Contacts = () => {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-6 mb-12">
+              <div className="grid md:grid-cols-2 gap-6 mb-12">
                 <div className="bg-card border rounded-lg p-6 text-center">
                   <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                     <Icon name="Clock" size={32} className="text-primary" />
@@ -175,22 +175,11 @@ const Contacts = () => {
                   <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                     <Icon name="Timer" size={32} className="text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg mb-2">Быстрая доставка</h3>
+                  <h3 className="font-semibold text-lg mb-2">Доставка</h3>
                   <p className="text-muted-foreground text-sm">
-                    За 2 часа по городу
+                    От 1.5 часов по городу
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">Срочная доставка за 1 час</p>
-                </div>
-
-                <div className="bg-card border rounded-lg p-6 text-center">
-                  <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                    <Icon name="ShieldCheck" size={32} className="text-primary" />
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2">Гарантия качества</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Свежесть цветов 7 дней
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">Или вернём деньги</p>
+                  <p className="text-xs text-muted-foreground mt-1">Срочная доставка доступна</p>
                 </div>
               </div>
             </>
