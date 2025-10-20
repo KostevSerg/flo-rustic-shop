@@ -13,6 +13,7 @@ interface Product {
   id: number;
   name: string;
   description: string;
+  composition?: string;
   price: number;
   image_url: string;
   category?: string;
@@ -60,6 +61,8 @@ const Product = () => {
       addToCart({
         id: product.id,
         name: product.name,
+        description: product.description,
+        composition: product.composition,
         price: product.price,
         image: product.image_url
       });
@@ -134,6 +137,12 @@ const Product = () => {
               <p className="text-lg text-muted-foreground leading-relaxed">
                 {product.description}
               </p>
+              {product.composition && (
+                <div className="mt-4 p-4 bg-muted/30 rounded-lg">
+                  <p className="text-sm font-semibold mb-1">Состав:</p>
+                  <p className="text-sm text-muted-foreground">{product.composition}</p>
+                </div>
+              )}
             </div>
 
             <div className="border-t border-b py-6 mb-6">
