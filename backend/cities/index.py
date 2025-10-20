@@ -383,6 +383,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         except:
                             pass
                     
+                    contact_address = address if address else f'г. {name}, ул. Цветочная, 15'
+                    
                     cur.execute('''
                         INSERT INTO city_contacts (city_id, phone, email, address, working_hours, delivery_info)
                         VALUES (%s, %s, %s, %s, %s, %s)
@@ -390,7 +392,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         city_id,
                         '+7 (999) 123-45-67',
                         'info@florustic.ru',
-                        f'г. {name}, ул. Цветочная, 15',
+                        contact_address,
                         working_hours_text,
                         'Бесплатная доставка в пределах центра'
                     ))
@@ -608,6 +610,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     ''', (name, region_id, timezone, work_hours, address, city_id))
                     
                     updated = cur.fetchone()
+                    
+                    if address:
+                        cur.execute('''
+                            UPDATE city_contacts 
+                            SET address = %s 
+                            WHERE city_id = %s
+                        ''', (address, city_id))
+                    
                     conn.commit()
                     
                     return {
