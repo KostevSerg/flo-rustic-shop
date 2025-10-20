@@ -226,8 +226,8 @@ const Index = () => {
               Почему выбирают FloRustic
             </h2>
             <p className="text-muted-foreground text-lg max-w-3xl mx-auto">
-              Мы — профессиональная флористическая студия с доставкой по всей России{selectedCity ? `, включая ${selectedCity}` : ''}. 
-              Создаём уникальные композиции из свежих цветов для любого повода.
+              Мы — служба доставки цветов по всей России{selectedCity ? `, включая ${selectedCity}` : ''}. 
+              Собираем красивые букеты из свежих цветов на любой случай.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
