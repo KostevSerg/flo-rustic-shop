@@ -8,6 +8,7 @@ interface City {
   region_id: number;
   timezone: string;
   work_hours?: any;
+  is_active?: boolean;
 }
 
 interface Region {
@@ -33,8 +34,8 @@ export const useRegionsAndCities = (isAuthenticated: boolean) => {
     setLoading(true);
     try {
       const [regionsRes, citiesRes] = await Promise.all([
-        fetch(`${API_ENDPOINTS.cities}?action=regions`),
-        fetch(API_ENDPOINTS.cities)
+        fetch(`${API_ENDPOINTS.cities}?action=regions&all=true`),
+        fetch(`${API_ENDPOINTS.cities}?all=true`)
       ]);
 
       const regionsData = await regionsRes.json();
@@ -131,6 +132,64 @@ export const useRegionsAndCities = (isAuthenticated: boolean) => {
     }
   };
 
+  const toggleRegionVisibility = async (regionId: number, isActive: boolean) => {
+    try {
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=update-region&id=${regionId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: isActive })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast({
+          title: 'Успешно',
+          description: isActive ? 'Регион показан на сайте' : 'Регион скрыт с сайта'
+        });
+        fetchData();
+      } else {
+        throw new Error(data.error || 'Update failed');
+      }
+    } catch (error) {
+      console.error('Failed to toggle region visibility:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось изменить видимость региона',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const toggleCityVisibility = async (cityId: number, isActive: boolean) => {
+    try {
+      const response = await fetch(`${API_ENDPOINTS.cities}?action=update&id=${cityId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: isActive })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        toast({
+          title: 'Успешно',
+          description: isActive ? 'Город показан на сайте' : 'Город скрыт с сайта'
+        });
+        fetchData();
+      } else {
+        throw new Error(data.error || 'Update failed');
+      }
+    } catch (error) {
+      console.error('Failed to toggle city visibility:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось изменить видимость города',
+        variant: 'destructive'
+      });
+    }
+  };
+
   return {
     regions,
     loading,
@@ -138,6 +197,8 @@ export const useRegionsAndCities = (isAuthenticated: boolean) => {
     toggleRegion,
     deleteRegion,
     deleteCity,
+    toggleRegionVisibility,
+    toggleCityVisibility,
     refetchData: fetchData
   };
 };

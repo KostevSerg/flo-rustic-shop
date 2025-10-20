@@ -25,6 +25,8 @@ const AdminCities = () => {
     toggleRegion,
     deleteRegion,
     deleteCity,
+    toggleRegionVisibility,
+    toggleCityVisibility,
     refetchData
   } = useRegionsAndCities(isAuthenticated);
 
@@ -86,6 +88,8 @@ const AdminCities = () => {
                   onEditCity={cityModal.openEditModal}
                   onDeleteCity={deleteCity}
                   onManageSettlements={handleManageSettlements}
+                  onToggleRegionVisibility={toggleRegionVisibility}
+                  onToggleCityVisibility={toggleCityVisibility}
                 />
               ))}
             </div>

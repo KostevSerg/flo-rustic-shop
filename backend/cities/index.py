@@ -161,16 +161,27 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'body': json.dumps({'contacts': contacts}, ensure_ascii=False)
                         }
             elif action == 'regions':
+                show_all = params.get('all') == 'true'
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    cur.execute('''
-                        SELECT r.id, r.name, r.is_active,
-                               COUNT(c.id) as cities_count
-                        FROM regions r
-                        LEFT JOIN cities c ON c.region_id = r.id AND c.is_active = true
-                        WHERE r.is_active = true
-                        GROUP BY r.id, r.name, r.is_active
-                        ORDER BY r.name
-                    ''')
+                    if show_all:
+                        cur.execute('''
+                            SELECT r.id, r.name, r.is_active,
+                                   COUNT(c.id) as cities_count
+                            FROM regions r
+                            LEFT JOIN cities c ON c.region_id = r.id
+                            GROUP BY r.id, r.name, r.is_active
+                            ORDER BY r.name
+                        ''')
+                    else:
+                        cur.execute('''
+                            SELECT r.id, r.name, r.is_active,
+                                   COUNT(c.id) as cities_count
+                            FROM regions r
+                            LEFT JOIN cities c ON c.region_id = r.id AND c.is_active = true
+                            WHERE r.is_active = true
+                            GROUP BY r.id, r.name, r.is_active
+                            ORDER BY r.name
+                        ''')
                     rows = cur.fetchall()
                     regions = [dict(row) for row in rows]
                     
@@ -184,15 +195,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'body': json.dumps({'regions': regions}, ensure_ascii=False)
                     }
             else:
+                show_all = params.get('all') == 'true'
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    cur.execute('''
-                        SELECT c.id, c.name, c.region_id, r.name as region_name, 
-                               c.timezone, c.work_hours, c.address
-                        FROM cities c
-                        JOIN regions r ON r.id = c.region_id
-                        WHERE c.is_active = true
-                        ORDER BY r.name, c.name
-                    ''')
+                    if show_all:
+                        cur.execute('''
+                            SELECT c.id, c.name, c.region_id, r.name as region_name, 
+                                   c.timezone, c.work_hours, c.address, c.is_active
+                            FROM cities c
+                            JOIN regions r ON r.id = c.region_id
+                            ORDER BY r.name, c.name
+                        ''')
+                    else:
+                        cur.execute('''
+                            SELECT c.id, c.name, c.region_id, r.name as region_name, 
+                                   c.timezone, c.work_hours, c.address
+                            FROM cities c
+                            JOIN regions r ON r.id = c.region_id
+                            WHERE c.is_active = true AND r.is_active = true
+                            ORDER BY r.name, c.name
+                        ''')
                     cities = cur.fetchall()
                     
                     grouped_cities: Dict[str, List[Dict[str, Any]]] = {}
@@ -544,9 +565,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             elif action == 'update-region':
                 body_data = json.loads(event.get('body', '{}'))
                 region_id = params.get('id')
-                name = body_data.get('name', '').strip()
+                name = body_data.get('name')
+                is_active = body_data.get('is_active')
                 
-                if not region_id or not name:
+                if not region_id:
                     return {
                         'statusCode': 400,
                         'headers': {
@@ -554,16 +576,34 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'error': 'Region ID and name are required'})
+                        'body': json.dumps({'error': 'Region ID is required'})
                     }
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    cur.execute('''
-                        UPDATE regions 
-                        SET name = %s
-                        WHERE id = %s
-                        RETURNING id, name
-                    ''', (name, region_id))
+                    if is_active is not None:
+                        cur.execute('''
+                            UPDATE regions 
+                            SET is_active = %s
+                            WHERE id = %s
+                            RETURNING id, name, is_active
+                        ''', (is_active, region_id))
+                    elif name:
+                        cur.execute('''
+                            UPDATE regions 
+                            SET name = %s
+                            WHERE id = %s
+                            RETURNING id, name, is_active
+                        ''', (name.strip(), region_id))
+                    else:
+                        return {
+                            'statusCode': 400,
+                            'headers': {
+                                'Content-Type': 'application/json',
+                                'Access-Control-Allow-Origin': '*'
+                            },
+                            'isBase64Encoded': False,
+                            'body': json.dumps({'error': 'Either name or is_active is required'})
+                        }
                     
                     updated = cur.fetchone()
                     conn.commit()
@@ -580,17 +620,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             elif action == 'update':
                 body_data = json.loads(event.get('body', '{}'))
                 city_id = params.get('id')
-                name = body_data.get('name', '').strip()
-                region_id = body_data.get('region_id')
-                timezone = body_data.get('timezone', '').strip()
-                address = body_data.get('address', '').strip()
-                work_hours = body_data.get('work_hours') or None
-                if work_hours and isinstance(work_hours, dict):
-                    work_hours = json.dumps(work_hours, ensure_ascii=False)
-                elif work_hours and isinstance(work_hours, str):
-                    work_hours = work_hours.strip() or None
+                is_active = body_data.get('is_active')
                 
-                if not city_id or not name or not region_id:
+                if not city_id:
                     return {
                         'statusCode': 400,
                         'headers': {
@@ -598,26 +630,56 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'Access-Control-Allow-Origin': '*'
                         },
                         'isBase64Encoded': False,
-                        'body': json.dumps({'error': 'City ID, name and region_id are required'})
+                        'body': json.dumps({'error': 'City ID is required'})
                     }
                 
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                    cur.execute('''
-                        UPDATE cities 
-                        SET name = %s, region_id = %s, timezone = %s, work_hours = %s, address = %s 
-                        WHERE id = %s
-                        RETURNING id, name, region_id, timezone, work_hours, address
-                    ''', (name, region_id, timezone, work_hours, address, city_id))
+                    if is_active is not None:
+                        cur.execute('''
+                            UPDATE cities 
+                            SET is_active = %s
+                            WHERE id = %s
+                            RETURNING id, name, region_id, timezone, work_hours, address, is_active
+                        ''', (is_active, city_id))
+                    else:
+                        name = body_data.get('name', '').strip()
+                        region_id = body_data.get('region_id')
+                        timezone = body_data.get('timezone', '').strip()
+                        address = body_data.get('address', '').strip()
+                        work_hours = body_data.get('work_hours') or None
+                        if work_hours and isinstance(work_hours, dict):
+                            work_hours = json.dumps(work_hours, ensure_ascii=False)
+                        elif work_hours and isinstance(work_hours, str):
+                            work_hours = work_hours.strip() or None
+                        
+                        if not name or not region_id:
+                            return {
+                                'statusCode': 400,
+                                'headers': {
+                                    'Content-Type': 'application/json',
+                                    'Access-Control-Allow-Origin': '*'
+                                },
+                                'isBase64Encoded': False,
+                                'body': json.dumps({'error': 'Name and region_id are required'})
+                            }
+                        
+                        cur.execute('''
+                            UPDATE cities 
+                            SET name = %s, region_id = %s, timezone = %s, work_hours = %s, address = %s 
+                            WHERE id = %s
+                            RETURNING id, name, region_id, timezone, work_hours, address, is_active
+                        ''', (name, region_id, timezone, work_hours, address, city_id))
+                        
+                        updated = cur.fetchone()
+                        
+                        if address:
+                            cur.execute('''
+                                UPDATE city_contacts 
+                                SET address = %s 
+                                WHERE city_id = %s
+                            ''', (address, city_id))
                     
                     updated = cur.fetchone()
-                    
-                    if address:
-                        cur.execute('''
-                            UPDATE city_contacts 
-                            SET address = %s 
-                            WHERE city_id = %s
-                        ''', (address, city_id))
-                    
                     conn.commit()
                     
                     return {
