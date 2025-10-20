@@ -21,6 +21,8 @@ interface Product {
   base_price: number;
   category: string;
   is_featured?: boolean;
+  subcategory_id?: number | null;
+  subcategory_name?: string;
 }
 
 interface City {
@@ -45,7 +47,8 @@ const AdminProducts = () => {
     description: '',
     image_url: '',
     base_price: '',
-    category: 'Цветы'
+    category: 'Цветы',
+    subcategory_id: null as number | null
   });
 
   const loadProducts = async () => {

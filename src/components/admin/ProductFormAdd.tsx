@@ -1,5 +1,13 @@
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import API_ENDPOINTS from '@/config/api';
+
+interface Subcategory {
+  id: number;
+  name: string;
+  category: string;
+}
 
 interface ProductFormAddProps {
   newProduct: {
@@ -8,6 +16,7 @@ interface ProductFormAddProps {
     image_url: string;
     base_price: string;
     category: string;
+    subcategory_id?: number | null;
   };
   setNewProduct: (product: any) => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -15,6 +24,31 @@ interface ProductFormAddProps {
 }
 
 const ProductFormAdd = ({ newProduct, setNewProduct, onSubmit, onCancel }: ProductFormAddProps) => {
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [loadingSubcategories, setLoadingSubcategories] = useState(false);
+
+  useEffect(() => {
+    if (newProduct.category === 'Цветы') {
+      fetchSubcategories();
+    } else {
+      setSubcategories([]);
+      setNewProduct({ ...newProduct, subcategory_id: null });
+    }
+  }, [newProduct.category]);
+
+  const fetchSubcategories = async () => {
+    setLoadingSubcategories(true);
+    try {
+      const response = await fetch(`${API_ENDPOINTS.products}?action=subcategories&category=Цветы`);
+      const data = await response.json();
+      setSubcategories(data.subcategories || []);
+    } catch (error) {
+      console.error('Failed to fetch subcategories:', error);
+    } finally {
+      setLoadingSubcategories(false);
+    }
+  };
+
   return (
     <div className="bg-card border border-border rounded-lg p-6 mb-8">
       <h2 className="text-2xl font-bold mb-4">Добавить новый товар</h2>
@@ -52,7 +86,7 @@ const ProductFormAdd = ({ newProduct, setNewProduct, onSubmit, onCancel }: Produ
             </label>
             <select
               value={newProduct.category}
-              onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+              onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value, subcategory_id: null })}
               className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary bg-background"
               required
             >
@@ -61,6 +95,22 @@ const ProductFormAdd = ({ newProduct, setNewProduct, onSubmit, onCancel }: Produ
               <option value="Подарки">Подарки</option>
             </select>
           </div>
+          {newProduct.category === 'Цветы' && (
+            <div>
+              <label className="block text-sm font-medium mb-2">Подкатегория</label>
+              <select
+                value={newProduct.subcategory_id || ''}
+                onChange={(e) => setNewProduct({ ...newProduct, subcategory_id: e.target.value ? parseInt(e.target.value) : null })}
+                className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                disabled={loadingSubcategories}
+              >
+                <option value="">Без подкатегории</option>
+                {subcategories.map(sub => (
+                  <option key={sub.id} value={sub.id}>{sub.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <div>
             <label className="block text-sm font-medium mb-2">URL изображения</label>
             <input

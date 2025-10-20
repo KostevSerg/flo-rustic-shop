@@ -1,5 +1,13 @@
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import API_ENDPOINTS from '@/config/api';
+
+interface Subcategory {
+  id: number;
+  name: string;
+  category: string;
+}
 
 interface Product {
   id: number;
@@ -8,6 +16,7 @@ interface Product {
   image_url: string;
   base_price: number;
   category: string;
+  subcategory_id?: number | null;
 }
 
 interface ProductFormEditProps {
@@ -18,6 +27,30 @@ interface ProductFormEditProps {
 }
 
 const ProductFormEdit = ({ editingProduct, setEditingProduct, onSubmit, onCancel }: ProductFormEditProps) => {
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [loadingSubcategories, setLoadingSubcategories] = useState(false);
+
+  useEffect(() => {
+    if (editingProduct.category === 'Цветы') {
+      fetchSubcategories();
+    } else {
+      setSubcategories([]);
+    }
+  }, [editingProduct.category]);
+
+  const fetchSubcategories = async () => {
+    setLoadingSubcategories(true);
+    try {
+      const response = await fetch(`${API_ENDPOINTS.products}?action=subcategories&category=Цветы`);
+      const data = await response.json();
+      setSubcategories(data.subcategories || []);
+    } catch (error) {
+      console.error('Failed to fetch subcategories:', error);
+    } finally {
+      setLoadingSubcategories(false);
+    }
+  };
+
   return (
     <>
       <div
@@ -69,7 +102,7 @@ const ProductFormEdit = ({ editingProduct, setEditingProduct, onSubmit, onCancel
                 </label>
                 <select
                   value={editingProduct.category}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value, subcategory_id: null })}
                   className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary bg-background"
                   required
                 >
@@ -78,6 +111,22 @@ const ProductFormEdit = ({ editingProduct, setEditingProduct, onSubmit, onCancel
                   <option value="Подарки">Подарки</option>
                 </select>
               </div>
+              {editingProduct.category === 'Цветы' && (
+                <div>
+                  <label className="block text-sm font-medium mb-2">Подкатегория</label>
+                  <select
+                    value={editingProduct.subcategory_id || ''}
+                    onChange={(e) => setEditingProduct({ ...editingProduct, subcategory_id: e.target.value ? parseInt(e.target.value) : null })}
+                    className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary bg-background"
+                    disabled={loadingSubcategories}
+                  >
+                    <option value="">Без подкатегории</option>
+                    {subcategories.map(sub => (
+                      <option key={sub.id} value={sub.id}>{sub.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">URL изображения</label>

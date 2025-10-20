@@ -9,6 +9,12 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
 
+interface Subcategory {
+  id: number;
+  name: string;
+  category: string;
+}
+
 interface Product {
   id: number;
   name: string;
@@ -16,6 +22,8 @@ interface Product {
   price: number;
   image_url: string;
   category?: string;
+  subcategory_id?: number | null;
+  subcategory_name?: string;
 }
 
 interface City {
@@ -51,6 +59,27 @@ const City = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeCategory, setActiveCategory] = useState<Category>('Цветы');
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [activeSubcategory, setActiveSubcategory] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (activeCategory === 'Цветы') {
+      fetchSubcategories();
+    } else {
+      setSubcategories([]);
+      setActiveSubcategory(null);
+    }
+  }, [activeCategory]);
+
+  const fetchSubcategories = async () => {
+    try {
+      const response = await fetch(`${API_ENDPOINTS.products}?action=subcategories&category=Цветы`);
+      const data = await response.json();
+      setSubcategories(data.subcategories || []);
+    } catch (error) {
+      console.error('Failed to fetch subcategories:', error);
+    }
+  };
 
   useEffect(() => {
     const fetchCityAndProducts = async () => {
@@ -82,7 +111,12 @@ const City = () => {
         setCityName(foundCityName);
         setCityData(foundCity);
         
-        const productsUrl = `${API_ENDPOINTS.products}?city=${encodeURIComponent(foundCityName)}&category=${encodeURIComponent(activeCategory)}`;
+        let productsUrl = `${API_ENDPOINTS.products}?city=${encodeURIComponent(foundCityName)}`;
+        if (activeSubcategory) {
+          productsUrl += `&subcategory_id=${activeSubcategory}`;
+        } else {
+          productsUrl += `&category=${encodeURIComponent(activeCategory)}`;
+        }
         const productsResponse = await fetch(productsUrl);
         const productsData = await productsResponse.json();
         
@@ -96,7 +130,7 @@ const City = () => {
     };
 
     fetchCityAndProducts();
-  }, [citySlug, activeCategory]);
+  }, [citySlug, activeCategory, activeSubcategory]);
 
   const handleAddToCart = (product: Product) => {
     addToCart({
@@ -219,28 +253,61 @@ const City = () => {
             Выберите готовый букет из каталога или закажите индивидуальную композицию.
           </p>
           
-          <div className="flex justify-center gap-4 flex-wrap">
-            <Button
-              variant={activeCategory === 'Цветы' ? 'default' : 'outline'}
-              onClick={() => setActiveCategory('Цветы')}
-              className="px-6"
-            >
-              Цветы
-            </Button>
-            <Button
-              variant={activeCategory === 'Шары' ? 'default' : 'outline'}
-              onClick={() => setActiveCategory('Шары')}
-              className="px-6"
-            >
-              Шары
-            </Button>
-            <Button
-              variant={activeCategory === 'Подарки' ? 'default' : 'outline'}
-              onClick={() => setActiveCategory('Подарки')}
-              className="px-6"
-            >
-              Подарки
-            </Button>
+          <div className="space-y-4">
+            <div className="flex justify-center gap-4 flex-wrap">
+              <Button
+                variant={activeCategory === 'Цветы' ? 'default' : 'outline'}
+                onClick={() => {
+                  setActiveCategory('Цветы');
+                  setActiveSubcategory(null);
+                }}
+                className="px-6"
+              >
+                Цветы
+              </Button>
+              <Button
+                variant={activeCategory === 'Шары' ? 'default' : 'outline'}
+                onClick={() => {
+                  setActiveCategory('Шары');
+                  setActiveSubcategory(null);
+                }}
+                className="px-6"
+              >
+                Шары
+              </Button>
+              <Button
+                variant={activeCategory === 'Подарки' ? 'default' : 'outline'}
+                onClick={() => {
+                  setActiveCategory('Подарки');
+                  setActiveSubcategory(null);
+                }}
+                className="px-6"
+              >
+                Подарки
+              </Button>
+            </div>
+            
+            {activeCategory === 'Цветы' && subcategories.length > 0 && (
+              <div className="flex justify-center gap-2 flex-wrap">
+                <Button
+                  variant={activeSubcategory === null ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setActiveSubcategory(null)}
+                >
+                  Все цветы
+                </Button>
+                {subcategories.map(sub => (
+                  <Button
+                    key={sub.id}
+                    variant={activeSubcategory === sub.id ? 'secondary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setActiveSubcategory(sub.id)}
+                  >
+                    {sub.name}
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
