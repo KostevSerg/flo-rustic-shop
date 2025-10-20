@@ -113,7 +113,7 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
               </div>
             </div>
 
-            <div className="overflow-y-auto max-h-[60vh]">
+            <div className="overflow-y-auto max-h-[70vh]">
               {loading ? (
                 <div className="p-8 text-center text-muted-foreground">
                   <div className="animate-spin mx-auto mb-3 w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
@@ -125,21 +125,21 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
                   <p>Города не найдены</p>
                 </div>
               ) : (
-                <div className="grid md:grid-cols-2 gap-4 p-6">
+                <div className="grid md:grid-cols-3 gap-3 p-4">
                   {Object.entries(filteredCities).map(([region, regionCities]) => (
-                    <div key={region} className="bg-accent/20 rounded-lg p-4">
-                      <div className="flex items-center mb-3">
-                        <Icon name="MapPin" size={18} className="mr-2 text-primary" />
-                        <h4 className="font-semibold text-sm text-muted-foreground">
+                    <div key={region} className="bg-accent/20 rounded-lg p-3">
+                      <div className="flex items-center mb-2 pb-2 border-b border-border/50">
+                        <Icon name="MapPin" size={16} className="mr-1.5 text-primary flex-shrink-0" />
+                        <h4 className="font-semibold text-xs text-muted-foreground uppercase tracking-wide">
                           {region}
                         </h4>
                       </div>
-                      <div className="space-y-1">
+                      <div className="space-y-0.5">
                         {regionCities.map((city) => (
                           <button
                             key={city.id}
                             onClick={() => handleSelect(city.name, city.id)}
-                            className="w-full px-3 py-2 text-left rounded-md hover:bg-primary hover:text-primary-foreground transition-colors"
+                            className="w-full px-2 py-1.5 text-left text-sm rounded-md hover:bg-primary hover:text-primary-foreground transition-colors"
                           >
                             {city.name}
                           </button>
