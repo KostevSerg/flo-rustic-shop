@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import BreadcrumbsNav from '@/components/BreadcrumbsNav';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
@@ -186,6 +187,8 @@ const City = () => {
       
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
+        <BreadcrumbsNav items={[{ name: `Доставка в ${cityName}` }]} />
+        
         <CityHeader
           cityName={cityName}
           activeCategory={activeCategory}

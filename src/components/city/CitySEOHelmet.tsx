@@ -32,6 +32,26 @@ const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
       <script type="application/ld+json">
         {JSON.stringify({
           "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Главная",
+              "item": "https://florustic.ru/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": `Доставка цветов в ${cityName}`
+            }
+          ]
+        })}
+      </script>
+      
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
           "@type": "LocalBusiness",
           "@id": pageUrl,
           "name": `FloRustic — Доставка цветов в ${cityName}`,

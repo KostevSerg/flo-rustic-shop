@@ -5,6 +5,7 @@ import { useCity } from '@/contexts/CityContext';
 import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import BreadcrumbsNav from '@/components/BreadcrumbsNav';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
 import { Button } from '@/components/ui/button';
@@ -92,6 +93,26 @@ const Contacts = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Главная",
+                "item": "https://florustic.ru/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Контакты"
+              }
+            ]
+          })}
+        </script>
+        
         {selectedContact && (
           <script type="application/ld+json">
             {JSON.stringify({
@@ -118,6 +139,8 @@ const Contacts = () => {
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
+          <BreadcrumbsNav items={[{ name: 'Контакты' }]} />
+          
           <h1 className="text-5xl font-bold text-center mb-4">Контакты</h1>
           <p className="text-center text-muted-foreground text-lg mb-12">
             Свяжитесь с нами удобным способом — работаем во всех городах присутствия
