@@ -91,11 +91,16 @@ const ProductFormEdit = ({ editingProduct, setEditingProduct, onSubmit, onCancel
                 </label>
                 <input
                   type="number"
-                  value={editingProduct.base_price || ''}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, base_price: e.target.value ? parseInt(e.target.value) : 0 })}
+                  value={editingProduct.base_price === 0 ? '' : editingProduct.base_price}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const numValue = value === '' ? 0 : parseInt(value, 10);
+                    setEditingProduct({ ...editingProduct, base_price: isNaN(numValue) ? 0 : numValue });
+                  }}
                   className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
                   required
                   min="0"
+                  step="1"
                 />
               </div>
               <div>

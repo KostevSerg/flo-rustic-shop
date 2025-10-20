@@ -124,6 +124,15 @@ const AdminProducts = () => {
     e.preventDefault();
     if (!editingProduct) return;
 
+    if (!editingProduct.base_price || editingProduct.base_price <= 0) {
+      toast({
+        title: 'Ошибка',
+        description: 'Укажите корректную базовую цену',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     try {
       const response = await fetch(API_ENDPOINTS.products, {
         method: 'PUT',
@@ -133,7 +142,7 @@ const AdminProducts = () => {
           name: editingProduct.name,
           description: editingProduct.description,
           image_url: editingProduct.image_url,
-          base_price: editingProduct.base_price,
+          base_price: Number(editingProduct.base_price),
           category: editingProduct.category,
           subcategory_id: editingProduct.subcategory_id
         })

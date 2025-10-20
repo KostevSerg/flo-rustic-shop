@@ -35,7 +35,7 @@ const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatur
           {product.description}
         </p>
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xl font-bold">{product.base_price} ₽</span>
+          <span className="text-xl font-bold">{product.base_price || 0} ₽</span>
           <div className="flex gap-2 items-center">
             {product.is_featured && (
               <span className="text-xs bg-yellow-500 text-white px-2 py-1 rounded flex items-center gap-1">
