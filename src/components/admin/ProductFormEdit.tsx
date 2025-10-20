@@ -90,10 +90,11 @@ const ProductFormEdit = ({ editingProduct, setEditingProduct, onSubmit, onCancel
                 </label>
                 <input
                   type="number"
-                  value={editingProduct.base_price}
-                  onChange={(e) => setEditingProduct({ ...editingProduct, base_price: parseInt(e.target.value) })}
+                  value={editingProduct.base_price || ''}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, base_price: e.target.value ? parseInt(e.target.value) : 0 })}
                   className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
                   required
+                  min="0"
                 />
               </div>
               <div>

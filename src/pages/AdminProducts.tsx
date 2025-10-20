@@ -134,7 +134,8 @@ const AdminProducts = () => {
           description: editingProduct.description,
           image_url: editingProduct.image_url,
           base_price: editingProduct.base_price,
-          category: editingProduct.category
+          category: editingProduct.category,
+          subcategory_id: editingProduct.subcategory_id
         })
       });
 
