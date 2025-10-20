@@ -53,4 +53,396 @@
     <priority>0.6</priority>
   </url>
   
+  <!-- Алейск -->
+  <url>
+    <loc>https://florustic.ru/city/alejsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Ангарск -->
+  <url>
+    <loc>https://florustic.ru/city/angarsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Барнаул -->
+  <url>
+    <loc>https://florustic.ru/city/barnaul</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Белгород -->
+  <url>
+    <loc>https://florustic.ru/city/belgorod</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Белокуриха -->
+  <url>
+    <loc>https://florustic.ru/city/belokuriha</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Бийск -->
+  <url>
+    <loc>https://florustic.ru/city/bijsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Бирюч -->
+  <url>
+    <loc>https://florustic.ru/city/biruc</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Благовещенск -->
+  <url>
+    <loc>https://florustic.ru/city/blagovesensk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Бодайбо -->
+  <url>
+    <loc>https://florustic.ru/city/bodajbo</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Борисовка -->
+  <url>
+    <loc>https://florustic.ru/city/borisovka</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Валуйки -->
+  <url>
+    <loc>https://florustic.ru/city/valujki</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Волгоград -->
+  <url>
+    <loc>https://florustic.ru/city/volgograd</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Волоконовка -->
+  <url>
+    <loc>https://florustic.ru/city/volokonovka</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Воронеж -->
+  <url>
+    <loc>https://florustic.ru/city/voronez</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Гальбштадт -->
+  <url>
+    <loc>https://florustic.ru/city/galbstadt</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Екатеринбург -->
+  <url>
+    <loc>https://florustic.ru/city/ekaterinburg</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Завитинск -->
+  <url>
+    <loc>https://florustic.ru/city/zavitinsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- ЗАТО Циолковского -->
+  <url>
+    <loc>https://florustic.ru/city/zato-ciolkovskogo</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Зея -->
+  <url>
+    <loc>https://florustic.ru/city/zea</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Ивня -->
+  <url>
+    <loc>https://florustic.ru/city/ivna</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Казань -->
+  <url>
+    <loc>https://florustic.ru/city/kazan</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Камень-на-Оби -->
+  <url>
+    <loc>https://florustic.ru/city/kamen-na-obi</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Короча -->
+  <url>
+    <loc>https://florustic.ru/city/koroca</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Красноярск -->
+  <url>
+    <loc>https://florustic.ru/city/krasnoarsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Кулунда -->
+  <url>
+    <loc>https://florustic.ru/city/kulunda</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Мамонтово -->
+  <url>
+    <loc>https://florustic.ru/city/mamontovo</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Москва -->
+  <url>
+    <loc>https://florustic.ru/city/moskva</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Нижний Новгород -->
+  <url>
+    <loc>https://florustic.ru/city/niznij-novgorod</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Новосибирск -->
+  <url>
+    <loc>https://florustic.ru/city/novosibirsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Омск -->
+  <url>
+    <loc>https://florustic.ru/city/omsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Павловск -->
+  <url>
+    <loc>https://florustic.ru/city/pavlovsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Пермь -->
+  <url>
+    <loc>https://florustic.ru/city/perm</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Поспелиха -->
+  <url>
+    <loc>https://florustic.ru/city/pospeliha</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Райчихинск -->
+  <url>
+    <loc>https://florustic.ru/city/rajcihinsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Ракитное -->
+  <url>
+    <loc>https://florustic.ru/city/rakitnoe</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Ребриха -->
+  <url>
+    <loc>https://florustic.ru/city/rebriha</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Ростов-на-Дону -->
+  <url>
+    <loc>https://florustic.ru/city/rostov-na-donu</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Рубцовск -->
+  <url>
+    <loc>https://florustic.ru/city/rubcovsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Самара -->
+  <url>
+    <loc>https://florustic.ru/city/samara</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Санкт-Петербург -->
+  <url>
+    <loc>https://florustic.ru/city/sankt-peterburg</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Свободный -->
+  <url>
+    <loc>https://florustic.ru/city/svobodnyj</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Славгород -->
+  <url>
+    <loc>https://florustic.ru/city/slavgorod</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Строитель -->
+  <url>
+    <loc>https://florustic.ru/city/stroitel</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Тальменка -->
+  <url>
+    <loc>https://florustic.ru/city/talmenka</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Уфа -->
+  <url>
+    <loc>https://florustic.ru/city/ufa</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Челябинск -->
+  <url>
+    <loc>https://florustic.ru/city/celebinsk</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Шебекино -->
+  <url>
+    <loc>https://florustic.ru/city/sebekino</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Шипуново -->
+  <url>
+    <loc>https://florustic.ru/city/sipunovo</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Яровое -->
+  <url>
+    <loc>https://florustic.ru/city/arovoe</loc>
+    <lastmod>2025-10-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
 </urlset>
