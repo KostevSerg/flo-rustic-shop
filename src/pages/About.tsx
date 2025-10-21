@@ -1,13 +1,37 @@
 import { useCart } from '@/contexts/CartContext';
-import { useState, useEffect } from 'react';
+import { useCity } from '@/contexts/CityContext';
+import { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BreadcrumbsNav from '@/components/BreadcrumbsNav';
 import API_ENDPOINTS from '@/config/api';
 
+const getCityInPrepositionalCase = (city: string): string => {
+  const cityMap: Record<string, string> = {
+    'Барнаул': 'Барнауле',
+    'Москва': 'Москве',
+    'Санкт-Петербург': 'Санкт-Петербурге',
+    'Новосибирск': 'Новосибирске',
+    'Екатеринбург': 'Екатеринбурге',
+    'Казань': 'Казани',
+    'Нижний Новгород': 'Нижнем Новгороде',
+    'Челябинск': 'Челябинске',
+    'Самара': 'Самаре',
+    'Омск': 'Омске',
+    'Ростов-на-Дону': 'Ростове-на-Дону',
+    'Уфа': 'Уфе',
+    'Красноярск': 'Красноярске',
+    'Воронеж': 'Воронеже',
+    'Пермь': 'Перми',
+    'Волгоград': 'Волгограде'
+  };
+  return cityMap[city] || city;
+};
+
 const About = () => {
   const { totalItems } = useCart();
+  const { selectedCity } = useCity();
   const [content, setContent] = useState({ 
     title: 'О нас', 
     htmlContent: '',
@@ -36,6 +60,16 @@ const About = () => {
 
     loadContent();
   }, []);
+
+  const processedContent = useMemo(() => {
+    if (!content.htmlContent) return '';
+    
+    const cityInPrepositional = getCityInPrepositionalCase(selectedCity);
+    
+    return content.htmlContent
+      .replace(/\bБарнауле\b/g, cityInPrepositional)
+      .replace(/\bБарнаул\b/g, selectedCity);
+  }, [content.htmlContent, selectedCity]);
 
   const pageTitle = `${content.title} — FloRustic | Флористическая студия`;
   const pageDescription = content.metaDescription;
@@ -87,7 +121,7 @@ const About = () => {
           ) : (
             <div 
               className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: content.htmlContent }}
+              dangerouslySetInnerHTML={{ __html: processedContent }}
             />
           )}
         </div>
