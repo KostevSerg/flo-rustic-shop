@@ -12,6 +12,7 @@ import ProductFormAdd from '@/components/admin/ProductFormAdd';
 import ProductFormEdit from '@/components/admin/ProductFormEdit';
 import ProductCardItem from '@/components/admin/ProductCardItem';
 import CityPriceModal from '@/components/admin/CityPriceModal';
+import { submitProductToIndexNow } from '@/utils/indexnow';
 
 interface Product {
   id: number;
@@ -118,10 +119,25 @@ const AdminProducts = () => {
 
       if (!response.ok) throw new Error('Failed to add product');
 
+      const result = await response.json();
+      const productId = result.product_id;
+
       toast({
         title: 'Успешно',
         description: `Товар "${newProduct.name}" добавлен`
       });
+
+      if (productId) {
+        submitProductToIndexNow(productId).then(indexResult => {
+          if (indexResult.success) {
+            toast({
+              title: '🚀 IndexNow',
+              description: 'Товар отправлен в поисковики (Bing, Yandex)',
+              duration: 3000
+            });
+          }
+        }).catch(err => console.error('IndexNow error:', err));
+      }
 
       setNewProduct({ name: '', description: '', composition: '', image_url: '', base_price: '', category: 'Цветы', categories: ['Цветы'], subcategory_id: null, subcategory_ids: [] });
       setShowAddForm(false);
@@ -175,6 +191,16 @@ const AdminProducts = () => {
         title: 'Успешно',
         description: `Товар "${editingProduct.name}" обновлен`
       });
+
+      submitProductToIndexNow(editingProduct.id).then(indexResult => {
+        if (indexResult.success) {
+          toast({
+            title: '🚀 IndexNow',
+            description: 'Изменения отправлены в поисковики',
+            duration: 3000
+          });
+        }
+      }).catch(err => console.error('IndexNow error:', err));
 
       setEditingProduct(null);
       loadProducts();

@@ -7,7 +7,8 @@ const API_ENDPOINTS = {
   promoCodes: 'https://functions.poehali.dev/5a9c434d-e6ba-42ec-a45e-052fd140c0ba',
   sendOrder: 'https://functions.poehali.dev/97825be8-1815-431a-99ba-3b3ed7c3f8a5',
   uploadImage: 'https://functions.poehali.dev/1a6c3d40-9259-4124-95d8-03422b03f786',
-  pageContents: 'https://functions.poehali.dev/3918d2b6-cf28-40ff-ba75-8c73546c5f37'
+  pageContents: 'https://functions.poehali.dev/3918d2b6-cf28-40ff-ba75-8c73546c5f37',
+  indexNow: 'https://functions.poehali.dev/f9051455-576c-4094-8413-8c03926b2370'
 };
 
 export default API_ENDPOINTS;
