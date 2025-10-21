@@ -91,10 +91,24 @@ const About = () => {
     const cityInPrepositional = getCityInPrepositionalCase(selectedCity);
     const cityInDative = getCityInDativeCase(selectedCity);
     
-    return content.htmlContent
-      .replace(/\bБарнаулу\b/g, cityInDative)
-      .replace(/\bБарнауле\b/g, cityInPrepositional)
-      .replace(/\bБарнаул\b/g, selectedCity);
+    console.log('About page: Replacing city', {
+      selectedCity,
+      cityInPrepositional,
+      cityInDative,
+      originalLength: content.htmlContent.length
+    });
+    
+    const result = content.htmlContent
+      .replace(/\bБарнаулу\b/gi, cityInDative)
+      .replace(/\bБарнауле\b/gi, cityInPrepositional)
+      .replace(/\bБарнаул\b/gi, selectedCity);
+    
+    console.log('About page: Replacement done', {
+      changed: result !== content.htmlContent,
+      resultLength: result.length
+    });
+    
+    return result;
   }, [content.htmlContent, selectedCity]);
 
   const pageTitle = `${content.title} — FloRustic | Флористическая студия`;
