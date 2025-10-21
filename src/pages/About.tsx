@@ -24,7 +24,31 @@ const getCityInPrepositionalCase = (city: string): string => {
     'Красноярск': 'Красноярске',
     'Воронеж': 'Воронеже',
     'Пермь': 'Перми',
-    'Волгоград': 'Волгограде'
+    'Волгоград': 'Волгограде',
+    'Белокуриха': 'Белокурихе'
+  };
+  return cityMap[city] || city;
+};
+
+const getCityInDativeCase = (city: string): string => {
+  const cityMap: Record<string, string> = {
+    'Барнаул': 'Барнаулу',
+    'Москва': 'Москве',
+    'Санкт-Петербург': 'Санкт-Петербургу',
+    'Новосибирск': 'Новосибирску',
+    'Екатеринбург': 'Екатеринбургу',
+    'Казань': 'Казани',
+    'Нижний Новгород': 'Нижнему Новгороду',
+    'Челябинск': 'Челябинску',
+    'Самара': 'Самаре',
+    'Омск': 'Омску',
+    'Ростов-на-Дону': 'Ростову-на-Дону',
+    'Уфа': 'Уфе',
+    'Красноярск': 'Красноярску',
+    'Воронеж': 'Воронежу',
+    'Пермь': 'Перми',
+    'Волгоград': 'Волгограду',
+    'Белокуриха': 'Белокурихе'
   };
   return cityMap[city] || city;
 };
@@ -65,8 +89,10 @@ const About = () => {
     if (!content.htmlContent) return '';
     
     const cityInPrepositional = getCityInPrepositionalCase(selectedCity);
+    const cityInDative = getCityInDativeCase(selectedCity);
     
     return content.htmlContent
+      .replace(/\bБарнаулу\b/g, cityInDative)
       .replace(/\bБарнауле\b/g, cityInPrepositional)
       .replace(/\bБарнаул\b/g, selectedCity);
   }, [content.htmlContent, selectedCity]);
