@@ -44,6 +44,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if method == 'GET':
             query_params = event.get('queryStringParameters') or {}
             action = query_params.get('action')
+            product_id = query_params.get('id')
             city_name = query_params.get('city')
             category = query_params.get('category')
             subcategory_id = query_params.get('subcategory_id')
@@ -79,7 +80,48 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
             
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                if city_name:
+                if product_id:
+                    if city_name:
+                        safe_city_name = city_name.replace("'", "''")
+                        cur.execute(f'''
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
+                                   s.name as subcategory_name,
+                                   COALESCE(pcp.price, 
+                                           ROUND(p.base_price * (1 + COALESCE(c.price_markup_percent, 0) / 100), 2)
+                                   ) as price
+                            FROM products p
+                            LEFT JOIN cities c ON c.name = '{safe_city_name}' AND c.is_active = true
+                            LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
+                            LEFT JOIN subcategories s ON s.id = p.subcategory_id
+                            WHERE p.is_active = true AND p.id = {int(product_id)}
+                        ''')
+                    else:
+                        cur.execute(f'''
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                                   s.name as subcategory_name
+                            FROM products p
+                            LEFT JOIN subcategories s ON s.id = p.subcategory_id
+                            WHERE p.is_active = true AND p.id = {int(product_id)}
+                        ''')
+                    
+                    products = [dict(row) for row in cur.fetchall()]
+                    
+                    def decimal_default(obj):
+                        if isinstance(obj, Decimal):
+                            return float(obj)
+                        raise TypeError
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'products': products}, default=decimal_default, ensure_ascii=False)
+                    }
+                
+                elif city_name:
                     safe_city_name = city_name.replace("'", "''")
                     if subcategory_id:
                         cur.execute(f'''
