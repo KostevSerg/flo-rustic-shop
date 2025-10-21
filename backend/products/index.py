@@ -38,9 +38,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Database configuration missing'})
         }
     
-    conn = psycopg2.connect(database_url)
-    
+    conn = None
     try:
+        conn = psycopg2.connect(database_url, connect_timeout=5)
         if method == 'GET':
             query_params = event.get('queryStringParameters') or {}
             action = query_params.get('action')
@@ -397,4 +397,5 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     finally:
-        conn.close()
+        if conn:
+            conn.close()
