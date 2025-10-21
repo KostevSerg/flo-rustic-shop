@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { CartProvider } from "@/contexts/CartContext";
 import { CityProvider } from "@/contexts/CityContext";
-import { SiteTextsProvider } from "@/contexts/SiteTextsProvider";
+import { SiteTextsProvider } from "@/contexts/SiteTextsContext";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import JivoChat from "@/components/JivoChat";
 import { useEffect } from "react";
