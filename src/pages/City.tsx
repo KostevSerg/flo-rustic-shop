@@ -64,6 +64,7 @@ const City = () => {
   const [activeCategory, setActiveCategory] = useState<Category>('Цветы');
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [activeSubcategory, setActiveSubcategory] = useState<number | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
 
   useEffect(() => {
     if (activeCategory === 'Цветы') {
@@ -202,6 +203,8 @@ const City = () => {
           products={products}
           cityName={cityName}
           onAddToCart={handleAddToCart}
+          sortOrder={sortOrder}
+          onSortChange={setSortOrder}
         />
 
         <CityContent cityName={cityName} />
