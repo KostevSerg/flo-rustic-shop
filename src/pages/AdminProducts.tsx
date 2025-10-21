@@ -45,6 +45,7 @@ const AdminProducts = () => {
   const [showPriceModal, setShowPriceModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
   const [newProduct, setNewProduct] = useState({
     name: '',
     description: '',
@@ -73,6 +74,11 @@ const AdminProducts = () => {
       setLoading(false);
     }
   };
+
+  const sortedProducts = [...products].sort((a, b) => {
+    if (!sortOrder) return 0;
+    return sortOrder === 'asc' ? a.base_price - b.base_price : b.base_price - a.base_price;
+  });
 
   const loadCities = async () => {
     try {
@@ -308,13 +314,32 @@ const AdminProducts = () => {
               />
             )}
 
+            <div className="flex gap-2 mb-6">
+              <Button
+                variant={sortOrder === 'asc' ? 'default' : 'outline'}
+                onClick={() => setSortOrder(sortOrder === 'asc' ? null : 'asc')}
+                className="flex items-center gap-2"
+              >
+                <Icon name="ArrowUpNarrowWide" size={16} />
+                По возрастанию цены
+              </Button>
+              <Button
+                variant={sortOrder === 'desc' ? 'default' : 'outline'}
+                onClick={() => setSortOrder(sortOrder === 'desc' ? null : 'desc')}
+                className="flex items-center gap-2"
+              >
+                <Icon name="ArrowDownWideNarrow" size={16} />
+                По убыванию цены
+              </Button>
+            </div>
+
             {loading ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">Загрузка товаров...</p>
               </div>
             ) : (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((product) => (
+                {sortedProducts.map((product) => (
                   <ProductCardItem
                     key={product.id}
                     product={product}
