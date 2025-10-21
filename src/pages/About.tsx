@@ -7,50 +7,32 @@ import Footer from '@/components/Footer';
 import BreadcrumbsNav from '@/components/BreadcrumbsNav';
 import API_ENDPOINTS from '@/config/api';
 
-const getCityInPrepositionalCase = (city: string): string => {
-  const cityMap: Record<string, string> = {
-    'Барнаул': 'Барнауле',
-    'Москва': 'Москве',
-    'Санкт-Петербург': 'Санкт-Петербурге',
-    'Новосибирск': 'Новосибирске',
-    'Екатеринбург': 'Екатеринбурге',
-    'Казань': 'Казани',
-    'Нижний Новгород': 'Нижнем Новгороде',
-    'Челябинск': 'Челябинске',
-    'Самара': 'Самаре',
-    'Омск': 'Омске',
-    'Ростов-на-Дону': 'Ростове-на-Дону',
-    'Уфа': 'Уфе',
-    'Красноярск': 'Красноярске',
-    'Воронеж': 'Воронеже',
-    'Пермь': 'Перми',
-    'Волгоград': 'Волгограде',
-    'Белокуриха': 'Белокурихе'
+const declineCity = (city: string, caseType: 'prepositional' | 'dative'): string => {
+  const declensions: Record<string, { prepositional: string; dative: string }> = {
+    'Барнаул': { prepositional: 'Барнауле', dative: 'Барнаулу' },
+    'Москва': { prepositional: 'Москве', dative: 'Москве' },
+    'Санкт-Петербург': { prepositional: 'Санкт-Петербурге', dative: 'Санкт-Петербургу' },
+    'Новосибирск': { prepositional: 'Новосибирске', dative: 'Новосибирску' },
+    'Екатеринбург': { prepositional: 'Екатеринбурге', dative: 'Екатеринбургу' },
+    'Казань': { prepositional: 'Казани', dative: 'Казани' },
+    'Нижний Новгород': { prepositional: 'Нижнем Новгороде', dative: 'Нижнему Новгороду' },
+    'Челябинск': { prepositional: 'Челябинске', dative: 'Челябинску' },
+    'Самара': { prepositional: 'Самаре', dative: 'Самаре' },
+    'Омск': { prepositional: 'Омске', dative: 'Омску' },
+    'Ростов-на-Дону': { prepositional: 'Ростове-на-Дону', dative: 'Ростову-на-Дону' },
+    'Уфа': { prepositional: 'Уфе', dative: 'Уфе' },
+    'Красноярск': { prepositional: 'Красноярске', dative: 'Красноярску' },
+    'Воронеж': { prepositional: 'Воронеже', dative: 'Воронежу' },
+    'Пермь': { prepositional: 'Перми', dative: 'Перми' },
+    'Волгоград': { prepositional: 'Волгограде', dative: 'Волгограду' },
+    'Белокуриха': { prepositional: 'Белокурихе', dative: 'Белокурихе' },
+    'Гальбштадт': { prepositional: 'Гальбштадте', dative: 'Гальбштадту' }
   };
-  return cityMap[city] || city;
-};
-
-const getCityInDativeCase = (city: string): string => {
-  const cityMap: Record<string, string> = {
-    'Барнаул': 'Барнаулу',
-    'Москва': 'Москве',
-    'Санкт-Петербург': 'Санкт-Петербургу',
-    'Новосибирск': 'Новосибирску',
-    'Екатеринбург': 'Екатеринбургу',
-    'Казань': 'Казани',
-    'Нижний Новгород': 'Нижнему Новгороду',
-    'Челябинск': 'Челябинску',
-    'Самара': 'Самаре',
-    'Омск': 'Омску',
-    'Ростов-на-Дону': 'Ростову-на-Дону',
-    'Уфа': 'Уфе',
-    'Красноярск': 'Красноярску',
-    'Воронеж': 'Воронежу',
-    'Пермь': 'Перми',
-    'Волгоград': 'Волгограду',
-    'Белокуриха': 'Белокурихе'
-  };
-  return cityMap[city] || city;
+  
+  const declension = declensions[city];
+  if (!declension) return city;
+  
+  return declension[caseType];
 };
 
 const About = () => {
@@ -88,8 +70,8 @@ const About = () => {
   const processedContent = useMemo(() => {
     if (!content.htmlContent) return '';
     
-    const cityInPrepositional = getCityInPrepositionalCase(selectedCity);
-    const cityInDative = getCityInDativeCase(selectedCity);
+    const cityInPrepositional = declineCity(selectedCity, 'prepositional');
+    const cityInDative = declineCity(selectedCity, 'dative');
     
     console.log('About page: Replacing city', {
       selectedCity,
@@ -98,10 +80,16 @@ const About = () => {
       originalLength: content.htmlContent.length
     });
     
-    const result = content.htmlContent
-      .replace(/\bБарнаулу\b/gi, cityInDative)
-      .replace(/\bБарнауле\b/gi, cityInPrepositional)
-      .replace(/\bБарнаул\b/gi, selectedCity);
+    let result = content.htmlContent;
+    
+    result = result.replace(/Барнаулу/g, cityInDative);
+    result = result.replace(/барнаулу/g, cityInDative.toLowerCase());
+    
+    result = result.replace(/Барнауле/g, cityInPrepositional);
+    result = result.replace(/барнауле/g, cityInPrepositional.toLowerCase());
+    
+    result = result.replace(/Барнаул([^уе])/g, `${selectedCity}$1`);
+    result = result.replace(/барнаул([^уе])/g, `${selectedCity.toLowerCase()}$1`);
     
     console.log('About page: Replacement done', {
       changed: result !== content.htmlContent,
