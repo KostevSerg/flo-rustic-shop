@@ -24,6 +24,15 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
     e.preventDefault();
     e.stopPropagation();
     onAddToCart();
+    
+    if (typeof window.ym !== 'undefined') {
+      window.ym(104746725, 'reachGoal', 'add_to_cart', {
+        product_id: product.id,
+        product_name: product.name,
+        product_price: product.price
+      });
+    }
+    
     toast({
       title: "Добавлено в корзину",
       description: `${product.name} успешно добавлен в корзину`

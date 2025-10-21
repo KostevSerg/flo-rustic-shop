@@ -69,6 +69,15 @@ const Product = () => {
       });
     }
     
+    if (typeof window.ym !== 'undefined') {
+      window.ym(104746725, 'reachGoal', 'buy_now', {
+        product_id: product.id,
+        product_name: product.name,
+        product_price: product.price,
+        quantity: quantity
+      });
+    }
+    
     navigate('/cart');
   };
 

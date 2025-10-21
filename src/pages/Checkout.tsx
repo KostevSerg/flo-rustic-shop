@@ -234,6 +234,14 @@ const Checkout = () => {
       console.log('Заказ создан:', result);
       const orderId = result.id;
 
+      if (typeof window.ym !== 'undefined') {
+        window.ym(104746725, 'reachGoal', 'purchase', {
+          order_id: orderId,
+          order_price: finalPrice,
+          products_count: items.length
+        });
+      }
+
       // Отправляем письмо с данными заказа
       try {
         const selectedSettlement = settlements.find(s => s.id.toString() === formData.settlementId);
