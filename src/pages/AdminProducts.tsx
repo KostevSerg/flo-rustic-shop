@@ -143,19 +143,24 @@ const AdminProducts = () => {
     }
 
     try {
+      const payload = {
+        id: editingProduct.id,
+        name: editingProduct.name,
+        description: editingProduct.description,
+        composition: editingProduct.composition,
+        image_url: editingProduct.image_url,
+        base_price: Number(editingProduct.base_price),
+        category: editingProduct.category,
+        categories: editingProduct.categories,
+        subcategory_id: editingProduct.subcategory_id,
+        subcategory_ids: editingProduct.subcategory_ids
+      };
+      console.log('Updating product with payload:', payload);
+      
       const response = await fetch(API_ENDPOINTS.products, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: editingProduct.id,
-          name: editingProduct.name,
-          description: editingProduct.description,
-          composition: editingProduct.composition,
-          image_url: editingProduct.image_url,
-          base_price: Number(editingProduct.base_price),
-          category: editingProduct.category,
-          subcategory_id: editingProduct.subcategory_id
-        })
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) throw new Error('Failed to update product');

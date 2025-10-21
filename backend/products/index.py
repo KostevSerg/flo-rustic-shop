@@ -126,8 +126,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     safe_city_name = city_name.replace("'", "''")
                     if subcategory_id:
                         cur.execute(f'''
-                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
-                                   s.name as subcategory_name,
+                            SELECT DISTINCT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
+                                   s.name as subcategory_name, p.created_at,
                                    COALESCE(pcp.price, 
                                            ROUND(p.base_price * (1 + COALESCE(c.price_markup_percent, 0) / 100), 2)
                                    ) as price
@@ -135,15 +135,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             LEFT JOIN cities c ON c.name = '{safe_city_name}' AND c.is_active = true
                             LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
-                            WHERE p.is_active = true AND p.subcategory_id = {int(subcategory_id)}
+                            JOIN product_subcategories ps ON ps.product_id = p.id
+                            WHERE p.is_active = true AND ps.subcategory_id = {int(subcategory_id)}
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
                     elif category:
                         safe_category = category.replace("'", "''")
                         cur.execute(f'''
-                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
-                                   s.name as subcategory_name,
+                            SELECT DISTINCT p.id, p.name, p.description, p.composition, p.image_url, p.category, p.is_featured, p.subcategory_id,
+                                   s.name as subcategory_name, p.created_at,
                                    COALESCE(pcp.price, 
                                            ROUND(p.base_price * (1 + COALESCE(c.price_markup_percent, 0) / 100), 2)
                                    ) as price
@@ -151,7 +152,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             LEFT JOIN cities c ON c.name = '{safe_city_name}' AND c.is_active = true
                             LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
-                            WHERE p.is_active = true AND p.category = '{safe_category}'
+                            JOIN product_categories pc ON pc.product_id = p.id
+                            WHERE p.is_active = true AND pc.category = '{safe_category}'
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
@@ -173,22 +175,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 else:
                     if subcategory_id:
                         cur.execute(f'''
-                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
-                                   s.name as subcategory_name
+                            SELECT DISTINCT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                                   s.name as subcategory_name, p.created_at
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
-                            WHERE p.is_active = true AND p.subcategory_id = {int(subcategory_id)}
+                            JOIN product_subcategories ps ON ps.product_id = p.id
+                            WHERE p.is_active = true AND ps.subcategory_id = {int(subcategory_id)}
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
                     elif category:
                         safe_category = category.replace("'", "''")
                         cur.execute(f'''
-                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
-                                   s.name as subcategory_name
+                            SELECT DISTINCT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                                   s.name as subcategory_name, p.created_at
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
-                            WHERE p.is_active = true AND p.category = '{safe_category}'
+                            JOIN product_categories pc ON pc.product_id = p.id
+                            WHERE p.is_active = true AND pc.category = '{safe_category}'
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
@@ -254,6 +258,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 def decimal_default(obj):
                     if isinstance(obj, Decimal):
                         return float(obj)
+                    if hasattr(obj, 'isoformat'):
+                        return obj.isoformat()
                     raise TypeError
                 
                 return {
