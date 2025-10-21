@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BreadcrumbsNav from '@/components/BreadcrumbsNav';
 import API_ENDPOINTS from '@/config/api';
+import { useCitySEO } from '@/hooks/useCitySEO';
 
 const Delivery = () => {
   const { totalItems } = useCart();
@@ -37,8 +38,10 @@ const Delivery = () => {
     loadContent();
   }, []);
 
-  const pageTitle = `${content.title} — FloRustic | Доставка цветов`;
-  const pageDescription = content.metaDescription;
+  const { title: pageTitle, description: pageDescription } = useCitySEO(
+    content.title,
+    content.metaDescription
+  );
 
   return (
     <div className="min-h-screen flex flex-col">

@@ -9,6 +9,7 @@ import BreadcrumbsNav from '@/components/BreadcrumbsNav';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
 import { Button } from '@/components/ui/button';
+import { useCitySEO } from '@/hooks/useCitySEO';
 
 interface CityContactData {
   id: number;
@@ -67,13 +68,10 @@ const Contacts = () => {
     );
   }
 
-  const pageTitle = selectedCity 
-    ? `Контакты FloRustic в ${selectedCity} — Телефон, адрес, режим работы`
-    : 'Контакты FloRustic — Телефон, email, адреса магазинов по России';
-
-  const pageDescription = selectedCity
-    ? `Контакты магазина цветов FloRustic в ${selectedCity}: телефон, адрес, режим работы, email. Свяжитесь с нами для заказа свежих букетов с доставкой.`
-    : 'Контакты FloRustic: телефоны, email и адреса магазинов цветов по всей России. Звоните для заказа букетов с доставкой. Работаем ежедневно.';
+  const { title: pageTitle, description: pageDescription, cityInPrepositional } = useCitySEO(
+    'Контакты',
+    `Контакты магазина цветов FloRustic: телефон, адрес, режим работы, email. Свяжитесь с нами для заказа свежих букетов с доставкой`
+  );
 
   return (
     <div className="min-h-screen flex flex-col">

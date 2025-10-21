@@ -6,34 +6,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BreadcrumbsNav from '@/components/BreadcrumbsNav';
 import API_ENDPOINTS from '@/config/api';
-
-const declineCity = (city: string, caseType: 'prepositional' | 'dative'): string => {
-  const declensions: Record<string, { prepositional: string; dative: string }> = {
-    'Барнаул': { prepositional: 'Барнауле', dative: 'Барнаулу' },
-    'Москва': { prepositional: 'Москве', dative: 'Москве' },
-    'Санкт-Петербург': { prepositional: 'Санкт-Петербурге', dative: 'Санкт-Петербургу' },
-    'Новосибирск': { prepositional: 'Новосибирске', dative: 'Новосибирску' },
-    'Екатеринбург': { prepositional: 'Екатеринбурге', dative: 'Екатеринбургу' },
-    'Казань': { prepositional: 'Казани', dative: 'Казани' },
-    'Нижний Новгород': { prepositional: 'Нижнем Новгороде', dative: 'Нижнему Новгороду' },
-    'Челябинск': { prepositional: 'Челябинске', dative: 'Челябинску' },
-    'Самара': { prepositional: 'Самаре', dative: 'Самаре' },
-    'Омск': { prepositional: 'Омске', dative: 'Омску' },
-    'Ростов-на-Дону': { prepositional: 'Ростове-на-Дону', dative: 'Ростову-на-Дону' },
-    'Уфа': { prepositional: 'Уфе', dative: 'Уфе' },
-    'Красноярск': { prepositional: 'Красноярске', dative: 'Красноярску' },
-    'Воронеж': { prepositional: 'Воронеже', dative: 'Воронежу' },
-    'Пермь': { prepositional: 'Перми', dative: 'Перми' },
-    'Волгоград': { prepositional: 'Волгограде', dative: 'Волгограду' },
-    'Белокуриха': { prepositional: 'Белокурихе', dative: 'Белокурихе' },
-    'Гальбштадт': { prepositional: 'Гальбштадте', dative: 'Гальбштадту' }
-  };
-  
-  const declension = declensions[city];
-  if (!declension) return city;
-  
-  return declension[caseType];
-};
+import { declineCity, useCitySEO } from '@/hooks/useCitySEO';
 
 const About = () => {
   const { totalItems } = useCart();
@@ -99,8 +72,13 @@ const About = () => {
     return result;
   }, [content.htmlContent, selectedCity]);
 
-  const pageTitle = `${content.title} — FloRustic | Флористическая студия`;
-  const pageDescription = content.metaDescription;
+  const { title: pageTitle, description: pageDescription } = useCitySEO(
+    content.title,
+    content.metaDescription
+  );
+  
+  const { selectedCity } = useCity();
+  const cityInPrepositional = useMemo(() => declineCity(selectedCity, 'prepositional'), [selectedCity]);
 
   return (
     <div className="min-h-screen flex flex-col">
