@@ -204,27 +204,30 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 products = [dict(row) for row in cur.fetchall()]
                 
-                # Получаем все категории и подкатегории для каждого товара
+                # Очищаем base64 изображения (слишком большие для ответа)
                 for product in products:
-                    product_id = product['id']
+                    if product.get('image_url') and len(product['image_url']) > 5000:
+                        product['image_url'] = ''
+                
+                # Добавляем categories/subcategories только для запроса конкретного товара
+                if product_id and products:
+                    pid = products[0]['id']
                     
-                    # Получаем все категории
+                    # Получаем категории
                     cur.execute(f'''
                         SELECT category FROM product_categories 
-                        WHERE product_id = {product_id}
+                        WHERE product_id = {pid}
                     ''')
-                    categories = [row['category'] for row in cur.fetchall()]
-                    product['categories'] = categories
+                    products[0]['categories'] = [row['category'] for row in cur.fetchall()]
                     
-                    # Получаем все подкатегории
+                    # Получаем подкатегории
                     cur.execute(f'''
                         SELECT ps.subcategory_id, s.name, s.category 
                         FROM product_subcategories ps
                         JOIN subcategories s ON s.id = ps.subcategory_id
-                        WHERE ps.product_id = {product_id}
+                        WHERE ps.product_id = {pid}
                     ''')
-                    subcategories = [dict(row) for row in cur.fetchall()]
-                    product['subcategories'] = subcategories
+                    products[0]['subcategories'] = [dict(row) for row in cur.fetchall()]
                 
                 def decimal_default(obj):
                     if isinstance(obj, Decimal):
