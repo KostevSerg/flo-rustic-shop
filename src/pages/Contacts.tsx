@@ -112,26 +112,6 @@ const Contacts = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Главная",
-                "item": "https://florustic.ru/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Контакты"
-              }
-            ]
-          })}
-        </script>
-        
         {selectedContact && (
           <script type="application/ld+json">
             {JSON.stringify({

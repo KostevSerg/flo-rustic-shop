@@ -72,16 +72,6 @@ const Catalog = () => {
         <meta name="twitter:description" content={pageDescription} />
         
         <link rel="canonical" href="https://florustic.ru/catalog" />
-        
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "CollectionPage",
-            "name": pageTitle,
-            "description": pageDescription,
-            "url": "https://florustic.ru/catalog"
-          })}
-        </script>
       </Helmet>
       
       <Header cartCount={totalItems} />

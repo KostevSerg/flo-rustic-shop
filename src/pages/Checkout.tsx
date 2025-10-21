@@ -365,6 +365,10 @@ const Checkout = () => {
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
+          <BreadcrumbsNav items={[
+            { name: 'Корзина', path: '/cart' },
+            { name: 'Оформление заказа' }
+          ]} />
           <div className="flex items-center gap-4 mb-6">
             <Button variant="ghost" onClick={() => navigate('/cart')}>
               <Icon name="ArrowLeft" size={20} className="mr-2" />

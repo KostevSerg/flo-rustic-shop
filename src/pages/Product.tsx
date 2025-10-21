@@ -104,30 +104,6 @@ const Product = () => {
   const pageDescription = product.description || `Купить ${product.name} с доставкой в ${selectedCity}. Цена ${product.price} ₽. Свежие цветы, быстрая доставка. Заказать онлайн в FloRustic.`;
   const productUrl = `https://florustic.ru/product/${id}`;
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Главная",
-        "item": "https://florustic.ru/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Каталог",
-        "item": "https://florustic.ru/catalog"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": product.name
-      }
-    ]
-  };
-
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -169,9 +145,6 @@ const Product = () => {
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={product.image_url} />
         
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbSchema)}
-        </script>
         <script type="application/ld+json">
           {JSON.stringify(productSchema)}
         </script>
