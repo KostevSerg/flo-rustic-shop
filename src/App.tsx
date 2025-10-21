@@ -3,13 +3,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { CartProvider } from "@/contexts/CartContext";
 import { CityProvider } from "@/contexts/CityContext";
-import { SiteTextsProvider } from "@/contexts/SiteTextsContext";
+import { SiteTextsProvider } from "@/contexts/SiteTextsProvider";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import JivoChat from "@/components/JivoChat";
+import { useEffect } from "react";
 import Index from "./pages/Index";
 import Catalog from "./pages/Catalog";
 import Product from "./pages/Product";
@@ -38,6 +39,24 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+declare global {
+  interface Window {
+    ym?: (counterId: number, method: string, url?: string) => void;
+  }
+}
+
+const YandexMetrikaTracker = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (typeof window.ym !== 'undefined') {
+      window.ym(104746725, 'hit', window.location.href);
+    }
+  }, [location]);
+
+  return null;
+};
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -55,6 +74,7 @@ const App = () => (
                     v7_relativeSplatPath: true
                   }}
                 >
+                  <YandexMetrikaTracker />
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/catalog" element={<Catalog />} />
