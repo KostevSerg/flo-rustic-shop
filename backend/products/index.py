@@ -204,6 +204,28 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 products = [dict(row) for row in cur.fetchall()]
                 
+                # Получаем все категории и подкатегории для каждого товара
+                for product in products:
+                    product_id = product['id']
+                    
+                    # Получаем все категории
+                    cur.execute(f'''
+                        SELECT category FROM product_categories 
+                        WHERE product_id = {product_id}
+                    ''')
+                    categories = [row['category'] for row in cur.fetchall()]
+                    product['categories'] = categories
+                    
+                    # Получаем все подкатегории
+                    cur.execute(f'''
+                        SELECT ps.subcategory_id, s.name, s.category 
+                        FROM product_subcategories ps
+                        JOIN subcategories s ON s.id = ps.subcategory_id
+                        WHERE ps.product_id = {product_id}
+                    ''')
+                    subcategories = [dict(row) for row in cur.fetchall()]
+                    product['subcategories'] = subcategories
+                
                 def decimal_default(obj):
                     if isinstance(obj, Decimal):
                         return float(obj)
@@ -230,7 +252,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 image_url = body_data.get('image_url', '').strip()
                 base_price = body_data.get('base_price')
                 category = body_data.get('category', '').strip()
+                categories = body_data.get('categories', [])
                 subcategory_id = body_data.get('subcategory_id')
+                subcategory_ids = body_data.get('subcategory_ids', [])
                 
                 if not name or not base_price:
                     return {
@@ -263,6 +287,38 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             RETURNING id
                         ''')
                     product_id = cur.fetchone()[0]
+                    
+                    # Добавляем множественные категории
+                    if categories:
+                        for cat in categories:
+                            safe_category = cat.replace("'", "''")
+                            cur.execute(f'''
+                                INSERT INTO product_categories (product_id, category)
+                                VALUES ({product_id}, '{safe_category}')
+                                ON CONFLICT (product_id, category) DO NOTHING
+                            ''')
+                    elif category:
+                        cur.execute(f'''
+                            INSERT INTO product_categories (product_id, category)
+                            VALUES ({product_id}, '{safe_cat}')
+                            ON CONFLICT (product_id, category) DO NOTHING
+                        ''')
+                    
+                    # Добавляем множественные подкатегории
+                    if subcategory_ids:
+                        for sub_id in subcategory_ids:
+                            cur.execute(f'''
+                                INSERT INTO product_subcategories (product_id, subcategory_id)
+                                VALUES ({product_id}, {int(sub_id)})
+                                ON CONFLICT (product_id, subcategory_id) DO NOTHING
+                            ''')
+                    elif subcategory_id:
+                        cur.execute(f'''
+                            INSERT INTO product_subcategories (product_id, subcategory_id)
+                            VALUES ({product_id}, {int(subcategory_id)})
+                            ON CONFLICT (product_id, subcategory_id) DO NOTHING
+                        ''')
+                    
                     conn.commit()
                 
                 return {
@@ -385,8 +441,33 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 }
             
             with conn.cursor() as cur:
-                update_query = f"UPDATE products SET {', '.join(updates)} WHERE id = {int(product_id)}"
-                cur.execute(update_query)
+                if updates:
+                    update_query = f"UPDATE products SET {', '.join(updates)} WHERE id = {int(product_id)}"
+                    cur.execute(update_query)
+                
+                # Обновляем категории если переданы
+                if 'categories' in body_data:
+                    # Удаляем старые
+                    cur.execute(f"DELETE FROM product_categories WHERE product_id = {int(product_id)}")
+                    # Добавляем новые
+                    for cat in body_data['categories']:
+                        safe_cat = cat.replace("'", "''")
+                        cur.execute(f'''
+                            INSERT INTO product_categories (product_id, category)
+                            VALUES ({int(product_id)}, '{safe_cat}')
+                        ''')
+                
+                # Обновляем подкатегории если переданы
+                if 'subcategory_ids' in body_data:
+                    # Удаляем старые
+                    cur.execute(f"DELETE FROM product_subcategories WHERE product_id = {int(product_id)}")
+                    # Добавляем новые
+                    for sub_id in body_data['subcategory_ids']:
+                        cur.execute(f'''
+                            INSERT INTO product_subcategories (product_id, subcategory_id)
+                            VALUES ({int(product_id)}, {int(sub_id)})
+                        ''')
+                
                 conn.commit()
             
             return {

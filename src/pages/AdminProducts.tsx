@@ -21,9 +21,11 @@ interface Product {
   image_url: string;
   base_price: number;
   category: string;
+  categories?: string[];
   is_featured?: boolean;
   subcategory_id?: number | null;
   subcategory_name?: string;
+  subcategories?: Array<{subcategory_id: number; name: string; category: string}>;
 }
 
 interface City {
@@ -50,7 +52,9 @@ const AdminProducts = () => {
     image_url: '',
     base_price: '',
     category: 'Цветы',
-    subcategory_id: null as number | null
+    categories: ['Цветы'] as string[],
+    subcategory_id: null as number | null,
+    subcategory_ids: [] as number[]
   });
 
   const loadProducts = async () => {
@@ -110,7 +114,7 @@ const AdminProducts = () => {
         description: `Товар "${newProduct.name}" добавлен`
       });
 
-      setNewProduct({ name: '', description: '', composition: '', image_url: '', base_price: '', category: 'Цветы', subcategory_id: null });
+      setNewProduct({ name: '', description: '', composition: '', image_url: '', base_price: '', category: 'Цветы', categories: ['Цветы'], subcategory_id: null, subcategory_ids: [] });
       setShowAddForm(false);
       loadProducts();
     } catch (error) {

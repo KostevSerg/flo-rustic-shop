@@ -18,7 +18,9 @@ interface ProductFormAddProps {
     image_url: string;
     base_price: string;
     category: string;
+    categories?: string[];
     subcategory_id?: number | null;
+    subcategory_ids?: number[];
   };
   setNewProduct: (product: any) => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -30,18 +32,13 @@ const ProductFormAdd = ({ newProduct, setNewProduct, onSubmit, onCancel }: Produ
   const [loadingSubcategories, setLoadingSubcategories] = useState(false);
 
   useEffect(() => {
-    if (newProduct.category === 'Цветы') {
-      fetchSubcategories();
-    } else {
-      setSubcategories([]);
-      setNewProduct({ ...newProduct, subcategory_id: null });
-    }
-  }, [newProduct.category]);
+    fetchSubcategories();
+  }, []);
 
   const fetchSubcategories = async () => {
     setLoadingSubcategories(true);
     try {
-      const response = await fetch(`${API_ENDPOINTS.products}?action=subcategories&category=Цветы`);
+      const response = await fetch(`${API_ENDPOINTS.products}?action=subcategories`);
       const data = await response.json();
       setSubcategories(data.subcategories || []);
     } catch (error) {
@@ -49,6 +46,22 @@ const ProductFormAdd = ({ newProduct, setNewProduct, onSubmit, onCancel }: Produ
     } finally {
       setLoadingSubcategories(false);
     }
+  };
+
+  const toggleCategory = (cat: string) => {
+    const categories = newProduct.categories || [newProduct.category];
+    const newCategories = categories.includes(cat)
+      ? categories.filter(c => c !== cat)
+      : [...categories, cat];
+    setNewProduct({ ...newProduct, categories: newCategories });
+  };
+
+  const toggleSubcategory = (subId: number) => {
+    const subcategoryIds = newProduct.subcategory_ids || (newProduct.subcategory_id ? [newProduct.subcategory_id] : []);
+    const newSubcategoryIds = subcategoryIds.includes(subId)
+      ? subcategoryIds.filter(id => id !== subId)
+      : [...subcategoryIds, subId];
+    setNewProduct({ ...newProduct, subcategory_ids: newSubcategoryIds });
   };
 
   return (
@@ -82,37 +95,60 @@ const ProductFormAdd = ({ newProduct, setNewProduct, onSubmit, onCancel }: Produ
               required
             />
           </div>
-          <div>
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium mb-2">
-              Категория <span className="text-destructive">*</span>
+              Категории <span className="text-muted-foreground">(выберите одну или несколько)</span>
             </label>
-            <select
-              value={newProduct.category}
-              onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value, subcategory_id: null })}
-              className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-              required
-            >
-              <option value="Цветы">Цветы</option>
-              <option value="Шары">Шары</option>
-              <option value="Подарки">Подарки</option>
-            </select>
-          </div>
-          {newProduct.category === 'Цветы' && (
-            <div>
-              <label className="block text-sm font-medium mb-2">Подкатегория</label>
-              <select
-                value={newProduct.subcategory_id || ''}
-                onChange={(e) => setNewProduct({ ...newProduct, subcategory_id: e.target.value ? parseInt(e.target.value) : null })}
-                className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary bg-background"
-                disabled={loadingSubcategories}
-              >
-                <option value="">Без подкатегории</option>
-                {subcategories.map(sub => (
-                  <option key={sub.id} value={sub.id}>{sub.name}</option>
-                ))}
-              </select>
+            <div className="flex flex-wrap gap-2">
+              {['Цветы', 'Шары', 'Подарки', 'Композиции'].map(cat => {
+                const categories = newProduct.categories || [newProduct.category];
+                const isSelected = categories.includes(cat);
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => toggleCategory(cat)}
+                    className={`px-4 py-2 rounded-lg border transition-colors ${
+                      isSelected
+                        ? 'bg-primary text-primary-foreground border-primary'
+                        : 'bg-background border-border hover:border-primary'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
             </div>
-          )}
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium mb-2">
+              Подкатегории <span className="text-muted-foreground">(необязательно)</span>
+            </label>
+            {loadingSubcategories ? (
+              <div className="text-sm text-muted-foreground">Загрузка...</div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {subcategories.map(sub => {
+                  const subcategoryIds = newProduct.subcategory_ids || (newProduct.subcategory_id ? [newProduct.subcategory_id] : []);
+                  const isSelected = subcategoryIds.includes(sub.id);
+                  return (
+                    <button
+                      key={sub.id}
+                      type="button"
+                      onClick={() => toggleSubcategory(sub.id)}
+                      className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
+                        isSelected
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-background border-border hover:border-primary'
+                      }`}
+                    >
+                      {sub.name} <span className="text-xs opacity-70">({sub.category})</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           <div className="md:col-span-2">
             <ImageUpload
               currentImage={newProduct.image_url}
