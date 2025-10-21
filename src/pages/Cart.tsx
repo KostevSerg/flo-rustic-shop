@@ -40,11 +40,14 @@ const Cart = () => {
     );
   }
 
+  const formattedPrice = totalPrice ? totalPrice.toLocaleString('ru-RU') : '0';
+  const itemsCount = totalItems || 0;
+
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
-        <title>Корзина ({totalItems}) — FloRustic | Оформление заказа</title>
-        <meta name="description" content={`В вашей корзине ${totalItems} товаров на сумму ${totalPrice.toLocaleString('ru-RU')} ₽. Оформите заказ цветов с доставкой.`} />
+        <title>{`Корзина (${itemsCount}) — FloRustic | Оформление заказа`}</title>
+        <meta name="description" content={`В вашей корзине ${itemsCount} товаров на сумму ${formattedPrice} ₽. Оформите заказ цветов с доставкой.`} />
         <meta name="robots" content="noindex, follow" />
         <link rel="canonical" href="https://florustic.ru/cart" />
       </Helmet>
