@@ -8,6 +8,8 @@ interface Product {
   image_url: string;
   base_price: number;
   category: string;
+  categories?: string[];
+  subcategories?: Array<{subcategory_id: number; name: string; category: string}>;
   is_featured?: boolean;
 }
 
@@ -34,21 +36,34 @@ const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatur
         <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
           {product.description}
         </p>
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xl font-bold">{product.base_price || 0} ₽</span>
-          <div className="flex gap-2 items-center">
+        <div className="mb-3">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xl font-bold">{product.base_price || 0} ₽</span>
             {product.is_featured && (
               <span className="text-xs bg-yellow-500 text-white px-2 py-1 rounded flex items-center gap-1">
                 <Icon name="Star" size={12} />
                 Популярный
               </span>
             )}
-            {product.category && (
-              <span className="text-xs bg-accent px-2 py-1 rounded">
-                {product.category}
-              </span>
-            )}
           </div>
+          {(product.categories && product.categories.length > 0) && (
+            <div className="flex flex-wrap gap-1 mb-2">
+              {product.categories.map((cat, idx) => (
+                <span key={idx} className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
+                  {cat}
+                </span>
+              ))}
+            </div>
+          )}
+          {(product.subcategories && product.subcategories.length > 0) && (
+            <div className="flex flex-wrap gap-1">
+              {product.subcategories.map((sub) => (
+                <span key={sub.subcategory_id} className="text-xs bg-accent/50 px-2 py-0.5 rounded">
+                  {sub.name}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex gap-2">
           <Button

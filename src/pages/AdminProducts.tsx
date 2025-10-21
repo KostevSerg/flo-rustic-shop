@@ -60,7 +60,7 @@ const AdminProducts = () => {
   const loadProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch(API_ENDPOINTS.products);
+      const response = await fetch(`${API_ENDPOINTS.products}?with_relations=true`);
       const data = await response.json();
       setProducts(data.products || []);
     } catch (error) {
@@ -97,14 +97,17 @@ const AdminProducts = () => {
     }
 
     try {
+      const payload = {
+        action: 'create',
+        ...newProduct,
+        base_price: parseInt(newProduct.base_price)
+      };
+      console.log('Creating product with payload:', payload);
+      
       const response = await fetch(API_ENDPOINTS.products, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'create',
-          ...newProduct,
-          base_price: parseInt(newProduct.base_price)
-        })
+        body: JSON.stringify(payload)
       });
 
       if (!response.ok) throw new Error('Failed to add product');

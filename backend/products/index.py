@@ -48,6 +48,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             city_name = query_params.get('city')
             category = query_params.get('category')
             subcategory_id = query_params.get('subcategory_id')
+            with_relations = query_params.get('with_relations') == 'true'
             
             if action == 'subcategories':
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -209,25 +210,46 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     if product.get('image_url') and len(product['image_url']) > 5000:
                         product['image_url'] = ''
                 
-                # Добавляем categories/subcategories только для запроса конкретного товара
-                if product_id and products:
-                    pid = products[0]['id']
+                # Добавляем categories/subcategories если запрошено или для конкретного товара
+                if (with_relations or product_id) and products:
+                    product_ids = [p['id'] for p in products]
+                    product_ids_str = ','.join(map(str, product_ids))
                     
-                    # Получаем категории
+                    # Получаем все категории одним запросом
                     cur.execute(f'''
-                        SELECT category FROM product_categories 
-                        WHERE product_id = {pid}
+                        SELECT product_id, category 
+                        FROM product_categories 
+                        WHERE product_id IN ({product_ids_str})
                     ''')
-                    products[0]['categories'] = [row['category'] for row in cur.fetchall()]
+                    categories_map = {}
+                    for row in cur.fetchall():
+                        pid = row['product_id']
+                        if pid not in categories_map:
+                            categories_map[pid] = []
+                        categories_map[pid].append(row['category'])
                     
-                    # Получаем подкатегории
+                    # Получаем все подкатегории одним запросом
                     cur.execute(f'''
-                        SELECT ps.subcategory_id, s.name, s.category 
+                        SELECT ps.product_id, ps.subcategory_id, s.name, s.category 
                         FROM product_subcategories ps
                         JOIN subcategories s ON s.id = ps.subcategory_id
-                        WHERE ps.product_id = {pid}
+                        WHERE ps.product_id IN ({product_ids_str})
                     ''')
-                    products[0]['subcategories'] = [dict(row) for row in cur.fetchall()]
+                    subcategories_map = {}
+                    for row in cur.fetchall():
+                        pid = row['product_id']
+                        if pid not in subcategories_map:
+                            subcategories_map[pid] = []
+                        subcategories_map[pid].append({
+                            'subcategory_id': row['subcategory_id'],
+                            'name': row['name'],
+                            'category': row['category']
+                        })
+                    
+                    # Добавляем к товарам
+                    for product in products:
+                        product['categories'] = categories_map.get(product['id'], [])
+                        product['subcategories'] = subcategories_map.get(product['id'], [])
                 
                 def decimal_default(obj):
                     if isinstance(obj, Decimal):
