@@ -72,13 +72,10 @@ const About = () => {
     return result;
   }, [content.htmlContent, selectedCity]);
 
-  const { title: pageTitle, description: pageDescription } = useCitySEO(
+  const { title: pageTitle, description: pageDescription, cityInPrepositional } = useCitySEO(
     content.title,
     content.metaDescription
   );
-  
-  const { selectedCity } = useCity();
-  const cityInPrepositional = useMemo(() => declineCity(selectedCity, 'prepositional'), [selectedCity]);
 
   return (
     <div className="min-h-screen flex flex-col">
