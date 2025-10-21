@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import ReviewsSection from '@/components/ReviewsSection';
+import SiteLinksMarkup from '@/components/SiteLinksMarkup';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
@@ -161,8 +162,26 @@ const Index = () => {
             }
           })}
         </script>
+        
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "FloRustic",
+            "url": "https://florustic.ru",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://florustic.ru/catalog?search={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          })}
+        </script>
       </Helmet>
       
+      <SiteLinksMarkup />
       <Header cartCount={totalItems} />
       
       <section className="relative bg-gradient-to-br from-accent/20 to-background py-24 md:py-32">
