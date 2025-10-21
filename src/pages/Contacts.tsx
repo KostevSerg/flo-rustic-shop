@@ -30,6 +30,11 @@ const Contacts = () => {
   const [selectedContact, setSelectedContact] = useState<CityContactData | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const { title: pageTitle, description: pageDescription, cityInPrepositional } = useCitySEO(
+    'Контакты',
+    `Контакты магазина цветов FloRustic: телефон, адрес, режим работы, email. Свяжитесь с нами для заказа свежих букетов с доставкой`
+  );
+
   useEffect(() => {
     const fetchCityContact = async () => {
       setLoading(true);
@@ -88,11 +93,6 @@ const Contacts = () => {
       </div>
     );
   }
-
-  const { title: pageTitle, description: pageDescription, cityInPrepositional } = useCitySEO(
-    'Контакты',
-    `Контакты магазина цветов FloRustic: телефон, адрес, режим работы, email. Свяжитесь с нами для заказа свежих букетов с доставкой`
-  );
 
   return (
     <div className="min-h-screen flex flex-col">
