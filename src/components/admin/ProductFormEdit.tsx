@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import ImageUpload from '@/components/ui/image-upload';
 import API_ENDPOINTS from '@/config/api';
 
 interface Subcategory {
@@ -136,28 +137,23 @@ const ProductFormEdit = ({ editingProduct, setEditingProduct, onSubmit, onCancel
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">
-                Ссылка на изображение
-              </label>
-              <input
-                type="url"
-                value={editingProduct.image_url}
-                onChange={(e) => setEditingProduct({ ...editingProduct, image_url: e.target.value })}
-                className="w-full px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
-                placeholder="https://example.com/image.jpg"
+              <ImageUpload
+                currentImage={editingProduct.image_url}
+                onImageChange={(url) => setEditingProduct({ ...editingProduct, image_url: url })}
+                label="Изображение товара"
               />
-              {editingProduct.image_url && (
-                <div className="mt-3">
-                  <img 
-                    src={editingProduct.image_url} 
-                    alt="Предпросмотр" 
-                    className="max-w-xs rounded-lg border border-border"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                </div>
-              )}
+              <div className="mt-2">
+                <label className="block text-xs font-medium mb-1 text-muted-foreground">
+                  Или укажите URL изображения
+                </label>
+                <input
+                  type="url"
+                  value={editingProduct.image_url}
+                  onChange={(e) => setEditingProduct({ ...editingProduct, image_url: e.target.value })}
+                  className="w-full px-3 py-2 text-sm rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="https://cdn.poehali.dev/files/... или /images/products/..."
+                />
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">Описание</label>
