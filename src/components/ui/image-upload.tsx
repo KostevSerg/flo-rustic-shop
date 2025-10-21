@@ -33,10 +33,33 @@ const ImageUpload = ({ currentImage, onImageChange, label = 'Изображен�
     try {
       const reader = new FileReader();
       
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         const base64String = event.target?.result as string;
-        onImageChange(base64String);
-        setUploading(false);
+        
+        try {
+          const response = await fetch('https://functions.poehali.dev/1a6c3d40-9259-4124-95d8-03422b03f786', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              image: base64String,
+              filename: file.name
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('Ошибка загрузки на сервер');
+          }
+
+          const data = await response.json();
+          onImageChange(data.url);
+          setUploading(false);
+        } catch (uploadError) {
+          console.error('Upload to S3 error:', uploadError);
+          setError('Не удалось загрузить изображение на сервер');
+          setUploading(false);
+        }
       };
 
       reader.onerror = () => {
