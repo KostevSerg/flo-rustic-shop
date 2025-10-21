@@ -59,19 +59,20 @@ const ProductFormEdit = ({ editingProduct, setEditingProduct, onSubmit, onCancel
         className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
         onClick={onCancel}
       />
-      <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-2xl bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
-        <div className="p-6 border-b border-border">
+      <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-2xl max-h-[90vh] bg-card border border-border rounded-xl shadow-2xl flex flex-col">
+        <div className="px-4 py-3 border-b border-border flex-shrink-0">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold">Редактировать товар</h3>
+            <h3 className="text-lg font-bold">Редактировать товар</h3>
             <button
               onClick={onCancel}
-              className="hover:bg-accent/50 rounded-lg p-2 transition-colors"
+              className="hover:bg-accent/50 rounded-lg p-1.5 transition-colors"
             >
-              <Icon name="X" size={24} />
+              <Icon name="X" size={20} />
             </button>
           </div>
         </div>
-        <form onSubmit={onSubmit} className="p-6">
+        <form onSubmit={onSubmit} className="flex flex-col flex-1 min-h-0">
+          <div className="overflow-y-auto flex-1 px-4 py-4">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -175,10 +176,11 @@ const ProductFormEdit = ({ editingProduct, setEditingProduct, onSubmit, onCancel
               />
             </div>
           </div>
-          <div className="flex gap-3 mt-6">
+          </div>
+          <div className="flex gap-3 px-4 py-3 border-t border-border flex-shrink-0 bg-card">
             <Button type="submit">
               <Icon name="Save" size={18} className="mr-2" />
-              Сохранить изменения
+              Сохранить
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Отмена
