@@ -38,9 +38,30 @@ const Contacts = () => {
         const data = await response.json();
         if (data.contact) {
           setSelectedContact(data.contact);
+        } else {
+          setSelectedContact({
+            id: 0,
+            city_id: 0,
+            city_name: selectedCity,
+            phone: '+7 (800) 123-45-67',
+            email: 'info@florustic.ru',
+            address: 'Уточняйте по телефону',
+            working_hours: 'Ежедневно с 9:00 до 21:00',
+            delivery_info: 'Доставка по всему городу'
+          });
         }
       } catch (error) {
         console.error('Failed to fetch city contact:', error);
+        setSelectedContact({
+          id: 0,
+          city_id: 0,
+          city_name: selectedCity,
+          phone: '+7 (800) 123-45-67',
+          email: 'info@florustic.ru',
+          address: 'Уточняйте по телефону',
+          working_hours: 'Ежедневно с 9:00 до 21:00',
+          delivery_info: 'Доставка по всему городу'
+        });
       } finally {
         setLoading(false);
       }
