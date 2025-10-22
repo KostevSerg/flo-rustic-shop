@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
+import API_ENDPOINTS from '@/config/api';
 
 interface ImageUploadProps {
   currentImage?: string;
@@ -33,10 +34,33 @@ const ImageUpload = ({ currentImage, onImageChange, label = 'Изображен�
     try {
       const reader = new FileReader();
       
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         const base64String = event.target?.result as string;
-        onImageChange(base64String);
-        setUploading(false);
+        
+        try {
+          const response = await fetch(API_ENDPOINTS.uploadImage, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              image: base64String,
+              filename: file.name
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('Не удалось загрузить изображение');
+          }
+
+          const data = await response.json();
+          onImageChange(data.url);
+          setUploading(false);
+        } catch (uploadErr) {
+          console.error('Upload error:', uploadErr);
+          setError('Не удалось загрузить изображение на сервер');
+          setUploading(false);
+        }
       };
 
       reader.onerror = () => {
