@@ -140,6 +140,7 @@ const City = () => {
     addToCart({
       id: product.id,
       name: product.name,
+      description: product.description,
       price: product.price,
       image: product.image_url
     });
