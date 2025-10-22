@@ -57,15 +57,31 @@ const Reviews = () => {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "FloRustic",
+    "url": "https://florustic.ru",
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "4.8",
       "reviewCount": reviews.length.toString(),
       "bestRating": "5",
-      "worstRating": "1"
+      "worstRating": "1",
+      "itemReviewed": {
+        "@type": "LocalBusiness",
+        "name": "FloRustic",
+        "image": "https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "RU"
+        },
+        "priceRange": "₽₽"
+      }
     },
     "review": reviews.map(review => ({
       "@type": "Review",
+      "itemReviewed": {
+        "@type": "LocalBusiness",
+        "name": "FloRustic",
+        "image": "https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png"
+      },
       "author": {
         "@type": "Person",
         "name": review.name
