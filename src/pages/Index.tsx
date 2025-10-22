@@ -138,12 +138,7 @@ const Index = () => {
               "addressCountry": "RU"
             },
             "openingHours": "Mo-Su 09:00-21:00",
-            "areaServed": ["Москва", "Санкт-Петербург", "Казань", "Екатеринбург", "Новосибирск", "Россия"],
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": "4.9",
-              "reviewCount": "127"
-            }
+            "areaServed": ["Москва", "Санкт-Петербург", "Казань", "Екатеринбург", "Новосибирск", "Россия"]
           })}
         </script>
         
