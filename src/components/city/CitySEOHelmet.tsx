@@ -6,10 +6,10 @@ interface CitySEOHelmetProps {
 }
 
 const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
-  const pageTitle = `Доставка цветов в ${cityName} — FloRustic | Букеты с доставкой в ${cityName}`;
-  const pageDescription = `Доставка свежих цветов и букетов в ${cityName}. Большой выбор композиций для любого случая. Быстрая доставка по городу ${cityName}. Заказать букет онлайн с доставкой на дом. Свежие цветы, доступные цены.`;
+  const pageTitle = `Доставка цветов ${cityName} — FloRustic | Букеты с доставкой в ${cityName}`;
+  const pageDescription = `Доставка свежих цветов и букетов в ${cityName}. Большой выбор композиций: розы, тюльпаны, стабилизированный мох. Быстрая доставка по городу ${cityName}. Заказать букет онлайн с доставкой курьером. Свежие цветы от профессиональных флористов.`;
   const pageUrl = `https://florustic.ru/city/${citySlug}`;
-  const keywords = `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, доставка цветов россия`;
+  const keywords = `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, цветы с доставкой ${cityName}`;
 
   return (
     <Helmet>
@@ -61,18 +61,33 @@ const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
             "@type": "City",
             "name": cityName
           },
-          "priceRange": "$$",
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.9",
-            "reviewCount": "127"
-          },
+          "priceRange": "₽₽",
           "address": {
             "@type": "PostalAddress",
             "addressLocality": cityName,
             "addressCountry": "RU"
           },
-          "priceRange": "₽₽"
+          "openingHours": "Mo-Su 09:00-21:00",
+          "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": `Доставка цветов в ${cityName}`,
+            "itemListElement": [
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": `Букеты с доставкой в ${cityName}`
+                }
+              },
+              {
+                "@type": "Offer",
+                "itemOffered": {
+                  "@type": "Service",
+                  "name": `Композиции из стабилизированного мха в ${cityName}`
+                }
+              }
+            ]
+          }
         })}
       </script>
     </Helmet>
