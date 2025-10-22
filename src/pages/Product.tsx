@@ -40,7 +40,19 @@ const Product = () => {
         const data = await response.json();
         
         if (data.products && data.products.length > 0) {
-          setProduct(data.products[0]);
+          const loadedProduct = data.products[0];
+          setProduct(loadedProduct);
+          
+          if (typeof window.ym !== 'undefined') {
+            window.ym(104746725, 'ecommerce', 'detail', {
+              products: [{
+                id: loadedProduct.id.toString(),
+                name: loadedProduct.name,
+                price: loadedProduct.price,
+                category: loadedProduct.category || 'Букеты'
+              }]
+            });
+          }
         } else {
           navigate('/404');
         }
@@ -70,11 +82,15 @@ const Product = () => {
     }
     
     if (typeof window.ym !== 'undefined') {
-      window.ym(104746725, 'reachGoal', 'buy_now', {
-        product_id: product.id,
-        product_name: product.name,
-        product_price: product.price,
-        quantity: quantity
+      window.ym(104746725, 'reachGoal', 'buy_now');
+      
+      window.ym(104746725, 'ecommerce', 'add', {
+        products: [{
+          id: product.id.toString(),
+          name: product.name,
+          price: product.price,
+          quantity: quantity
+        }]
       });
     }
     

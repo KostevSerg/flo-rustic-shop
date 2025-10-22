@@ -236,10 +236,20 @@ const Checkout = () => {
       const orderId = result.id;
 
       if (typeof window.ym !== 'undefined') {
-        window.ym(104746725, 'reachGoal', 'purchase', {
-          order_id: orderId,
-          order_price: finalPrice,
-          products_count: items.length
+        window.ym(104746725, 'reachGoal', 'purchase');
+        
+        window.ym(104746725, 'ecommerce', 'purchase', {
+          actionField: {
+            id: orderId.toString(),
+            revenue: finalPrice,
+            coupon: appliedPromo?.code || ''
+          },
+          products: items.map(item => ({
+            id: item.id.toString(),
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity
+          }))
         });
       }
 

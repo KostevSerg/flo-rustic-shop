@@ -26,10 +26,15 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
     onAddToCart();
     
     if (typeof window.ym !== 'undefined') {
-      window.ym(104746725, 'reachGoal', 'add_to_cart', {
-        product_id: product.id,
-        product_name: product.name,
-        product_price: product.price
+      window.ym(104746725, 'reachGoal', 'add_to_cart');
+      
+      window.ym(104746725, 'ecommerce', 'add', {
+        products: [{
+          id: product.id.toString(),
+          name: product.name,
+          price: product.price,
+          quantity: 1
+        }]
       });
     }
     

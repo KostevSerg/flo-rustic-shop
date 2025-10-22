@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
@@ -9,6 +10,19 @@ import Icon from '@/components/ui/icon';
 
 const Cart = () => {
   const { items, removeFromCart, updateQuantity, totalItems, totalPrice } = useCart();
+
+  useEffect(() => {
+    if (items.length > 0 && typeof window.ym !== 'undefined') {
+      window.ym(104746725, 'ecommerce', 'detail', {
+        products: items.map(item => ({
+          id: item.id.toString(),
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity
+        }))
+      });
+    }
+  }, [items]);
 
   if (items.length === 0) {
     return (
@@ -90,7 +104,19 @@ const Cart = () => {
                   </div>
                 </div>
                 <button 
-                  onClick={() => removeFromCart(item.id)}
+                  onClick={() => {
+                    removeFromCart(item.id);
+                    if (typeof window.ym !== 'undefined') {
+                      window.ym(104746725, 'ecommerce', 'remove', {
+                        products: [{
+                          id: item.id.toString(),
+                          name: item.name,
+                          price: item.price,
+                          quantity: item.quantity
+                        }]
+                      });
+                    }
+                  }}
                   className="text-muted-foreground hover:text-destructive transition"
                 >
                   <Icon name="Trash2" size={20} />
