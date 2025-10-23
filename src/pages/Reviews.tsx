@@ -80,6 +80,7 @@ const Reviews = () => {
       "itemReviewed": {
         "@type": "LocalBusiness",
         "name": "FloRustic",
+        "url": "https://florustic.ru",
         "image": "https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png"
       },
       "author": {
