@@ -142,7 +142,7 @@ const Product = () => {
         "@type": "OfferShippingDetails",
         "shippingRate": {
           "@type": "MonetaryAmount",
-          "value": "0",
+          "value": "300",
           "currency": "RUB"
         },
         "deliveryTime": {
