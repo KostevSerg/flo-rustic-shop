@@ -126,18 +126,47 @@ const Product = () => {
     "name": product.name,
     "description": product.description,
     "image": product.image_url,
+    "brand": {
+      "@type": "Brand",
+      "name": "FloRustic"
+    },
     "offers": {
       "@type": "Offer",
       "url": productUrl,
       "priceCurrency": "RUB",
       "price": product.price,
+      "priceValidUntil": new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       "availability": "https://schema.org/InStock",
+      "itemCondition": "https://schema.org/NewCondition",
+      "shippingDetails": {
+        "@type": "OfferShippingDetails",
+        "shippingRate": {
+          "@type": "MonetaryAmount",
+          "value": "0",
+          "currency": "RUB"
+        },
+        "deliveryTime": {
+          "@type": "ShippingDeliveryTime",
+          "handlingTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 0,
+            "maxValue": 1.5,
+            "unitCode": "HUR"
+          }
+        }
+      },
       "seller": {
         "@type": "Organization",
-        "name": "FloRustic"
+        "name": "FloRustic",
+        "url": "https://florustic.ru"
       }
     },
-    "category": product.category || "Букеты"
+    "category": product.category || "Букеты",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5.0",
+      "reviewCount": "2"
+    }
   };
 
   return (

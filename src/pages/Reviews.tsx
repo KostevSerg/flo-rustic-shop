@@ -1,66 +1,59 @@
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BreadcrumbsNav from '@/components/BreadcrumbsNav';
 import Icon from '@/components/ui/icon';
+import API_ENDPOINTS from '@/config/api';
+
+interface Review {
+  id: number;
+  name: string;
+  city: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+}
 
 const Reviews = () => {
   const { totalItems } = useCart();
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const reviews = [
-    {
-      id: 1,
-      name: 'Анна Смирнова',
-      date: '15 марта 2024',
-      rating: 5,
-      text: 'Заказывала букет на день рождения мамы. Цветы свежие, красиво оформлены, доставили точно в срок. Мама была в восторге! Спасибо FloRustic!'
-    },
-    {
-      id: 2,
-      name: 'Дмитрий Петров',
-      date: '10 марта 2024',
-      rating: 5,
-      text: 'Отличный сервис! Букет превзошел все ожидания. Флористы действительно профессионалы своего дела. Буду заказывать еще.'
-    },
-    {
-      id: 3,
-      name: 'Елена Ковалева',
-      date: '5 марта 2024',
-      rating: 5,
-      text: 'Прекрасные цветы и очень вежливые курьеры. Заказываю здесь регулярно, качество всегда на высоте. Рекомендую!'
-    },
-    {
-      id: 4,
-      name: 'Михаил Соколов',
-      date: '28 февраля 2024',
-      rating: 4,
-      text: 'Хороший выбор букетов, свежие цветы. Единственное пожелание — хотелось бы больше эксклюзивных композиций.'
-    },
-    {
-      id: 5,
-      name: 'Ольга Новикова',
-      date: '20 февраля 2024',
-      rating: 5,
-      text: 'Заказывала букет с доставкой на работу. Все было идеально! Цветы простояли больше недели. Очень довольна!'
-    },
-    {
-      id: 6,
-      name: 'Сергей Волков',
-      date: '12 февраля 2024',
-      rating: 5,
-      text: 'Быстрая доставка, красивая упаковка, приятные цены. Жена была счастлива. Спасибо за вашу работу!'
-    }
-  ];
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`${API_ENDPOINTS.reviews}`);
+        const data = await response.json();
+        setReviews(data.reviews || []);
+      } catch (error) {
+        console.error('Failed to fetch reviews:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const reviewsSchema = {
+    fetchReviews();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  const averageRating = reviews.length > 0
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    : '5.0';
+
+  const reviewsSchema = reviews.length > 0 ? {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "FloRustic",
     "url": "https://florustic.ru",
     "aggregateRating": {
       "@type": "AggregateRating",
-      "ratingValue": "4.8",
+      "ratingValue": averageRating,
       "reviewCount": reviews.length.toString(),
       "bestRating": "5",
       "worstRating": "1",
@@ -87,21 +80,21 @@ const Reviews = () => {
         "@type": "Person",
         "name": review.name
       },
-      "datePublished": review.date,
+      "datePublished": new Date(review.created_at).toISOString().split('T')[0],
       "reviewRating": {
         "@type": "Rating",
         "ratingValue": review.rating.toString(),
         "bestRating": "5"
       },
-      "reviewBody": review.text
+      "reviewBody": review.comment
     }))
-  };
+  } : null;
 
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>Отзывы о FloRustic — Реальные мнения клиентов о доставке цветов</title>
-        <meta name="description" content="Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Отзывы: более 1000 реальных мнений клиентов. Средний рейтинг 4.8/5. Оценка качества букетов и сервиса!" />
+        <meta name="description" content={`Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Отзывы: ${reviews.length} реальных мнений клиентов. Средний рейтинг ${averageRating}/5. Оценка качества букетов и сервиса!`} />
         <meta name="keywords" content="отзывы florustic, отзывы о доставке цветов, качество цветов отзывы, букеты отзывы, florustic мнения клиентов" />
         <link rel="canonical" href="https://florustic.ru/reviews" />
         
@@ -151,22 +144,35 @@ const Reviews = () => {
           </p>
           
           <div className="space-y-6">
-            {reviews.map(review => (
-              <div key={review.id} className="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="font-semibold text-lg">{review.name}</h3>
-                    <p className="text-sm text-muted-foreground">{review.date}</p>
-                  </div>
-                  <div className="flex">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <Icon key={i} name="Star" size={20} className="text-yellow-500 fill-yellow-500" />
-                    ))}
-                  </div>
-                </div>
-                <p className="text-foreground leading-relaxed">{review.text}</p>
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin mx-auto mb-3 w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
+                <p className="text-muted-foreground">Загрузка отзывов...</p>
               </div>
-            ))}
+            ) : reviews.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Пока нет отзывов. Будьте первым!</p>
+              </div>
+            ) : (
+              reviews.map(review => (
+                <div key={review.id} className="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <h3 className="font-semibold text-lg">{review.name}</h3>
+                      <p className="text-sm text-muted-foreground">
+                        {formatDate(review.created_at)} • {review.city}
+                      </p>
+                    </div>
+                    <div className="flex">
+                      {[...Array(review.rating)].map((_, i) => (
+                        <Icon key={i} name="Star" size={20} className="text-yellow-500 fill-yellow-500" />
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-foreground leading-relaxed">{review.comment}</p>
+                </div>
+              ))
+            )}
           </div>
 
           <div className="mt-12 bg-accent/20 p-8 rounded-lg text-center">
