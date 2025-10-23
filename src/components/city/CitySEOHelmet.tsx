@@ -7,7 +7,7 @@ interface CitySEOHelmetProps {
 
 const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
   const pageTitle = `Доставка цветов ${cityName} — FloRustic | Букеты с доставкой в ${cityName}`;
-  const pageDescription = `Доставка цветов в ${cityName} от FloRustic. Свежие букеты, розы, тюльпаны, композиции ручной работы. Доставка за 2 часа по адресу в ${cityName}. Более 500 букетов в каталоге. Гарантия свежести 7 дней. Заказ онлайн 24/7. Цены от 990₽!`;
+  const pageDescription = `Служба доставки цветов в ${cityName}. Свежие цветы в ${cityName} — доставка в течение 1.5 часов после оплаты. Розы, тюльпаны, композиции ручной работы. Более 500 букетов в каталоге. Заказ онлайн 24/7!`;
   const pageUrl = `https://florustic.ru/city/${citySlug}`;
   const keywords = `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, цветы с доставкой ${cityName}`;
 
