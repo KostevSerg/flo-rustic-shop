@@ -29,7 +29,7 @@ const Cart = () => {
       <div className="min-h-screen flex flex-col">
         <Helmet>
           <title>Корзина — FloRustic | Оформление заказа цветов</title>
-          <meta name="description" content="Оформите заказ цветов в FloRustic. Ваша корзина с букетами и композициями. Быстрое оформление и доставка по России." />
+          <meta name="description" content="Корзина FloRustic — оформите заказ цветов онлайн за 2 минуты. Выбор способа оплаты и доставки. Доставка по России за 2 часа. Безопасная оплата картой или наличными при получении!" />
           <meta name="robots" content="noindex, follow" />
           <link rel="canonical" href="https://florustic.ru/cart" />
         </Helmet>
@@ -62,7 +62,7 @@ const Cart = () => {
     <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>{`Корзина (${itemsCount}) — FloRustic | Оформление заказа`}</title>
-        <meta name="description" content={`В вашей корзине ${itemsCount} товаров на сумму ${formattedPrice} ₽. Оформите заказ цветов с доставкой.`} />
+        <meta name="description" content={`В корзине ${itemsCount} товаров на ${formattedPrice}₽. Оформите заказ за 2 минуты. Доставка цветов по России. Оплата картой или наличными. Гарантия свежести!`} />
         <meta name="robots" content="noindex, follow" />
         <link rel="canonical" href="https://florustic.ru/cart" />
       </Helmet>

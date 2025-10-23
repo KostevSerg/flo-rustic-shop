@@ -12,7 +12,7 @@ const Guarantees = () => {
   const [content, setContent] = useState({ 
     title: 'Гарантии', 
     htmlContent: '',
-    metaDescription: 'Гарантии качества цветов и доставки FloRustic. Свежие букеты и профессиональный сервис.',
+    metaDescription: 'Гарантии FloRustic: свежесть цветов 7 дней, замена букета при браке, возврат денег, фото перед доставкой. Только свежие цветы напрямую с плантаций. Контроль качества каждого букета. Доставка точно в срок или компенсация!',
     metaKeywords: 'гарантии качества, свежие цветы, доставка цветов'
   });
   const [loading, setLoading] = useState(true);
@@ -25,7 +25,7 @@ const Guarantees = () => {
         setContent({
           title: data.title || 'Гарантии',
           htmlContent: data.content || '',
-          metaDescription: data.meta_description || 'Гарантии качества цветов и доставки FloRustic. Свежие букеты и профессиональный сервис.',
+          metaDescription: data.meta_description || 'Гарантии FloRustic: свежесть цветов 7 дней, замена букета при браке, возврат денег, фото перед доставкой. Только свежие цветы напрямую с плантаций. Контроль качества каждого букета. Доставка точно в срок или компенсация!',
           metaKeywords: data.meta_keywords || 'гарантии качества, свежие цветы, доставка цветов'
         });
       } catch (error) {

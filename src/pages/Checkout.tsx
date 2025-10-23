@@ -368,7 +368,7 @@ const Checkout = () => {
     <div className="min-h-screen flex flex-col bg-accent/5">
       <Helmet>
         <title>Оформление заказа — FloRustic | Доставка цветов</title>
-        <meta name="description" content="Оформите заказ цветов с доставкой. Укажите данные получателя, выберите способ оплаты. Быстрое оформление в FloRustic." />
+        <meta name="description" content="Оформление заказа цветов FloRustic за 2 минуты. Укажите адрес и время доставки. Выбор оплаты: онлайн или при получении. Промокоды и скидки. Гарантия свежести!" />
         <meta name="robots" content="noindex, follow" />
         <link rel="canonical" href="https://florustic.ru/checkout" />
       </Helmet>

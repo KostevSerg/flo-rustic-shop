@@ -12,7 +12,7 @@ const Delivery = () => {
   const [content, setContent] = useState({ 
     title: 'Доставка', 
     htmlContent: '',
-    metaDescription: 'Условия доставки цветов по России. Быстрая доставка за 2 часа, работаем ежедневно.',
+    metaDescription: 'Доставка цветов по России от FloRustic — быстро, надежно, точно в срок. Доставка за 2 часа. Работаем 24/7 без выходных. Бесплатная доставка от 3000₽. Контроль качества при передаче. Фото букета перед доставкой!',
     metaKeywords: 'доставка цветов, условия доставки, доставка букетов'
   });
   const [loading, setLoading] = useState(true);
@@ -25,7 +25,7 @@ const Delivery = () => {
         setContent({
           title: data.title || 'Доставка',
           htmlContent: data.content || '',
-          metaDescription: data.meta_description || 'Условия доставки цветов по России. Быстрая доставка за 2 часа, работаем ежедневно.',
+          metaDescription: data.meta_description || 'Доставка цветов по России от FloRustic — быстро, надежно, точно в срок. Доставка за 2 часа. Работаем 24/7 без выходных. Бесплатная доставка от 3000₽. Контроль качества при передаче. Фото букета перед доставкой!',
           metaKeywords: data.meta_keywords || 'доставка цветов, условия доставки, доставка букетов'
         });
       } catch (error) {

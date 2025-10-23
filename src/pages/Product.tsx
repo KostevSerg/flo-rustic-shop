@@ -117,7 +117,7 @@ const Product = () => {
   }
 
   const pageTitle = `${product.name} — купить в ${selectedCity} | FloRustic`;
-  const pageDescription = product.description || `Купить ${product.name} с доставкой в ${selectedCity}. Цена ${product.price} ₽. Свежие цветы, быстрая доставка. Заказать онлайн в FloRustic.`;
+  const pageDescription = `${product.name} с доставкой в ${selectedCity} — ${product.price}₽. ${product.description ? product.description.slice(0, 100) : 'Свежие цветы от профессиональных флористов'}. Доставка за 2 часа. Гарантия свежести 7 дней. Заказ онлайн 24/7!`;
   const productUrl = `https://florustic.ru/product/${id}`;
 
   const productSchema = {

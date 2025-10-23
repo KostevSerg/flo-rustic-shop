@@ -101,7 +101,7 @@ const Reviews = () => {
     <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>Отзывы о FloRustic — Реальные мнения клиентов о доставке цветов</title>
-        <meta name="description" content="Читайте отзывы клиентов о FloRustic. Реальные мнения покупателей о качестве цветов, скорости доставки и сервисе. Более 1000+ положительных отзывов." />
+        <meta name="description" content="Отзывы о FloRustic — более 1000 реальных отзывов клиентов о доставке цветов. Оценка качества букетов, сервиса, скорости доставки. Средний рейтинг 4.8/5. Читайте мнения покупателей перед заказом!" />
         <meta name="keywords" content="отзывы florustic, отзывы о доставке цветов, качество цветов отзывы, букеты отзывы, florustic мнения клиентов" />
         <link rel="canonical" href="https://florustic.ru/reviews" />
         

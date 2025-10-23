@@ -14,7 +14,7 @@ const About = () => {
   const [content, setContent] = useState({ 
     title: 'О нас', 
     htmlContent: '',
-    metaDescription: 'FloRustic — профессиональная флористическая студия с доставкой цветов по всей России.',
+    metaDescription: 'FloRustic — сеть флористических студий с доставкой цветов по России. Более 5 лет опыта, 200+ городов, профессиональные флористы. Свежие букеты ручной работы. Гарантия качества и своевременной доставки!',
     metaKeywords: 'florustic, о нас, флористическая студия'
   });
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,7 @@ const About = () => {
         setContent({
           title: data.title || 'О нас',
           htmlContent: data.content || '',
-          metaDescription: data.meta_description || 'FloRustic — профессиональная флористическая студия с доставкой цветов по всей России.',
+          metaDescription: data.meta_description || 'FloRustic — сеть флористических студий с доставкой цветов по России. Более 5 лет опыта, 200+ городов, профессиональные флористы. Свежие букеты ручной работы. Гарантия качества и своевременной доставки!',
           metaKeywords: data.meta_keywords || 'florustic, о нас, флористическая студия'
         });
       } catch (error) {
