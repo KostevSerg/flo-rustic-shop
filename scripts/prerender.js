@@ -1,23 +1,70 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fetch from 'node-fetch';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const distPath = path.join(__dirname, '..', 'dist');
+
+function getLatestBuildPath() {
+  const buildsPath = path.join(__dirname, '..', 'builds');
+  const builds = fs.readdirSync(buildsPath);
+  const latestBuild = builds.sort().reverse()[0];
+  const latestBuildPath = path.join(buildsPath, latestBuild);
+  
+  // Check if there's a subdirectory (hash folder)
+  const subDirs = fs.readdirSync(latestBuildPath);
+  if (subDirs.length > 0 && fs.statSync(path.join(latestBuildPath, subDirs[0])).isDirectory()) {
+    return path.join(latestBuildPath, subDirs[0]);
+  }
+  
+  return latestBuildPath;
+}
+
+const distPath = fs.existsSync(path.join(__dirname, '..', 'dist')) 
+  ? path.join(__dirname, '..', 'dist')
+  : getLatestBuildPath();
+  
 const indexPath = path.join(distPath, 'index.html');
 
-const CITIES = [
-  { slug: 'volgograd', name: 'Волгоград' },
-  { slug: 'barnaul', name: 'Барнаул' },
-  { slug: 'bijsk', name: 'Бийск' },
-  { slug: 'belokuriha', name: 'Белокуриха' },
-  { slug: 'moscow', name: 'Москва' },
-  { slug: 'sankt-peterburg', name: 'Санкт-Петербург' },
-  { slug: 'novosibirsk', name: 'Новосибирск' },
-  { slug: 'ekaterinburg', name: 'Екатеринбург' },
-  { slug: 'kazan', name: 'Казань' },
-  { slug: 'nizhnij-novgorod', name: 'Нижний Новгород' },
-];
+const func2urlPath = path.join(__dirname, '..', 'backend', 'func2url.json');
+const func2url = JSON.parse(fs.readFileSync(func2urlPath, 'utf8'));
+const CITIES_API_URL = func2url.cities;
+
+function generateSlug(cityName) {
+  return cityName
+    .toLowerCase()
+    .replace(/ё/g, 'e')
+    .replace(/ /g, '-')
+    .replace(/а/g, 'a').replace(/б/g, 'b').replace(/в/g, 'v').replace(/г/g, 'g')
+    .replace(/д/g, 'd').replace(/е/g, 'e').replace(/ж/g, 'zh').replace(/з/g, 'z')
+    .replace(/и/g, 'i').replace(/й/g, 'j').replace(/к/g, 'k').replace(/л/g, 'l')
+    .replace(/м/g, 'm').replace(/н/g, 'n').replace(/о/g, 'o').replace(/п/g, 'p')
+    .replace(/р/g, 'r').replace(/с/g, 's').replace(/т/g, 't').replace(/у/g, 'u')
+    .replace(/ф/g, 'f').replace(/х/g, 'h').replace(/ц/g, 'c').replace(/ч/g, 'ch')
+    .replace(/ш/g, 'sh').replace(/щ/g, 'sch').replace(/ъ/g, '').replace(/ы/g, 'y')
+    .replace(/ь/g, '').replace(/э/g, 'e').replace(/ю/g, 'yu').replace(/я/g, 'ya');
+}
+
+async function fetchCities() {
+  console.log('🔍 Fetching cities from database...');
+  const response = await fetch(CITIES_API_URL);
+  const data = await response.json();
+  
+  let allCities = [];
+  if (data.cities && typeof data.cities === 'object') {
+    Object.keys(data.cities).forEach(regionName => {
+      const citiesInRegion = data.cities[regionName];
+      if (Array.isArray(citiesInRegion)) {
+        allCities = allCities.concat(citiesInRegion);
+      }
+    });
+  }
+  
+  return allCities.map(city => ({
+    slug: generateSlug(city.name),
+    name: city.name
+  }));
+}
 
 function generateCityMeta(cityName, citySlug) {
   const title = `Доставка цветов ${cityName} — FloRustic | Букеты с доставкой в ${cityName}`;
@@ -39,26 +86,39 @@ function generateCityMeta(cityName, citySlug) {
   `;
 }
 
-console.log('🚀 Starting prerendering...');
-
-const indexHtml = fs.readFileSync(indexPath, 'utf8');
-
-const cityDir = path.join(distPath, 'city');
-if (!fs.existsSync(cityDir)) {
-  fs.mkdirSync(cityDir, { recursive: true });
-}
-
-CITIES.forEach(({ slug, name }) => {
-  const cityMeta = generateCityMeta(name, slug);
-  const cityHtml = indexHtml.replace('</head>', `${cityMeta}</head>`);
+async function prerender() {
+  console.log('🚀 Starting prerendering...');
+  console.log(`📂 Using build path: ${distPath}`);
+  console.log(`📄 Index file: ${indexPath}`);
+  console.log('');
   
-  const cityPath = path.join(cityDir, slug);
-  if (!fs.existsSync(cityPath)) {
-    fs.mkdirSync(cityPath, { recursive: true });
+  const CITIES = await fetchCities();
+  console.log(`✅ Found ${CITIES.length} active cities\n`);
+  
+  const indexHtml = fs.readFileSync(indexPath, 'utf8');
+  
+  const cityDir = path.join(distPath, 'city');
+  if (!fs.existsSync(cityDir)) {
+    fs.mkdirSync(cityDir, { recursive: true });
   }
   
-  fs.writeFileSync(path.join(cityPath, 'index.html'), cityHtml, 'utf8');
-  console.log(`✅ Generated: /city/${slug}/index.html`);
-});
+  CITIES.forEach(({ slug, name }) => {
+    const cityMeta = generateCityMeta(name, slug);
+    const cityHtml = indexHtml.replace('</head>', `${cityMeta}</head>`);
+    
+    const cityPath = path.join(cityDir, slug);
+    if (!fs.existsSync(cityPath)) {
+      fs.mkdirSync(cityPath, { recursive: true });
+    }
+    
+    fs.writeFileSync(path.join(cityPath, 'index.html'), cityHtml, 'utf8');
+    console.log(`✅ Generated: /city/${slug}/index.html`);
+  });
+  
+  console.log(`\n✅ Prerendering complete! Generated ${CITIES.length} city pages.`);
+}
 
-console.log(`✅ Prerendering complete! Generated ${CITIES.length} city pages.`);
+prerender().catch(error => {
+  console.error('❌ Error during prerendering:', error);
+  process.exit(1);
+});
