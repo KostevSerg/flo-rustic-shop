@@ -35,6 +35,10 @@ const Contacts = () => {
     `Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Контакты: телефон для заказа, адреса салонов. Работаем 24/7 без выходных. Консультация флориста бесплатно!`
   );
 
+  const canonicalUrl = typeof window !== 'undefined' 
+    ? window.location.origin + window.location.pathname
+    : 'https://florustic.ru/contacts';
+
   useEffect(() => {
     const fetchCityContact = async () => {
       setLoading(true);
@@ -100,12 +104,12 @@ const Contacts = () => {
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <meta name="keywords" content={`контакты florustic, телефон florustic, адрес florustic ${selectedCity}, магазин цветов контакты, доставка цветов телефон`} />
-        <link rel="canonical" href="https://florustic.ru/contacts" />
+        <link rel="canonical" href={canonicalUrl} />
         
         <meta property="og:type" content="website" />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
-        <meta property="og:url" content="https://florustic.ru/contacts" />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content="https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png" />
         
         <meta name="twitter:card" content="summary" />
@@ -129,7 +133,7 @@ const Contacts = () => {
               },
               "openingHours": selectedContact.working_hours || "Mo-Su 09:00-21:00",
               "priceRange": "₽₽",
-              "url": "https://florustic.ru/contacts"
+              "url": canonicalUrl
             })}
           </script>
         )}
