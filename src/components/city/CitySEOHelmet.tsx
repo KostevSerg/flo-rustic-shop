@@ -43,7 +43,8 @@ const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
             {
               "@type": "ListItem",
               "position": 2,
-              "name": `Доставка цветов в ${cityName}`
+              "name": `Доставка цветов в ${cityName}`,
+              "item": pageUrl
             }
           ]
         })}
