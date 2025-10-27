@@ -68,7 +68,7 @@ const AdminAuth = ({ children }: AdminAuthProps) => {
         </form>
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          Пароль по умолчанию: admin2024
+          Забыли пароль? Обратитесь к администратору
         </p>
       </div>
     </div>
