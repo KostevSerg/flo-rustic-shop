@@ -73,9 +73,7 @@ const Header = ({ cartCount }: HeaderProps) => {
               />
             </div>
 
-            <Link to="/admin" className="hover:text-primary transition" title="Админ-панель">
-              <Icon name="Settings" size={24} />
-            </Link>
+
 
             <div className="flex items-center gap-4">
               <a href="tel:+79952151096" className="flex items-center gap-2 hover:text-primary transition font-medium">
@@ -146,9 +144,6 @@ const Header = ({ cartCount }: HeaderProps) => {
                 <span>WhatsApp</span>
               </a>
               <div className="flex items-center justify-end space-x-4">
-                <Link to="/admin" className="hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
-                  <Icon name="Settings" size={24} />
-                </Link>
                 <Link to="/cart" className="relative hover:text-primary transition">
                   <Icon name="ShoppingCart" size={24} />
                   {cartCount > 0 && (

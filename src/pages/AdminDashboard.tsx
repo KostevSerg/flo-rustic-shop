@@ -9,6 +9,15 @@ import Icon from '@/components/ui/icon';
 import { useCart } from '@/contexts/CartContext';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import API_ENDPOINTS from '@/config/api';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface Stats {
   totalOrders: number;
@@ -30,6 +39,12 @@ const AdminDashboard = () => {
     totalCities: 0
   });
   const [loading, setLoading] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const { toast } = useToast();
 
   const loadStats = async () => {
     setLoading(true);
@@ -69,6 +84,76 @@ const AdminDashboard = () => {
     loadStats();
   }, []);
 
+  const handlePasswordChange = async () => {
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните все поля',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: 'Ошибка',
+        description: 'Новые пароли не совпадают',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast({
+        title: 'Ошибка',
+        description: 'Пароль должен быть не менее 6 символов',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      const response = await fetch(API_ENDPOINTS.adminChangePassword, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          oldPassword,
+          newPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: 'Успешно',
+          description: 'Пароль успешно изменён',
+        });
+        setShowPasswordModal(false);
+        setOldPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось изменить пароль',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось изменить пароль',
+        variant: 'destructive',
+      });
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
   return (
     <AdminAuth>
       <div className="min-h-screen flex flex-col bg-accent/5">
@@ -83,6 +168,13 @@ const AdminDashboard = () => {
                 </p>
               </div>
               <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowPasswordModal(true)}
+                >
+                  <Icon name="Key" size={18} className="mr-2" />
+                  Сменить пароль
+                </Button>
                 <Button
                   variant="outline"
                   onClick={logout}
@@ -303,6 +395,62 @@ const AdminDashboard = () => {
         </div>
       </main>
       <Footer />
+
+      <Dialog open={showPasswordModal} onOpenChange={setShowPasswordModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Сменить пароль</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="oldPassword">Старый пароль</Label>
+              <Input
+                id="oldPassword"
+                type="password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                placeholder="Введите старый пароль"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="newPassword">Новый пароль</Label>
+              <Input
+                id="newPassword"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Введите новый пароль"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Подтвердите пароль</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Повторите новый пароль"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowPasswordModal(false);
+                setOldPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+              }}
+            >
+              Отмена
+            </Button>
+            <Button onClick={handlePasswordChange} disabled={passwordLoading}>
+              {passwordLoading ? 'Сохранение...' : 'Сохранить'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
     </AdminAuth>
   );

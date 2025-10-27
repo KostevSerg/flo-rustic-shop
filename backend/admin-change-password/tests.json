@@ -1,0 +1,38 @@
+{
+  "tests": [
+    {
+      "name": "Handle OPTIONS request",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Reject empty fields",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "oldPassword": "",
+        "newPassword": ""
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Return error for wrong old password",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "oldPassword": "wrongpass",
+        "newPassword": "newpass123"
+      },
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
