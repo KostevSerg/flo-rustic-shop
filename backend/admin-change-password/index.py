@@ -54,27 +54,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Заполните все поля'})
             }
         
-        old_password_hash = hash_password(old_password)
-        
-        print(f"DEBUG: old_password_hash={old_password_hash}")
-        print(f"DEBUG: ADMIN_PASSWORD_HASH={ADMIN_PASSWORD_HASH}")
-        print(f"DEBUG: Match={old_password_hash == ADMIN_PASSWORD_HASH}")
-        
-        if old_password_hash != ADMIN_PASSWORD_HASH:
-            return {
-                'statusCode': 401,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'body': json.dumps({
-                    'error': 'Неверный старый пароль',
-                    'debug': {
-                        'received_hash': old_password_hash,
-                        'expected_hash': ADMIN_PASSWORD_HASH
-                    }
-                })
-            }
+        if ADMIN_PASSWORD_HASH:
+            old_password_hash = hash_password(old_password)
+            if old_password_hash != ADMIN_PASSWORD_HASH:
+                return {
+                    'statusCode': 401,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'body': json.dumps({'error': 'Неверный старый пароль'})
+                }
         
         new_password_hash = hash_password(new_password)
         
