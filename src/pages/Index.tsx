@@ -9,6 +9,7 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import ReviewsSection from '@/components/ReviewsSection';
 import SiteLinksMarkup from '@/components/SiteLinksMarkup';
+import BreadcrumbsNav from '@/components/BreadcrumbsNav';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
@@ -114,20 +115,7 @@ const Index = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Главная",
-                "item": "https://florustic.ru/"
-              }
-            ]
-          })}
-        </script>
+
         
         <script type="application/ld+json">
           {JSON.stringify({
@@ -185,7 +173,12 @@ const Index = () => {
       <SiteLinksMarkup />
       <Header cartCount={totalItems} />
       
-      <section className="relative bg-gradient-to-br from-accent/20 to-background py-24 md:py-32">
+      <main className="flex-1">
+        <div className="container mx-auto px-4 pt-8">
+          <BreadcrumbsNav items={[]} />
+        </div>
+      
+        <section className="relative bg-gradient-to-br from-accent/20 to-background py-24 md:py-32">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
@@ -403,6 +396,7 @@ const Index = () => {
           </div>
         </div>
       </section>
+      </main>
 
       <Footer />
     </div>
