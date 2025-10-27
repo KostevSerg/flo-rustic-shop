@@ -142,18 +142,35 @@ const Product = () => {
         "@type": "OfferShippingDetails",
         "shippingRate": {
           "@type": "MonetaryAmount",
-          "value": "300",
+          "value": 300,
           "currency": "RUB"
+        },
+        "shippingDestination": {
+          "@type": "DefinedRegion",
+          "addressCountry": "RU"
         },
         "deliveryTime": {
           "@type": "ShippingDeliveryTime",
           "handlingTime": {
             "@type": "QuantitativeValue",
             "minValue": 0,
-            "maxValue": 1.5,
+            "maxValue": 2,
+            "unitCode": "HUR"
+          },
+          "transitTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 0,
+            "maxValue": 1,
             "unitCode": "HUR"
           }
         }
+      },
+      "hasMerchantReturnPolicy": {
+        "@type": "MerchantReturnPolicy",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 1,
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/FreeReturn"
       },
       "seller": {
         "@type": "Organization",
