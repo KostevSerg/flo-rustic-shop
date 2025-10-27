@@ -43,6 +43,22 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         products_response = urllib.request.urlopen('https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531?action=list')
         products_data = json.loads(products_response.read().decode('utf-8'))
         
+        # Уведомление поисковиков через IndexNow
+        def notify_search_engines():
+            try:
+                indexnow_payload = json.dumps({'urls': ['/sitemap.xml']}).encode('utf-8')
+                indexnow_req = urllib.request.Request(
+                    'https://functions.poehali.dev/f9051455-576c-4094-8413-8c03926b2370',
+                    data=indexnow_payload,
+                    headers={'Content-Type': 'application/json'}
+                )
+                urllib.request.urlopen(indexnow_req, timeout=5)
+            except:
+                pass  # Не блокируем основной ответ если уведомление не удалось
+        
+        # Запускаем уведомление в фоне
+        notify_search_engines()
+        
         def create_slug(name: str) -> str:
             return (name.lower()
                     .replace('ё', 'e')
