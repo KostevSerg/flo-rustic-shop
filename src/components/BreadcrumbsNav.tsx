@@ -22,12 +22,20 @@ const BreadcrumbsNav = ({ items }: BreadcrumbsNavProps) => {
         "name": "Главная",
         "item": "https://florustic.ru/"
       },
-      ...items.map((item, index) => ({
-        "@type": "ListItem",
-        "position": index + 2,
-        "name": item.name,
-        ...(item.path ? { "item": `https://florustic.ru${item.path}` } : {})
-      }))
+      ...items.map((item, index) => {
+        const position = index + 2;
+        const breadcrumbItem: any = {
+          "@type": "ListItem",
+          "position": position,
+          "name": item.name
+        };
+        
+        if (item.path) {
+          breadcrumbItem.item = `https://florustic.ru${item.path}`;
+        }
+        
+        return breadcrumbItem;
+      })
     ]
   };
 
