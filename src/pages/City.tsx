@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
+import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BreadcrumbsNav from '@/components/BreadcrumbsNav';
@@ -62,6 +63,7 @@ const City = () => {
   const { citySlug } = useParams<{ citySlug: string }>();
   const navigate = useNavigate();
   const { addToCart, totalItems } = useCart();
+  const { setCity } = useCity();
   const [products, setProducts] = useState<Product[]>([]);
   const [cityName, setCityName] = useState<string>('');
   const [cityData, setCityData] = useState<City | null>(null);
@@ -120,6 +122,7 @@ const City = () => {
         foundCityName = foundCity.name;
         setCityName(foundCityName);
         setCityData(foundCity);
+        setCity(foundCity.name, foundCity.id);
         
         let productsUrl = `${API_ENDPOINTS.products}?city=${encodeURIComponent(foundCityName)}`;
         if (activeSubcategory) {
