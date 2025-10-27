@@ -181,8 +181,8 @@ const Product = () => {
     "category": product.category || "Букеты",
     "aggregateRating": {
       "@type": "AggregateRating",
-      "ratingValue": "5.0",
-      "reviewCount": "2"
+      "ratingValue": 5.0,
+      "reviewCount": 2
     }
   };
 
