@@ -40,7 +40,7 @@ const CityHeader = ({
         Назад
       </Button>
       <h1 className="text-5xl font-bold mb-4">
-        Доставка цветов в {cityName}
+        Купить цветы в {cityName} с доставкой
       </h1>
       <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-4">
         <strong>FloRustic</strong> — профессиональная доставка свежих букетов по городу {cityName}. 
