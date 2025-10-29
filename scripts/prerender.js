@@ -72,6 +72,65 @@ function generateCityMeta(cityName, citySlug) {
   const url = `https://florustic.ru/city/${citySlug}`;
   const keywords = `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, цветы с доставкой ${cityName}`;
   
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Главная",
+        "item": "https://florustic.ru/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": `Доставка цветов в ${cityName}`,
+        "item": url
+      }
+    ]
+  };
+  
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": url,
+    "name": `FloRustic — Доставка цветов в ${cityName}`,
+    "description": description,
+    "url": url,
+    "areaServed": {
+      "@type": "City",
+      "name": cityName
+    },
+    "priceRange": "₽₽",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": cityName,
+      "addressCountry": "RU"
+    },
+    "openingHours": "Mo-Su 09:00-21:00",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": `Доставка цветов в ${cityName}`,
+      "itemListElement": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": `Букеты с доставкой в ${cityName}`
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": `Композиции из стабилизированного мха в ${cityName}`
+          }
+        }
+      ]
+    }
+  };
+  
   return `
     <title>${title}</title>
     <meta name="description" content="${description}">
@@ -86,6 +145,8 @@ function generateCityMeta(cityName, citySlug) {
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${title}">
     <meta name="twitter:description" content="${description}">
+    <script type="application/ld+json">${JSON.stringify(breadcrumbSchema)}</script>
+    <script type="application/ld+json">${JSON.stringify(localBusinessSchema)}</script>
   `;
 }
 
