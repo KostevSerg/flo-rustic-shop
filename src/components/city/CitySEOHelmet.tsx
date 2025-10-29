@@ -8,9 +8,7 @@ interface CitySEOHelmetProps {
 const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
   const pageTitle = `Купить цветы в ${cityName} с доставкой — FloRustic | Букеты ${cityName}`;
   const pageDescription = `Купить цветы в ${cityName} с доставкой за 2 часа. Свежие букеты, розы, тюльпаны, композиции ручной работы. Более 500 букетов в каталоге FloRustic. Заказ онлайн 24/7!`;
-  const pageUrl = typeof window !== 'undefined' 
-    ? window.location.origin + window.location.pathname
-    : `https://florustic.ru/city/${citySlug}`;
+  const pageUrl = `https://florustic.ru/city/${citySlug}`;
   const keywords = `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, цветы с доставкой ${cityName}`;
 
   return (
