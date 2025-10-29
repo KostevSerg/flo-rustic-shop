@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "name": "Get RSS feed",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedHeaders": {
+        "Content-Type": "application/rss+xml; charset=UTF-8"
+      }
+    },
+    {
+      "name": "Handle OPTIONS request",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}
