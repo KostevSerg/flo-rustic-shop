@@ -67,19 +67,22 @@ async function fetchCities() {
 }
 
 function generateCityMeta(cityName, citySlug) {
-  const title = `Доставка цветов ${cityName} — FloRustic | Букеты с доставкой в ${cityName}`;
-  const description = `Служба доставки цветов в ${cityName}. Свежие цветы в ${cityName} — доставка в течение 1.5 часов после оплаты. Розы, тюльпаны, композиции ручной работы. Более 500 букетов в каталоге. Заказ онлайн 24/7!`;
+  const title = `Купить цветы в ${cityName} с доставкой — FloRustic | Букеты ${cityName}`;
+  const description = `Купить цветы в ${cityName} с доставкой за 2 часа. Свежие букеты, розы, тюльпаны, композиции ручной работы. Более 500 букетов в каталоге FloRustic. Заказ онлайн 24/7!`;
   const url = `https://florustic.ru/city/${citySlug}`;
+  const keywords = `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, цветы с доставкой ${cityName}`;
   
   return `
     <title>${title}</title>
     <meta name="description" content="${description}">
+    <meta name="keywords" content="${keywords}">
     <link rel="canonical" href="${url}">
     <meta property="og:type" content="website">
     <meta property="og:title" content="${title}">
     <meta property="og:description" content="${description}">
     <meta property="og:url" content="${url}">
     <meta property="og:site_name" content="FloRustic">
+    <meta property="og:locale" content="ru_RU">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="${title}">
     <meta name="twitter:description" content="${description}">
