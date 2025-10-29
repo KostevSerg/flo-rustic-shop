@@ -184,6 +184,27 @@ const Reviews = () => {
               Написать отзыв
             </button>
           </div>
+
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold mb-4 text-center">Отзывы на Яндекс.Картах</h2>
+            <div id="yandex-reviews-widget" className="bg-card border border-border rounded-lg p-6">
+              <div className="text-center py-8">
+                <Icon name="MessageSquare" size={48} className="mx-auto mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground mb-4">
+                  Вы также можете оставить отзыв на Яндекс.Картах
+                </p>
+                <a 
+                  href="https://yandex.ru/maps/org/florustic/ORGANIZATION_ID/reviews/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
+                >
+                  Открыть на Яндекс.Картах
+                  <Icon name="ExternalLink" size={18} />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
       <Footer />
