@@ -147,15 +147,13 @@ const Footer = () => {
                 className="hover:opacity-80 transition"
                 aria-label="Max"
               >
-                <svg 
-                  viewBox="0 0 24 24" 
-                  width="24" 
-                  height="24" 
-                  fill="currentColor"
-                  className="inline-block"
-                >
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-                </svg>
+                <img 
+                  src="https://cdn.poehali.dev/files/57988f4d-dee7-4f5f-87a4-68a574db22b2.png"
+                  alt="Max"
+                  width="24"
+                  height="24"
+                  className="rounded"
+                />
               </a>
             </div>
           </div>
