@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
@@ -10,6 +9,9 @@ import Footer from '@/components/Footer';
 import { useCart } from '@/contexts/CartContext';
 import AdminAuth from '@/components/AdminAuth';
 import API_ENDPOINTS from '@/config/api';
+import SettlementBulkImport from '@/components/settlements/SettlementBulkImport';
+import SettlementForm from '@/components/settlements/SettlementForm';
+import SettlementList from '@/components/settlements/SettlementList';
 
 interface Settlement {
   id: number;
@@ -37,7 +39,6 @@ const AdminCitySettlements = () => {
     delivery_price: '0'
   });
   const [showBulkImport, setShowBulkImport] = useState(false);
-  const [bulkData, setBulkData] = useState('');
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -199,86 +200,9 @@ const AdminCitySettlements = () => {
     setFormData({ name: '', delivery_price: '0' });
   };
 
-  const handleBulkImport = async () => {
-    if (!bulkData.trim()) {
-      toast({
-        title: 'Ошибка',
-        description: 'Введите данные для импорта',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    const lines = bulkData.trim().split('\n');
-    const settlements = [];
-    let hasErrors = false;
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-
-      const parts = line.split(/[,;\t]/).map(p => p.trim());
-      
-      if (parts.length < 1) {
-        toast({
-          title: 'Ошибка',
-          description: `Строка ${i + 1}: неверный формат`,
-          variant: 'destructive'
-        });
-        hasErrors = true;
-        break;
-      }
-
-      const name = parts[0];
-      const delivery_price = parts.length > 1 ? parseFloat(parts[1]) || 0 : 0;
-
-      if (!name) {
-        toast({
-          title: 'Ошибка',
-          description: `Строка ${i + 1}: не указано название`,
-          variant: 'destructive'
-        });
-        hasErrors = true;
-        break;
-      }
-
-      settlements.push({ name, delivery_price });
-    }
-
-    if (hasErrors || settlements.length === 0) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`${API_ENDPOINTS.cities}?action=settlements_bulk`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          city_id: parseInt(cityId!),
-          settlements
-        })
-      });
-
-      if (response.ok) {
-        toast({
-          title: 'Успешно',
-          description: `Добавлено ${settlements.length} населенных пунктов`
-        });
-        setBulkData('');
-        setShowBulkImport(false);
-        fetchSettlements();
-      } else {
-        throw new Error('Failed to bulk import');
-      }
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось импортировать данные',
-        variant: 'destructive'
-      });
-    }
+  const handleBulkImportSuccess = () => {
+    setShowBulkImport(false);
+    fetchSettlements();
   };
 
   return (
@@ -327,186 +251,37 @@ const AdminCitySettlements = () => {
 
           <div className="container mx-auto px-4 py-8">
             {showBulkImport && (
-              <div className="bg-card rounded-lg p-6 mb-6 border-2 border-primary">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-semibold">Массовая загрузка населённых пунктов</h2>
-                  <Button variant="ghost" size="sm" onClick={() => setShowBulkImport(false)}>
-                    <Icon name="X" size={18} />
-                  </Button>
-                </div>
-                <div className="space-y-4">
-                  <div className="bg-muted/50 p-4 rounded-lg text-sm">
-                    <p className="font-semibold mb-2">Формат данных:</p>
-                    <p className="text-muted-foreground mb-2">
-                      Вставьте список населённых пунктов — по одному на строку.
-                    </p>
-                    <p className="text-muted-foreground mb-2">
-                      Формат: <code className="bg-background px-2 py-1 rounded">Название, Цена</code>
-                    </p>
-                    <p className="text-muted-foreground mb-3">
-                      Разделители: запятая, точка с запятой или табуляция
-                    </p>
-                    <div className="bg-background p-3 rounded font-mono text-xs">
-                      <div>Центральный район, 500</div>
-                      <div>Северный район; 600</div>
-                      <div>Южный район&nbsp;&nbsp;&nbsp;&nbsp;700</div>
-                      <div>Западный (без цены)</div>
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Данные для импорта
-                    </label>
-                    <textarea
-                      className="w-full min-h-[300px] p-4 border rounded-lg font-mono text-sm resize-y"
-                      value={bulkData}
-                      onChange={(e) => setBulkData(e.target.value)}
-                      placeholder="Вставьте список населённых пунктов..."
-                    />
-                  </div>
-                  <div className="flex gap-2 justify-end">
-                    <Button variant="outline" onClick={() => {
-                      setBulkData('');
-                      setShowBulkImport(false);
-                    }}>
-                      Отмена
-                    </Button>
-                    <Button onClick={handleBulkImport}>
-                      <Icon name="Upload" size={18} className="mr-2" />
-                      Импортировать
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              <SettlementBulkImport
+                cityId={cityId!}
+                onSuccess={handleBulkImportSuccess}
+                onCancel={() => setShowBulkImport(false)}
+              />
             )}
 
             {showAddForm && (
-              <div className="bg-card rounded-lg p-6 mb-6 border-2 border-primary">
-                <h2 className="text-xl font-semibold mb-4">Новый населенный пункт</h2>
-                <form onSubmit={handleAdd} className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Название <span className="text-destructive">*</span>
-                      </label>
-                      <Input
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="Например: Центральный район"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">
-                        Цена доставки, ₽
-                      </label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={formData.delivery_price}
-                        onChange={(e) => setFormData({ ...formData, delivery_price: e.target.value })}
-                        placeholder="0"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button type="submit">
-                      <Icon name="Save" size={18} className="mr-2" />
-                      Сохранить
-                    </Button>
-                    <Button type="button" variant="outline" onClick={() => {
-                      setShowAddForm(false);
-                      setFormData({ name: '', delivery_price: '0' });
-                    }}>
-                      Отмена
-                    </Button>
-                  </div>
-                </form>
-              </div>
+              <SettlementForm
+                formData={formData}
+                onFormDataChange={setFormData}
+                onSubmit={handleAdd}
+                onCancel={() => {
+                  setShowAddForm(false);
+                  setFormData({ name: '', delivery_price: '0' });
+                }}
+              />
             )}
 
-            {loading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin mx-auto mb-3 w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
-                <p className="text-muted-foreground">Загрузка...</p>
-              </div>
-            ) : settlements.length === 0 ? (
-              <div className="text-center py-12 bg-card rounded-lg">
-                <Icon name="MapPin" size={48} className="mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground mb-4">Населенные пункты не добавлены</p>
-                <Button onClick={() => setShowAddForm(true)}>
-                  <Icon name="Plus" size={18} className="mr-2" />
-                  Добавить первый
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {settlements.map(settlement => (
-                  <div key={settlement.id} className="bg-card rounded-lg p-4 border">
-                    {editingId === settlement.id ? (
-                      <div className="space-y-4">
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-medium mb-2">
-                              Название <span className="text-destructive">*</span>
-                            </label>
-                            <Input
-                              value={formData.name}
-                              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                              placeholder="Название населенного пункта"
-                            />
-                          </div>
-                          <div>
-                            <label className="block text-sm font-medium mb-2">
-                              Цена доставки, ₽
-                            </label>
-                            <Input
-                              type="number"
-                              step="0.01"
-                              min="0"
-                              value={formData.delivery_price}
-                              onChange={(e) => setFormData({ ...formData, delivery_price: e.target.value })}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button size="sm" onClick={() => handleUpdate(settlement.id)}>
-                            <Icon name="Save" size={16} className="mr-2" />
-                            Сохранить
-                          </Button>
-                          <Button size="sm" variant="outline" onClick={cancelEdit}>
-                            Отмена
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-lg">{settlement.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Доставка: {settlement.delivery_price > 0 ? `${settlement.delivery_price} ₽` : 'Бесплатно'}
-                          </p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline" onClick={() => startEdit(settlement)}>
-                            <Icon name="Pencil" size={16} className="mr-2" />
-                            Изменить
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => handleDelete(settlement.id, settlement.name)}
-                          >
-                            <Icon name="Trash2" size={16} />
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+            <SettlementList
+              settlements={settlements}
+              loading={loading}
+              editingId={editingId}
+              formData={formData}
+              onFormDataChange={setFormData}
+              onEdit={startEdit}
+              onUpdate={handleUpdate}
+              onCancelEdit={cancelEdit}
+              onDelete={handleDelete}
+              onAddFirst={() => setShowAddForm(true)}
+            />
           </div>
         </main>
         <Footer />
