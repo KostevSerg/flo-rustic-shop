@@ -15,6 +15,7 @@ import Index from "./pages/Index";
 import Catalog from "./pages/Catalog";
 import Product from "./pages/Product";
 import City from "./pages/City";
+import CityDelivery from "./pages/CityDelivery";
 import About from "./pages/About";
 import Delivery from "./pages/Delivery";
 import Guarantees from "./pages/Guarantees";
@@ -80,6 +81,7 @@ const App = () => (
                     <Route path="/catalog" element={<Catalog />} />
                     <Route path="/product/:id" element={<Product />} />
                     <Route path="/city/:citySlug" element={<City />} />
+                    <Route path="/city/:citySlug/delivery" element={<CityDelivery />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/delivery" element={<Delivery />} />
                     <Route path="/guarantees" element={<Guarantees />} />

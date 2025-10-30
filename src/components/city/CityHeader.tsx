@@ -19,6 +19,21 @@ interface CityHeaderProps {
   onSubcategoryChange: (subcategoryId: number | null) => void;
 }
 
+const createSlug = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/ё/g, 'e')
+    .replace(/ /g, '-')
+    .replace(/а/g, 'a').replace(/б/g, 'b').replace(/в/g, 'v').replace(/г/g, 'g')
+    .replace(/д/g, 'd').replace(/е/g, 'e').replace(/ж/g, 'zh').replace(/з/g, 'z')
+    .replace(/и/g, 'i').replace(/й/g, 'j').replace(/к/g, 'k').replace(/л/g, 'l')
+    .replace(/м/g, 'm').replace(/н/g, 'n').replace(/о/g, 'o').replace(/п/g, 'p')
+    .replace(/р/g, 'r').replace(/с/g, 's').replace(/т/g, 't').replace(/у/g, 'u')
+    .replace(/ф/g, 'f').replace(/х/g, 'h').replace(/ц/g, 'c').replace(/ч/g, 'ch')
+    .replace(/ш/g, 'sh').replace(/щ/g, 'sch').replace(/ъ/g, '').replace(/ы/g, 'y')
+    .replace(/ь/g, '').replace(/э/g, 'e').replace(/ю/g, 'yu').replace(/я/g, 'ya');
+};
+
 const CityHeader = ({
   cityName,
   activeCategory,
@@ -28,17 +43,26 @@ const CityHeader = ({
   onSubcategoryChange
 }: CityHeaderProps) => {
   const navigate = useNavigate();
+  const citySlug = createSlug(cityName);
 
   return (
     <div className="text-center mb-12">
-      <Button 
-        variant="ghost" 
-        onClick={() => navigate('/')} 
-        className="mb-6"
-      >
-        <Icon name="ArrowLeft" size={18} className="mr-2" />
-        Назад
-      </Button>
+      <div className="flex justify-center gap-4 mb-6">
+        <Button 
+          variant="ghost" 
+          onClick={() => navigate('/')}
+        >
+          <Icon name="ArrowLeft" size={18} className="mr-2" />
+          Назад
+        </Button>
+        <Button 
+          variant="outline" 
+          onClick={() => navigate(`/city/${citySlug}/delivery`)}
+        >
+          <Icon name="Truck" size={18} className="mr-2" />
+          Доставка и цены
+        </Button>
+      </div>
       <h1 className="text-5xl font-bold mb-4">
         Купить цветы в {cityName} с доставкой
       </h1>
