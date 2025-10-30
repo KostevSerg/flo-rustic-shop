@@ -242,7 +242,49 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     }
         
         elif method == 'POST':
-            if action == 'settlements':
+            if action == 'settlements_bulk':
+                body_data = json.loads(event.get('body', '{}'))
+                city_id = body_data.get('city_id')
+                settlements = body_data.get('settlements', [])
+                
+                if not city_id or not settlements:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'City ID and settlements are required'})
+                    }
+                
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    inserted_count = 0
+                    for settlement in settlements:
+                        name = settlement.get('name', '').strip()
+                        delivery_price = settlement.get('delivery_price', 0)
+                        
+                        if not name:
+                            continue
+                        
+                        cur.execute('''
+                            INSERT INTO settlements (city_id, name, delivery_price)
+                            VALUES (%s, %s, %s)
+                        ''', (city_id, name, delivery_price))
+                        inserted_count += 1
+                    
+                    conn.commit()
+                    
+                    return {
+                        'statusCode': 201,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'message': f'Imported {inserted_count} settlements'})
+                    }
+            elif action == 'settlements':
                 body_data = json.loads(event.get('body', '{}'))
                 city_id = body_data.get('city_id')
                 name = body_data.get('name', '').strip()
