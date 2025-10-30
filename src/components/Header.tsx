@@ -51,7 +51,7 @@ const Header = ({ cartCount }: HeaderProps) => {
             <Link to={`/city/${citySlug}`} className="hover:text-primary transition">
               Каталог
             </Link>
-            <Link to="/delivery" className="hover:text-primary transition">
+            <Link to={`/city/${citySlug}/delivery`} className="hover:text-primary transition">
               Доставка
             </Link>
             <Link to="/guarantees" className="hover:text-primary transition">
@@ -108,7 +108,7 @@ const Header = ({ cartCount }: HeaderProps) => {
             <Link to={`/city/${citySlug}`} className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
               Каталог
             </Link>
-            <Link to="/delivery" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
+            <Link to={`/city/${citySlug}/delivery`} className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
               Доставка
             </Link>
             <Link to="/guarantees" className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
