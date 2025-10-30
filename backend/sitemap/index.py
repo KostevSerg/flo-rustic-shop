@@ -135,6 +135,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>''')
+                    xml_urls.append(f'''  <url>
+    <loc>https://florustic.ru/city/{city_slug}/delivery</loc>
+    <lastmod>{today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>''')
         
         if products_data.get('products'):
             for product in products_data['products']:
