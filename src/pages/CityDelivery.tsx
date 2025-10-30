@@ -79,7 +79,7 @@ const CityDelivery = () => {
         
         setCity(foundCity);
 
-        const settlementsResponse = await fetch(`${API_ENDPOINTS.citySettlements}?city_id=${foundCity.id}`);
+        const settlementsResponse = await fetch(`${API_ENDPOINTS.citySettlements}?action=settlements&city_id=${foundCity.id}`);
         const settlementsData = await settlementsResponse.json();
         
         const sortedSettlements = (settlementsData.settlements || []).sort((a: Settlement, b: Settlement) => 
