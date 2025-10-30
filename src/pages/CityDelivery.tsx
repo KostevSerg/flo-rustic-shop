@@ -108,13 +108,19 @@ const CityDelivery = () => {
     loadData();
   }, [citySlug]);
 
+  const settlementNames = settlements.map(s => s.name).join(', ');
+  
   const pageTitle = city 
-    ? `Доставка цветов в ${city.name} - FloRustic`
+    ? `Доставка цветов в ${city.name} и населённые пункты - FloRustic`
     : 'Доставка - FloRustic';
   
   const pageDescription = city
-    ? `Служба доставки цветов в ${city.name} и населённые пункты. Свежие цветы — доставка в течение 1.5 часов. Работаем 24/7. Контроль качества. Фото букета перед доставкой!`
+    ? `Доставка букетов и цветов в ${city.name}: ${settlementNames}. Свежие цветы — доставка в течение 1.5 часов. Работаем 24/7. Контроль качества. Фото букета перед доставкой!`
     : content.metaDescription;
+  
+  const pageKeywords = city
+    ? `доставка цветов ${city.name}, доставка букетов ${city.name}, ${settlements.map(s => `доставка цветов ${s.name}, доставка букетов ${s.name}`).join(', ')}, ${content.metaKeywords}`
+    : content.metaKeywords;
 
   const canonicalUrl = typeof window !== 'undefined' 
     ? window.location.origin + window.location.pathname
@@ -168,7 +174,7 @@ const CityDelivery = () => {
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={`${content.metaKeywords}, доставка цветов ${city.name}, цветы ${city.name}`} />
+        <meta name="keywords" content={pageKeywords} />
         <link rel="canonical" href={canonicalUrl} />
         
         <meta property="og:type" content="website" />
@@ -201,6 +207,32 @@ const CityDelivery = () => {
             ]
           })}
         </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": `Доставка цветов в ${city.name}`,
+            "description": pageDescription,
+            "provider": {
+              "@type": "Organization",
+              "name": "FloRustic",
+              "url": "https://florustic.ru"
+            },
+            "areaServed": settlements.map(s => ({
+              "@type": "City",
+              "name": s.name
+            })),
+            "offers": settlements.map(s => ({
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": `Доставка цветов в ${s.name}`
+              },
+              "price": s.delivery_price,
+              "priceCurrency": "RUB"
+            }))
+          })}
+        </script>
       </Helmet>
       
       <Header cartCount={totalItems} />
@@ -224,7 +256,7 @@ const CityDelivery = () => {
 
           <div className="mt-12">
             <h2 className="text-2xl font-bold mb-6">
-              Населённые пункты и стоимость доставки
+              Доставка букетов и цветов: населённые пункты и стоимость
             </h2>
             
             {settlements.length > 0 ? (
@@ -260,6 +292,45 @@ const CityDelivery = () => {
               </div>
             )}
           </div>
+
+          {settlements.length > 0 && (
+            <div className="mt-16 bg-muted/30 rounded-lg p-8">
+              <h2 className="text-2xl font-bold mb-6">
+                Доставка цветов и букетов в населённые пункты
+              </h2>
+              <div className="prose prose-sm max-w-none text-muted-foreground">
+                <p className="mb-4">
+                  Служба доставки FloRustic осуществляет доставку свежих цветов и букетов 
+                  в {city.name} и следующие населённые пункты:
+                </p>
+                <p className="leading-relaxed">
+                  {settlements.map((s, index) => (
+                    <span key={s.id}>
+                      <strong className="text-foreground">доставка цветов {s.name}</strong>
+                      {index < settlements.length - 1 ? ', ' : '.'}
+                    </span>
+                  ))}
+                </p>
+                <h3 className="text-lg font-semibold mt-6 mb-3 text-foreground">
+                  Как заказать доставку букетов в {city.name}?
+                </h3>
+                <p className="mb-4">
+                  Заказать доставку букетов можно в любой из указанных населённых пунктов. 
+                  Доставка цветов осуществляется ежедневно. Гарантируем свежесть и качество каждого букета. 
+                  Работаем напрямую с поставщиками, поэтому предлагаем лучшие цены на доставку цветов 
+                  в {city.name} и окрестностях.
+                </p>
+                <h3 className="text-lg font-semibold mt-6 mb-3 text-foreground">
+                  Стоимость доставки букетов по населённым пунктам
+                </h3>
+                <p>
+                  Цена доставки зависит от удалённости населённого пункта. В таблице выше указана точная 
+                  стоимость доставки цветов для каждого населённого пункта. Минимальная стоимость доставки — 
+                  от {Math.min(...settlements.map(s => s.delivery_price)).toLocaleString('ru-RU')} ₽.
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="mt-12 text-center">
             <Button 
