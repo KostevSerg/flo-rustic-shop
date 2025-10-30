@@ -108,10 +108,10 @@ const getCityInPrepositional = (city: string): string => {
 
 const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
   const cityPrepositional = getCityInPrepositional(cityName);
-  const pageTitle = `Купить цветы в ${cityPrepositional} с доставкой — FloRustic | Букеты в ${cityPrepositional}`;
-  const pageDescription = `Доставка цветов в ${cityPrepositional} за 2 часа. Купить букет в ${cityPrepositional} можно онлайн 24/7. Свежие розы, тюльпаны, пионы и авторские композиции. Более 500 букетов в каталоге FloRustic!`;
+  const pageTitle = `Купить цветы в ${cityPrepositional} с доставкой — FloRustic | Букеты роз, тюльпанов, пионов`;
+  const pageDescription = `Купить розы, тюльпаны, пионы, хризантемы в ${cityPrepositional} с доставкой за 2 часа. Свежие букеты из роз и других цветов. Более 500 композиций. Заказ онлайн 24/7!`;
   const pageUrl = `https://florustic.ru/city/${citySlug}`;
-  const keywords = `доставка цветов в ${cityPrepositional}, купить букет в ${cityPrepositional}, заказать цветы в ${cityPrepositional}, цветы с доставкой в ${cityPrepositional}, букеты в ${cityPrepositional}, florustic ${cityName}`;
+  const keywords = `купить розы в ${cityPrepositional}, купить тюльпаны в ${cityPrepositional}, купить пионы в ${cityPrepositional}, купить букет роз в ${cityPrepositional}, доставка роз в ${cityPrepositional}, букет из роз в ${cityPrepositional}, хризантемы в ${cityPrepositional}, орхидеи в ${cityPrepositional}, гвоздики в ${cityPrepositional}, лилии в ${cityPrepositional}, доставка цветов в ${cityPrepositional}, купить букет в ${cityPrepositional}, заказать цветы в ${cityPrepositional}`;
 
   return (
     <Helmet>
@@ -201,18 +201,34 @@ const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "Как быстро можно доставить букет?",
+              "name": `Сколько стоит букет роз в ${cityPrepositional}?`,
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Стандартная доставка занимает 2-4 часа с момента оформления заказа. Также доступна срочная доставка за 1 час с доплатой."
+                "text": "Цена букета роз зависит от количества и сорта: букет из 25 роз от 2500₽, из 51 розы от 4500₽, из 101 розы от 8500₽."
               }
             },
             {
               "@type": "Question",
-              "name": "Можно ли доставить букет анонимно?",
+              "name": "Можно ли купить тюльпаны круглый год?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Да, мы можем организовать анонимную доставку. Просто укажите это при оформлении заказа, и курьер передаст букет без упоминания отправителя."
+                "text": "Тюльпаны доступны круглый год, но пик сезона — с февраля по май. В этот период самый большой выбор сортов и расцветок."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": `Как быстро можно доставить букет из пионов в ${cityPrepositional}?`,
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Стандартная доставка букета из пионов занимает 2-4 часа с момента заказа. Пионы — сезонные цветы (май-июль)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Можно ли заказать букет из орхидей с доставкой?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Да, орхидеи доступны круглый год. Можно заказать как срезанные орхидеи в букете, так и живые орхидеи в горшках."
               }
             },
             {
@@ -229,6 +245,64 @@ const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
               "acceptedAnswer": {
                 "@type": "Answer",
                 "text": "Если вы не удовлетворены качеством букета, свяжитесь с нашей службой поддержки в течение 24 часов. Мы либо заменим букет бесплатно, либо вернем полную стоимость заказа."
+              }
+            }
+          ]
+        })}
+      </script>
+      
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": `Цветы с доставкой в ${cityPrepositional}`,
+          "itemListElement": [
+            {
+              "@type": "Product",
+              "position": 1,
+              "name": `Букет роз в ${cityPrepositional}`,
+              "description": `Купить букет роз в ${cityPrepositional} с доставкой за 2 часа`,
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "RUB",
+                "lowPrice": "2500",
+                "highPrice": "8500"
+              }
+            },
+            {
+              "@type": "Product",
+              "position": 2,
+              "name": `Букет тюльпанов в ${cityPrepositional}`,
+              "description": `Купить свежие тюльпаны в ${cityPrepositional} с доставкой`,
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "RUB",
+                "lowPrice": "1500",
+                "highPrice": "5000"
+              }
+            },
+            {
+              "@type": "Product",
+              "position": 3,
+              "name": `Букет пионов в ${cityPrepositional}`,
+              "description": `Купить пионы в ${cityPrepositional} — сезонные цветы с доставкой`,
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "RUB",
+                "lowPrice": "3000",
+                "highPrice": "7000"
+              }
+            },
+            {
+              "@type": "Product",
+              "position": 4,
+              "name": `Орхидеи в ${cityPrepositional}`,
+              "description": `Купить орхидеи в горшках и срезке в ${cityPrepositional}`,
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "RUB",
+                "lowPrice": "2000",
+                "highPrice": "6000"
               }
             }
           ]
