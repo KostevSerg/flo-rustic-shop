@@ -5,11 +5,31 @@ interface CitySEOHelmetProps {
   citySlug: string;
 }
 
+const getCityInPrepositional = (city: string): string => {
+  const endings: Record<string, string> = {
+    'Барнаул': 'Барнауле',
+    'Москва': 'Москве',
+    'Новосибирск': 'Новосибирске',
+    'Екатеринбург': 'Екатеринбурге',
+    'Красноярск': 'Красноярске',
+    'Томск': 'Томске',
+    'Омск': 'Омске',
+    'Норильск': 'Норильске',
+    'Кемерово': 'Кемерово',
+    'Новокузнецк': 'Новокузнецке',
+    'Алейск': 'Алейске',
+    'Бийск': 'Бийске'
+  };
+  
+  return endings[city] || city + 'е';
+};
+
 const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
-  const pageTitle = `Купить цветы в ${cityName} с доставкой — FloRustic | Букеты ${cityName}`;
-  const pageDescription = `Купить цветы в ${cityName} с доставкой за 2 часа. Свежие букеты, розы, тюльпаны, композиции ручной работы. Более 500 букетов в каталоге FloRustic. Заказ онлайн 24/7!`;
+  const cityPrepositional = getCityInPrepositional(cityName);
+  const pageTitle = `Купить цветы в ${cityPrepositional} с доставкой — FloRustic | Букеты в ${cityPrepositional}`;
+  const pageDescription = `Доставка цветов в ${cityPrepositional} за 2 часа. Купить букет в ${cityPrepositional} можно онлайн 24/7. Свежие розы, тюльпаны, пионы и авторские композиции. Более 500 букетов в каталоге FloRustic!`;
   const pageUrl = `https://florustic.ru/city/${citySlug}`;
-  const keywords = `доставка цветов ${cityName}, букеты ${cityName}, цветы ${cityName}, купить букет ${cityName}, заказать цветы ${cityName}, florustic ${cityName}, цветы с доставкой ${cityName}`;
+  const keywords = `доставка цветов в ${cityPrepositional}, купить букет в ${cityPrepositional}, заказать цветы в ${cityPrepositional}, цветы с доставкой в ${cityPrepositional}, букеты в ${cityPrepositional}, florustic ${cityName}`;
 
   return (
     <Helmet>
@@ -43,7 +63,7 @@ const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
             {
               "@type": "ListItem",
               "position": 2,
-              "name": `Доставка цветов в ${cityName}`,
+              "name": `Доставка цветов в ${cityPrepositional}`,
               "item": pageUrl
             }
           ]
@@ -55,7 +75,7 @@ const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
           "@id": pageUrl,
-          "name": `FloRustic — Доставка цветов в ${cityName}`,
+          "name": `FloRustic — Доставка цветов в ${cityPrepositional}`,
           "description": pageDescription,
           "url": pageUrl,
           "areaServed": {
@@ -71,20 +91,20 @@ const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
           "openingHours": "Mo-Su 09:00-21:00",
           "hasOfferCatalog": {
             "@type": "OfferCatalog",
-            "name": `Доставка цветов в ${cityName}`,
+            "name": `Доставка цветов в ${cityPrepositional}`,
             "itemListElement": [
               {
                 "@type": "Offer",
                 "itemOffered": {
                   "@type": "Service",
-                  "name": `Букеты с доставкой в ${cityName}`
+                  "name": `Букеты с доставкой в ${cityPrepositional}`
                 }
               },
               {
                 "@type": "Offer",
                 "itemOffered": {
                   "@type": "Service",
-                  "name": `Композиции из стабилизированного мха в ${cityName}`
+                  "name": `Композиции из стабилизированного мха в ${cityPrepositional}`
                 }
               }
             ]

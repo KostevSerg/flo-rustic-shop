@@ -4,27 +4,53 @@ interface CityContentProps {
   cityName: string;
 }
 
+const getCityInPrepositional = (city: string): string => {
+  const endings: Record<string, string> = {
+    'Барнаул': 'Барнауле',
+    'Москва': 'Москве',
+    'Новосибирск': 'Новосибирске',
+    'Екатеринбург': 'Екатеринбурге',
+    'Красноярск': 'Красноярске',
+    'Томск': 'Томске',
+    'Омск': 'Омске',
+    'Норильск': 'Норильске',
+    'Кемерово': 'Кемерово',
+    'Новокузнецк': 'Новокузнецке',
+    'Алейск': 'Алейске',
+    'Бийск': 'Бийске'
+  };
+  
+  return endings[city] || city + 'е';
+};
+
 const CityContent = ({ cityName }: CityContentProps) => {
+  const cityPrepositional = getCityInPrepositional(cityName);
+  
   return (
     <div className="max-w-4xl mx-auto mt-16 space-y-12">
       <section className="bg-card rounded-lg p-8 border">
-        <h2 className="text-3xl font-bold mb-6">Купить цветы в {cityName} с доставкой</h2>
+        <h2 className="text-3xl font-bold mb-6">Купить цветы в {cityPrepositional} с доставкой</h2>
         <div className="space-y-4 text-muted-foreground">
           <p>
-            <strong className="text-foreground">FloRustic</strong> — это профессиональная служба доставки цветов в {cityName}. 
+            <strong className="text-foreground">Доставка цветов в {cityPrepositional}</strong> от FloRustic — это профессиональный сервис для тех, кто ценит качество и оперативность. 
             Мы предлагаем широкий выбор свежих букетов для любого повода: дни рождения, свадьбы, юбилеи, 
             корпоративные мероприятия или просто чтобы порадовать близких.
           </p>
           <p>
-            Когда вы хотите <strong className="text-foreground">заказать букет в {cityName}</strong>, важно выбрать надежного поставщика. 
+            Когда вы хотите <strong className="text-foreground">купить букет в {cityPrepositional}</strong>, важно выбрать надежного поставщика. 
             Мы работаем только со свежими цветами от проверенных поставщиков и гарантируем качество каждой композиции. 
-            Наши флористы создают уникальные букеты, которые обязательно произведут впечатление.
+            Наши флористы создают уникальные букеты, которые обязательно произведут впечатление на получателя.
+          </p>
+          <p>
+            <strong className="text-foreground">Заказать цветы в {cityPrepositional}</strong> можно круглосуточно через наш сайт. 
+            Каталог содержит более 500 позиций: розы, тюльпаны, пионы, хризантемы, орхидеи и авторские композиции ручной работы. 
+            Доставка работает ежедневно с 9:00 до 21:00, включая выходные и праздничные дни.
           </p>
         </div>
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-6">Почему выбирают нас для доставки цветов в {cityName}</h2>
+        <h2 className="text-2xl font-bold mb-6">Почему выбирают нас для доставки цветов в {cityPrepositional}</h2>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-card rounded-lg p-6 border">
             <div className="flex items-start gap-4">
@@ -34,7 +60,7 @@ const CityContent = ({ cityName }: CityContentProps) => {
               <div>
                 <h3 className="font-semibold text-lg mb-2">Быстрая доставка</h3>
                 <p className="text-muted-foreground text-sm">
-                  Доставим букет по {cityName} за 2-4 часа. Работаем ежедневно, включая выходные и праздники.
+                  Доставим букет в {cityPrepositional} за 2-4 часа. Работаем ежедневно, включая выходные и праздники.
                 </p>
               </div>
             </div>
@@ -85,7 +111,7 @@ const CityContent = ({ cityName }: CityContentProps) => {
       </section>
 
       <section className="bg-card rounded-lg p-8 border">
-        <h2 className="text-2xl font-bold mb-6">Как заказать доставку цветов в {cityName}</h2>
+        <h2 className="text-2xl font-bold mb-6">Как заказать доставку цветов в {cityPrepositional}</h2>
         <div className="space-y-6">
           <div className="flex gap-4">
             <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
@@ -126,7 +152,7 @@ const CityContent = ({ cityName }: CityContentProps) => {
       </section>
 
       <section className="bg-card rounded-lg p-8 border">
-        <h2 className="text-2xl font-bold mb-6">Популярные букеты для доставки в {cityName}</h2>
+        <h2 className="text-2xl font-bold mb-6">Популярные букеты для доставки в {cityPrepositional}</h2>
         <div className="space-y-4 text-muted-foreground">
           <p>
             <strong className="text-foreground">Букеты роз</strong> — классика, которая никогда не выходит из моды. 
@@ -148,7 +174,7 @@ const CityContent = ({ cityName }: CityContentProps) => {
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-6">Частые вопросы о доставке цветов в {cityName}</h2>
+        <h2 className="text-2xl font-bold mb-6">Частые вопросы о доставке цветов в {cityPrepositional}</h2>
         <div className="space-y-4">
           <div className="bg-card rounded-lg p-6 border">
             <h3 className="font-semibold mb-2">Как быстро можно доставить букет?</h3>
@@ -185,7 +211,7 @@ const CityContent = ({ cityName }: CityContentProps) => {
       </section>
 
       <section className="bg-card rounded-lg p-8 border">
-        <h2 className="text-2xl font-bold mb-6">Контакты для заказа цветов в {cityName}</h2>
+        <h2 className="text-2xl font-bold mb-6">Контакты для заказа цветов в {cityPrepositional}</h2>
         <div className="space-y-4 text-muted-foreground">
           <p>
             Чтобы <strong className="text-foreground">заказать доставку цветов в {cityName}</strong>, 
