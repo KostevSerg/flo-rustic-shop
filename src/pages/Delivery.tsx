@@ -86,6 +86,10 @@ const Delivery = () => {
         <div className="max-w-4xl mx-auto">
           <BreadcrumbsNav items={[{ name: 'Доставка' }]} />
           
+          <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center">
+            {content.title}
+          </h1>
+          
           {loading ? (
             <div className="text-center py-12">
               <div className="animate-spin mx-auto mb-3 w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>

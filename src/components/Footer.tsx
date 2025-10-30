@@ -72,7 +72,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to={`/city/${createSlug(selectedCity)}/delivery`} className="hover:text-primary-foreground/80 transition">
+                <Link to="/delivery" className="hover:text-primary-foreground/80 transition">
                   Доставка
                 </Link>
               </li>
