@@ -110,6 +110,7 @@ const Footer = () => {
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="hover:opacity-80 transition"
+                aria-label="WhatsApp"
               >
                 <Icon name="MessageCircle" size={24} />
               </a>
@@ -118,6 +119,7 @@ const Footer = () => {
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="hover:opacity-80 transition"
+                aria-label="Telegram"
               >
                 <Icon name="Send" size={24} />
               </a>
@@ -126,6 +128,7 @@ const Footer = () => {
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="hover:opacity-80 transition"
+                aria-label="VK"
               >
                 <svg 
                   viewBox="0 0 24 24" 
@@ -135,6 +138,23 @@ const Footer = () => {
                   className="inline-block"
                 >
                   <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.18 14.23h-1.8c-.68 0-.89-.54-2.11-1.76-1.06-1.02-1.53-1.16-1.8-1.16-.37 0-.48.11-.48.63v1.61c0 .43-.14.69-1.27.69-1.89 0-3.99-1.15-5.47-3.3-2.22-3.17-2.83-5.56-2.83-6.05 0-.27.11-.52.63-.52h1.8c.47 0 .65.21.83.72.96 2.58 2.57 4.84 3.23 4.84.25 0 .36-.11.36-.74v-2.88c-.09-1.55-.91-1.68-.91-2.23 0-.22.18-.43.47-.43h2.83c.4 0 .54.21.54.68v3.88c0 .4.18.54.3.54.25 0 .45-.14.9-.59 1.38-1.56 2.37-3.96 2.37-3.96.13-.27.34-.52.81-.52h1.8c.54 0 .66.28.54.68-.21.98-2.23 3.7-2.23 3.7-.21.34-.29.49 0 .88.21.29.9.88 1.36 1.41.84.94 1.49 1.73 1.67 2.28.17.56-.1.84-.65.84z"/>
+                </svg>
+              </a>
+              <a 
+                href={getText('social', 'max', 'https://max.ru/florustic')} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:opacity-80 transition"
+                aria-label="Max"
+              >
+                <svg 
+                  viewBox="0 0 24 24" 
+                  width="24" 
+                  height="24" 
+                  fill="currentColor"
+                  className="inline-block"
+                >
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
                 </svg>
               </a>
             </div>
