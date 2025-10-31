@@ -111,15 +111,15 @@ const CityDelivery = () => {
   const settlementNames = settlements.map(s => s.name).join(', ');
   
   const pageTitle = city 
-    ? `Доставка цветов в ${city.name} и населённые пункты - FloRustic`
+    ? `Условия доставки цветов ${city.name} — FloRustic | Доставка за 2 часа в ${settlementNames ? settlements.slice(0, 3).map(s => s.name).join(', ') : city.name}`
     : 'Доставка - FloRustic';
   
   const pageDescription = city
-    ? `Доставка букетов и цветов в ${city.name}: ${settlementNames}. Свежие цветы — доставка в течение 1.5 часов. Работаем 24/7. Контроль качества. Фото букета перед доставкой!`
+    ? `Условия и стоимость доставки цветов в ${city.name} от FloRustic. Доставляем букеты в населённые пункты: ${settlementNames}. Быстрая доставка за 1.5-2 часа. Фото букета перед доставкой. Контроль качества 24/7!`
     : content.metaDescription;
   
   const pageKeywords = city
-    ? `доставка цветов ${city.name}, доставка букетов ${city.name}, ${settlements.map(s => `доставка цветов ${s.name}, доставка букетов ${s.name}`).join(', ')}, ${content.metaKeywords}`
+    ? `условия доставки цветов ${city.name}, стоимость доставки ${city.name}, доставка букетов ${city.name}, доставка в населённые пункты ${city.name}, ${content.metaKeywords}`
     : content.metaKeywords;
 
   const canonicalUrl = typeof window !== 'undefined' 

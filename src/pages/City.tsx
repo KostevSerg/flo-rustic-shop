@@ -194,7 +194,11 @@ const City = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <CitySEOHelmet cityName={cityName} citySlug={citySlug || ''} />
+      <CitySEOHelmet 
+        cityName={cityName} 
+        citySlug={citySlug || ''} 
+        region={cityData?.region}
+      />
       
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">

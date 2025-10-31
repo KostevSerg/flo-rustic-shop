@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 interface CitySEOHelmetProps {
   cityName: string;
   citySlug: string;
+  region?: string;
 }
 
 const getCityInPrepositional = (city: string): string => {
@@ -106,12 +107,13 @@ const getCityInPrepositional = (city: string): string => {
   return endings[city] || city + 'е';
 };
 
-const CitySEOHelmet = ({ cityName, citySlug }: CitySEOHelmetProps) => {
+const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
   const cityPrepositional = getCityInPrepositional(cityName);
-  const pageTitle = `Купить цветы в ${cityPrepositional} с доставкой — FloRustic | Букеты роз, тюльпанов, пионов`;
-  const pageDescription = `Купить розы, тюльпаны, пионы, хризантемы в ${cityPrepositional} с доставкой за 2 часа. Свежие букеты из роз и других цветов. Более 500 композиций. Заказ онлайн 24/7!`;
+  const regionPart = region ? `, ${region}` : '';
+  const pageTitle = `Доставка цветов ${cityName}${regionPart} — FloRustic | Купить розы, тюльпаны, пионы с доставкой в ${cityPrepositional}`;
+  const pageDescription = `Заказать свежие цветы с доставкой в ${cityName}${regionPart} от FloRustic. Букеты роз, тюльпанов, пионов, хризантем за 2 часа. Композиции ручной работы, стабилизированный мох. Круглосуточный заказ онлайн в ${cityPrepositional}!`;
   const pageUrl = `https://florustic.ru/city/${citySlug}`;
-  const keywords = `купить розы в ${cityPrepositional}, купить тюльпаны в ${cityPrepositional}, купить пионы в ${cityPrepositional}, купить букет роз в ${cityPrepositional}, доставка роз в ${cityPrepositional}, букет из роз в ${cityPrepositional}, хризантемы в ${cityPrepositional}, орхидеи в ${cityPrepositional}, гвоздики в ${cityPrepositional}, лилии в ${cityPrepositional}, доставка цветов в ${cityPrepositional}, купить букет в ${cityPrepositional}, заказать цветы в ${cityPrepositional}`;
+  const keywords = `доставка цветов ${cityName}, купить розы ${cityName}, букет роз ${cityName}, тюльпаны ${cityName}, пионы ${cityName}, хризантемы ${cityName}, орхидеи ${cityName}, цветы с доставкой ${cityName}, заказать букет ${cityName}, флорист ${cityName}`;
 
   return (
     <Helmet>
