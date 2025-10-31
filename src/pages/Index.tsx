@@ -92,9 +92,7 @@ const Index = () => {
     ? `доставка цветов ${selectedCity}, букеты ${selectedCity}, цветы ${selectedCity}, заказать букет ${selectedCity}, купить цветы ${selectedCity}, florustic ${selectedCity}, доставка цветов россия`
     : 'доставка цветов россия, букеты с доставкой, цветы онлайн, заказать букет россия, купить цветы с доставкой, florustic, интернет магазин цветов';
 
-  const canonicalUrl = selectedCity && citySlug
-    ? `https://florustic.ru/city/${citySlug}`
-    : 'https://florustic.ru/';
+  const canonicalUrl = 'https://florustic.ru/';
 
   return (
     <div className="min-h-screen flex flex-col">
