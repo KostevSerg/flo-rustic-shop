@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import { useSiteTexts } from '@/contexts/SiteTextsContext';
@@ -41,12 +41,16 @@ const createSlug = (name: string): string => {
 };
 
 const Index = () => {
+  const location = useLocation();
   const { addToCart, totalItems } = useCart();
   const { getText } = useSiteTexts();
   const { selectedCity, initAutoDetection } = useCity();
   const citySlug = createSlug(selectedCity);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  // Не рендерим Helmet Index, если мы не на главной странице
+  const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     initAutoDetection();
@@ -96,11 +100,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet>
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={keywords} />
-        <link rel="canonical" href={canonicalUrl} data-react-helmet="true" />
+      {isHomePage && (
+        <Helmet defer={false}>
+          <title>{pageTitle}</title>
+          <meta name="description" content={pageDescription} />
+          <meta name="keywords" content={keywords} />
+          <link rel="canonical" href={canonicalUrl} />
         
         <meta property="og:type" content="website" />
         <meta property="og:title" content={pageTitle} />
@@ -167,6 +172,7 @@ const Index = () => {
           })}
         </script>
       </Helmet>
+      )}
       
       <SiteLinksMarkup />
       <Header cartCount={totalItems} />
