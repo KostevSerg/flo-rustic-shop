@@ -120,7 +120,7 @@ const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
       <meta name="keywords" content={keywords} />
-      <link rel="canonical" href={pageUrl} />
+      <link rel="canonical" href={pageUrl} data-react-helmet="true" />
       
       <meta property="og:type" content="website" />
       <meta property="og:title" content={pageTitle} />

@@ -100,7 +100,7 @@ const Index = () => {
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <meta name="keywords" content={keywords} />
-        <link rel="canonical" href={canonicalUrl} />
+        <link rel="canonical" href={canonicalUrl} data-react-helmet="true" />
         
         <meta property="og:type" content="website" />
         <meta property="og:title" content={pageTitle} />
