@@ -108,6 +108,11 @@ const getCityInPrepositional = (city: string): string => {
 };
 
 const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
+  // Не рендерим, пока citySlug пустой — иначе будет неправильный canonical
+  if (!citySlug || !cityName) {
+    return null;
+  }
+
   const cityPrepositional = getCityInPrepositional(cityName);
   const regionPart = region ? `, ${region}` : '';
   const pageTitle = `Доставка цветов ${cityName}${regionPart} — FloRustic | Купить розы, тюльпаны, пионы с доставкой в ${cityPrepositional}`;
