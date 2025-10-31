@@ -6,9 +6,11 @@ Disallow: /admin/*
 Disallow: /cart
 Disallow: /checkout
 
+# Приоритетная индексация страниц городов (высокий приоритет для SEO)
+Allow: /city/*
+
 # Разрешаем индексацию основных разделов
 Allow: /catalog
-Allow: /city/*
 Allow: /product/*
 Allow: /about
 Allow: /delivery
@@ -16,23 +18,26 @@ Allow: /guarantees
 Allow: /contacts
 Allow: /reviews
 
-# Google
+# Google (приоритет на страницы городов)
 User-agent: Googlebot
 Allow: /
+Allow: /city/*
 Disallow: /admin
 Disallow: /admin/*
 Disallow: /cart
 Disallow: /checkout
 Crawl-delay: 0
 
-# Яндекс
+# Яндекс (приоритет на страницы городов)
 User-agent: Yandex
 Allow: /
+Allow: /city/*
 Disallow: /admin
 Disallow: /admin/*
 Disallow: /cart
 Disallow: /checkout
 Crawl-delay: 0
+Clean-param: utm_source&utm_medium&utm_campaign /
 
 # Bing
 User-agent: Bingbot
@@ -56,5 +61,6 @@ Allow: /
 Sitemap: https://functions.poehali.dev/58b61451-ee69-439e-b94c-195335bd5057
 
 # Дополнительная информация
-# Обновлено: 2025-10-20
+# Обновлено: 2025-10-31
 # Домен: https://florustic.ru
+# Страницы городов: ~100 уникальных URL с региональным контентом
