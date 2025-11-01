@@ -121,7 +121,7 @@ const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
   const keywords = `доставка цветов ${cityName}, купить розы ${cityName}, букет роз ${cityName}, тюльпаны ${cityName}, пионы ${cityName}, хризантемы ${cityName}, орхидеи ${cityName}, цветы с доставкой ${cityName}, заказать букет ${cityName}, флорист ${cityName}`;
 
   return (
-    <Helmet>
+    <Helmet prioritizeSeoTags>
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
       <meta name="keywords" content={keywords} />
