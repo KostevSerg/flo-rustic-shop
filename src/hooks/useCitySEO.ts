@@ -35,12 +35,12 @@ export const useCitySEO = (baseTitle: string, baseDescription: string) => {
   const cityInPrepositional = useMemo(() => declineCity(selectedCity, 'prepositional'), [selectedCity]);
   
   const title = useMemo(() => {
-    return `${baseTitle} в ${cityInPrepositional} — FloRustic | Доставка цветов`;
-  }, [baseTitle, cityInPrepositional]);
+    return `${baseTitle} — FloRustic | Доставка цветов по всей России`;
+  }, [baseTitle]);
   
   const description = useMemo(() => {
-    return `${baseDescription} в ${cityInPrepositional}. Работаем ежедневно с 9:00 до 21:00, доставка за 2 часа.`;
-  }, [baseDescription, cityInPrepositional]);
+    return baseDescription;
+  }, [baseDescription]);
   
   return { title, description, selectedCity, cityInPrepositional };
 };
