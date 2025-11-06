@@ -376,13 +376,11 @@ const Checkout = () => {
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-4 mb-6">
-            <Button variant="ghost" onClick={() => navigate('/cart')}>
-              <Icon name="ArrowLeft" size={20} className="mr-2" />
-              Назад в корзину
-            </Button>
-            <h1 className="text-3xl font-bold">Оформление заказа</h1>
-          </div>
+          <Button variant="ghost" onClick={() => navigate('/cart')} className="mb-2">
+            <Icon name="ArrowLeft" size={20} className="mr-2" />
+            Назад в корзину
+          </Button>
+          <h1 className="text-3xl font-bold mb-6">Оформление заказа</h1>
           
           <form onSubmit={handleSubmit}>
             <div className="grid lg:grid-cols-3 gap-6">
