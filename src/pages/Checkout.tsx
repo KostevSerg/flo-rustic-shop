@@ -160,7 +160,7 @@ const Checkout = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.recipientName || !formData.recipientPhone || !formData.address || !formData.settlementId) {
+    if (!formData.recipientName || !formData.recipientPhone || !formData.senderPhone || !formData.address || !formData.settlementId) {
       toast({
         title: "Ошибка",
         description: "Заполните все обязательные поля",
