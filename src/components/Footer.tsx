@@ -141,7 +141,7 @@ const Footer = () => {
                 </svg>
               </a>
               <a 
-                href={getText('social', 'max', 'https://max.ru/florustic')} 
+                href={getText('social', 'max', 'https://web.max.ru/76685947')} 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="hover:opacity-80 transition"
