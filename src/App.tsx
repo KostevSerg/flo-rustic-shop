@@ -11,6 +11,7 @@ import { CityProvider } from "@/contexts/CityContext";
 import { SiteTextsProvider } from "@/contexts/SiteTextsContext";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import JivoChat from "@/components/JivoChat";
+import { CityConfirmModal } from "@/components/CityConfirmModal";
 import Index from "./pages/Index";
 import Catalog from "./pages/Catalog";
 import Product from "./pages/Product";
@@ -69,6 +70,7 @@ const App = () => (
                 <Toaster />
                 <Sonner />
                 <JivoChat />
+                <CityConfirmModal />
                 <BrowserRouter
                   future={{
                     v7_startTransition: true,
