@@ -374,16 +374,16 @@ const Checkout = () => {
       </Helmet>
 
       <Header cartCount={totalItems} />
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-3 md:px-4 py-4 md:py-8">
         <div className="max-w-7xl mx-auto">
-          <Button variant="ghost" onClick={() => navigate('/cart')} className="mb-2">
-            <Icon name="ArrowLeft" size={20} className="mr-2" />
+          <Button variant="ghost" onClick={() => navigate('/cart')} className="mb-2 text-sm md:text-base px-2 md:px-4">
+            <Icon name="ArrowLeft" size={18} className="mr-1 md:mr-2" />
             Назад в корзину
           </Button>
-          <h1 className="text-3xl font-bold mb-6">Оформление заказа</h1>
+          <h1 className="text-xl md:text-3xl font-bold mb-4 md:mb-6">Оформление заказа</h1>
           
           <form onSubmit={handleSubmit}>
-            <div className="grid lg:grid-cols-3 gap-6">
+            <div className="grid lg:grid-cols-3 gap-4 md:gap-6">
               <div className="lg:col-span-2 space-y-4">
                 <CheckoutRecipientForm
                   recipientName={formData.recipientName}

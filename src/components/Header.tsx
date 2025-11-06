@@ -30,30 +30,30 @@ const Header = ({ cartCount }: HeaderProps) => {
 
   return (
     <header className="bg-white border-b border-border sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between py-4">
+      <div className="container mx-auto px-3 md:px-4">
+        <div className="flex items-center justify-between py-2 md:py-4">
           <Link to="/" className="flex items-center">
             <img 
               src="https://cdn.poehali.dev/files/9580fd38-7d54-40e5-9120-ff97a68d6c3b.png" 
               alt="FloRustic" 
-              className="h-16"
+              className="h-12 md:h-16"
             />
           </Link>
 
-          <div className="flex lg:hidden items-center gap-3">
+          <div className="flex lg:hidden items-center gap-2">
             <a 
               href="https://wa.me/79952151096" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="flex items-center justify-center bg-green-500 text-white p-2 rounded-lg hover:bg-green-600 transition"
+              className="flex items-center justify-center bg-green-500 text-white p-1.5 rounded-lg hover:bg-green-600 transition"
               title="Написать в WhatsApp"
             >
-              <Icon name="MessageCircle" size={20} />
+              <Icon name="MessageCircle" size={18} />
             </a>
             <Link to="/cart" className="relative hover:text-primary transition">
-              <Icon name="ShoppingCart" size={24} />
+              <Icon name="ShoppingCart" size={22} />
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs w-4 h-4 rounded-full flex items-center justify-center text-[10px]">
                   {cartCount}
                 </span>
               )}
