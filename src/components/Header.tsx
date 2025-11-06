@@ -26,6 +26,7 @@ const createSlug = (name: string): string => {
 const Header = ({ cartCount }: HeaderProps) => {
   const { selectedCity, setCity } = useCity();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showCitySelector, setShowCitySelector] = useState(false);
   const citySlug = createSlug(selectedCity);
 
   return (
@@ -41,6 +42,14 @@ const Header = ({ cartCount }: HeaderProps) => {
           </Link>
 
           <div className="flex lg:hidden items-center gap-2">
+            <button
+              onClick={() => setShowCitySelector(!showCitySelector)}
+              className="flex items-center gap-1 text-sm hover:text-primary transition"
+              title="Выбрать город"
+            >
+              <Icon name="MapPin" size={18} />
+              <span className="max-w-[80px] truncate">{selectedCity}</span>
+            </button>
             <a 
               href="https://wa.me/79952151096" 
               target="_blank" 
@@ -121,8 +130,26 @@ const Header = ({ cartCount }: HeaderProps) => {
           </div>
         </div>
 
+        {showCitySelector && (
+          <div className="lg:hidden pb-4 border-t border-border pt-3 animate-fade-in">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-medium">Выберите город</h3>
+              <button onClick={() => setShowCitySelector(false)}>
+                <Icon name="X" size={18} />
+              </button>
+            </div>
+            <CitySelector
+              value={selectedCity}
+              onChange={(city, cityId) => {
+                setCity(city, cityId);
+                setShowCitySelector(false);
+              }}
+            />
+          </div>
+        )}
+
         {isMenuOpen && (
-          <nav className="lg:hidden pb-4 space-y-3 animate-fade-in">
+          <nav className="lg:hidden pb-4 space-y-3 animate-fade-in border-t border-border pt-3">
             <Link to={`/city/${citySlug}`} className="block hover:text-primary transition" onClick={() => setIsMenuOpen(false)}>
               Каталог
             </Link>
@@ -139,15 +166,6 @@ const Header = ({ cartCount }: HeaderProps) => {
               О нас
             </Link>
             <div className="space-y-3 pt-3 border-t border-border">
-              <div className="flex items-center space-x-2">
-                <Icon name="MapPin" size={20} className="flex-shrink-0" />
-                <div className="flex-1">
-                  <CitySelector
-                    value={selectedCity}
-                    onChange={setCity}
-                  />
-                </div>
-              </div>
               <a href="tel:+79952151096" className="flex items-center gap-2 hover:text-primary transition font-medium">
                 <Icon name="Phone" size={20} />
                 <span>+7 995 215-10-96</span>
