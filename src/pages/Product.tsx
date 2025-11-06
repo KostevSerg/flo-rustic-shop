@@ -5,7 +5,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import BreadcrumbsNav from '@/components/BreadcrumbsNav';
+
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
@@ -215,12 +215,7 @@ const Product = () => {
       <Header cartCount={totalItems} />
       
       <main className="flex-1 container mx-auto px-4 py-8">
-        <BreadcrumbsNav 
-          items={[
-            { name: 'Каталог', path: '/catalog' },
-            { name: product.name }
-          ]} 
-        />
+
         
         <Link 
           to="/catalog" 

@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import BreadcrumbsNav from '@/components/BreadcrumbsNav';
+
 import API_ENDPOINTS from '@/config/api';
 import { declineCity, useCitySEO } from '@/hooks/useCitySEO';
 
@@ -118,7 +118,7 @@ const About = () => {
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          <BreadcrumbsNav items={[{ name: 'О нас' }]} />
+
           
           {loading ? (
             <div className="text-center py-12">

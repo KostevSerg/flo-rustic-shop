@@ -176,10 +176,6 @@ const Index = () => {
       <Header cartCount={totalItems} />
       
       <main className="flex-1">
-        <div className="container mx-auto px-4 pt-8">
-          <BreadcrumbsNav items={[]} />
-        </div>
-      
         <section className="relative bg-gradient-to-br from-accent/20 to-background py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">

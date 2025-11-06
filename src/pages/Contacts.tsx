@@ -5,7 +5,7 @@ import { useCity } from '@/contexts/CityContext';
 import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import BreadcrumbsNav from '@/components/BreadcrumbsNav';
+
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
 import { Button } from '@/components/ui/button';
@@ -142,7 +142,7 @@ const Contacts = () => {
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
-          <BreadcrumbsNav items={[{ name: 'Контакты' }]} />
+
           
           <h1 className="text-5xl font-bold text-center mb-4">Контакты</h1>
           <p className="text-center text-muted-foreground text-lg mb-12">

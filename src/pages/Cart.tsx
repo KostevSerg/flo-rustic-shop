@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import BreadcrumbsNav from '@/components/BreadcrumbsNav';
+
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
@@ -69,7 +69,7 @@ const Cart = () => {
 
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
-        <BreadcrumbsNav items={[{ name: 'Корзина' }]} />
+
         <h1 className="text-5xl font-bold text-center mb-12">Корзина</h1>
         
         <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">

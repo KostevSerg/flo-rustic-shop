@@ -4,7 +4,7 @@ import { useCart } from '@/contexts/CartContext';
 import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import BreadcrumbsNav from '@/components/BreadcrumbsNav';
+
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
@@ -238,10 +238,7 @@ const CityDelivery = () => {
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
-          <BreadcrumbsNav items={[
-            { name: city.name, href: `/city/${citySlug}` },
-            { name: 'Доставка' }
-          ]} />
+
           
           <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center">
             Доставка цветов в {city.name}
