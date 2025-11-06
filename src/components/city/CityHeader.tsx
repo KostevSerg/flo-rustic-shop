@@ -46,64 +46,72 @@ const CityHeader = ({
   const citySlug = createSlug(cityName);
 
   return (
-    <div className="text-center mb-12">
-      <div className="flex justify-center gap-4 mb-6">
+    <div className="text-center mb-6 md:mb-12">
+      <div className="flex justify-center gap-2 md:gap-4 mb-4 md:mb-6">
         <Button 
-          variant="ghost" 
+          variant="ghost"
+          size="sm"
           onClick={() => navigate('/')}
+          className="text-xs md:text-sm"
         >
-          <Icon name="ArrowLeft" size={18} className="mr-2" />
-          Назад
+          <Icon name="ArrowLeft" size={16} className="md:mr-2" />
+          <span className="hidden md:inline">Назад</span>
         </Button>
         <Button 
-          variant="outline" 
+          variant="outline"
+          size="sm"
           onClick={() => navigate(`/city/${citySlug}/delivery`)}
+          className="text-xs md:text-sm"
         >
-          <Icon name="Truck" size={18} className="mr-2" />
-          Доставка и цены
+          <Icon name="Truck" size={16} className="md:mr-2" />
+          <span className="hidden sm:inline">Доставка и цены</span>
+          <span className="sm:hidden">Доставка</span>
         </Button>
       </div>
-      <h1 className="text-5xl font-bold mb-4">
+      <h1 className="text-2xl md:text-5xl font-bold mb-2 md:mb-4">
         Купить цветы в {cityName} с доставкой
       </h1>
-      <p className="text-muted-foreground text-lg max-w-3xl mx-auto mb-4">
+      <p className="text-muted-foreground text-sm md:text-lg max-w-3xl mx-auto mb-2 md:mb-4 hidden md:block">
         <strong>FloRustic</strong> — профессиональная доставка свежих букетов по городу {cityName}. 
         Работаем ежедневно с 9:00 до 21:00, доставка за 2 часа.
       </p>
-      <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+      <p className="text-muted-foreground text-xs md:text-base max-w-2xl mx-auto mb-4 md:mb-8 hidden md:block">
         Розы, пионы, тюльпаны, орхидеи и другие сезонные цветы. 
         Выберите готовый букет из каталога или закажите индивидуальную композицию.
       </p>
       
-      <div className="space-y-4">
-        <div className="flex justify-center gap-4 flex-wrap">
+      <div className="space-y-3 md:space-y-4">
+        <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
           <Button
             variant={activeCategory === 'Цветы' ? 'default' : 'outline'}
+            size="sm"
             onClick={() => {
               onCategoryChange('Цветы');
               onSubcategoryChange(null);
             }}
-            className="px-6"
+            className="px-3 md:px-6 text-xs md:text-sm"
           >
             Цветы
           </Button>
           <Button
             variant={activeCategory === 'Шары' ? 'default' : 'outline'}
+            size="sm"
             onClick={() => {
               onCategoryChange('Шары');
               onSubcategoryChange(null);
             }}
-            className="px-6"
+            className="px-3 md:px-6 text-xs md:text-sm"
           >
             Шары
           </Button>
           <Button
             variant={activeCategory === 'Подарки' ? 'default' : 'outline'}
+            size="sm"
             onClick={() => {
               onCategoryChange('Подарки');
               onSubcategoryChange(null);
             }}
-            className="px-6"
+            className="px-3 md:px-6 text-xs md:text-sm"
           >
             Подарки
           </Button>

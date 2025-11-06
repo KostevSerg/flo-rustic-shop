@@ -201,7 +201,7 @@ const City = () => {
       />
       
       <Header cartCount={totalItems} />
-      <main className="flex-1 container mx-auto px-4 py-16">
+      <main className="flex-1 container mx-auto px-3 md:px-4 py-4 md:py-16">
 
         
         <CityHeader

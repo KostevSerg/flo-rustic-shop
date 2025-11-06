@@ -109,9 +109,9 @@ const CityContent = ({ cityName }: CityContentProps) => {
   const cityPrepositional = getCityInPrepositional(cityName);
   
   return (
-    <div className="max-w-4xl mx-auto mt-16 space-y-12">
+    <div className="max-w-4xl mx-auto mt-8 md:mt-16 space-y-6 md:space-y-12 hidden md:block">
       <section className="bg-card rounded-lg p-8 border">
-        <h2 className="text-3xl font-bold mb-6">Купить цветы в {cityPrepositional} с доставкой</h2>
+        <h2 className="text-xl md:text-3xl font-bold mb-4 md:mb-6">Купить цветы в {cityPrepositional} с доставкой</h2>
         <div className="space-y-4 text-muted-foreground">
           <p>
             <strong className="text-foreground">Доставка цветов в {cityPrepositional}</strong> от FloRustic — это профессиональный сервис для тех, кто ценит качество и оперативность. 
@@ -132,8 +132,8 @@ const CityContent = ({ cityName }: CityContentProps) => {
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-6">Почему выбирают нас для доставки цветов в {cityPrepositional}</h2>
-        <div className="grid md:grid-cols-2 gap-6">
+        <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">Почему выбирают нас для доставки цветов в {cityPrepositional}</h2>
+        <div className="grid md:grid-cols-2 gap-4 md:gap-6">
           <div className="bg-card rounded-lg p-6 border">
             <div className="flex items-start gap-4">
               <div className="bg-primary/10 rounded-full p-3">
