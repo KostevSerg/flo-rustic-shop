@@ -330,8 +330,8 @@ const CityContent = ({ cityName }: CityContentProps) => {
           </p>
           <p>
             <strong className="text-foreground">Режим работы:</strong> Ежедневно с 9:00 до 21:00<br />
-            <strong className="text-foreground">Телефон:</strong> +7 (999) 123-45-67<br />
-            <strong className="text-foreground">Email:</strong> info@florustic.ru
+            <strong className="text-foreground">Телефон:</strong> +7 995 215-10-96<br />
+            <strong className="text-foreground">Email:</strong> florustic@yandex.ru
           </p>
           <p>
             Мы гарантируем свежесть цветов, своевременную доставку и индивидуальный подход к каждому заказу. 

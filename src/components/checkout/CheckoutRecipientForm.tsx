@@ -36,7 +36,7 @@ const CheckoutRecipientForm = ({ recipientName, recipientPhone, onChange }: Chec
             name="recipientPhone"
             value={recipientPhone}
             onChange={onChange}
-            placeholder="+7 (999) 123-45-67"
+            placeholder="+7 995 215-10-96"
             required
           />
         </div>

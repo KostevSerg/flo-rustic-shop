@@ -52,8 +52,8 @@ const Contacts = () => {
             id: 0,
             city_id: 0,
             city_name: selectedCity,
-            phone: '+7 (800) 123-45-67',
-            email: 'info@florustic.ru',
+            phone: '+7 995 215-10-96',
+            email: 'florustic@yandex.ru',
             address: 'Уточняйте по телефону',
             working_hours: 'Ежедневно с 9:00 до 21:00',
             delivery_info: 'Доставка по всему городу'

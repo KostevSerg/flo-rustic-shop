@@ -32,7 +32,7 @@ const CheckoutSenderForm = ({ senderName, senderPhone, email, onChange }: Checko
             name="senderPhone"
             value={senderPhone}
             onChange={onChange}
-            placeholder="+7 (999) 123-45-67"
+            placeholder="+7 995 215-10-96"
           />
         </div>
       </div>

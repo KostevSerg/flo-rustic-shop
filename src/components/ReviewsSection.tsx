@@ -221,7 +221,7 @@ const ReviewsSection = () => {
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  placeholder="+7 (999) 123-45-67"
+                  placeholder="+7 995 215-10-96"
                 />
               </div>
 
