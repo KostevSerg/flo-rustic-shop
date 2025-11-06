@@ -39,11 +39,32 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const fetchCities = async () => {
+      const CACHE_KEY = 'cities_cache';
+      const CACHE_DURATION = 24 * 60 * 60 * 1000;
+
       try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          if (Date.now() - timestamp < CACHE_DURATION) {
+            setCities(data);
+            setLoading(false);
+            return;
+          }
+        }
+
         const response = await fetch(API_ENDPOINTS.cities);
         const data = await response.json();
-        setCities(data.cities || {});
+        const citiesData = data.cities || {};
+        
+        setCities(citiesData);
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          data: citiesData,
+          timestamp: Date.now()
+        }));
       } catch (error) {
         console.error('Failed to fetch cities:', error);
       } finally {
@@ -52,7 +73,7 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
     };
 
     fetchCities();
-  }, []);
+  }, [isOpen]);
 
   const filteredCities = Object.entries(cities).reduce((acc, [region, regionCities]) => {
     const filtered = regionCities.filter(city =>

@@ -76,8 +76,28 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
 
       const { latitude, longitude } = position.coords;
 
-      const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=list');
-      const data = await response.json();
+      const CACHE_KEY = 'cities_cache';
+      let data;
+      
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data: cachedData, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+          data = { cities: cachedData };
+        }
+      }
+      
+      if (!data) {
+        const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=list');
+        data = await response.json();
+        
+        if (data.cities) {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            data: data.cities,
+            timestamp: Date.now()
+          }));
+        }
+      }
 
       if (data.cities) {
         const allCities: CityData[] = [];

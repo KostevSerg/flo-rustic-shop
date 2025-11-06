@@ -235,7 +235,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'statusCode': 200,
                         'headers': {
                             'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': '*'
+                            'Access-Control-Allow-Origin': '*',
+                            'Cache-Control': 'public, max-age=86400'
                         },
                         'isBase64Encoded': False,
                         'body': json.dumps({'cities': grouped_cities}, ensure_ascii=False, default=decimal_default)
