@@ -46,13 +46,13 @@ const BreadcrumbsNav = ({ items }: BreadcrumbsNavProps) => {
           {JSON.stringify(breadcrumbList)}
         </script>
       </Helmet>
-      <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6" aria-label="Breadcrumb">
+      <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-4" aria-label="Breadcrumb">
         <Link to="/" className="hover:text-primary transition">
-          <Icon name="Home" size={16} />
+          Главная
         </Link>
         {items.map((item, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <Icon name="ChevronRight" size={14} />
+          <div key={index} className="flex items-center gap-1.5">
+            <Icon name="ChevronRight" size={12} />
             {item.path ? (
               <Link to={item.path} className="hover:text-primary transition">
                 {item.name}

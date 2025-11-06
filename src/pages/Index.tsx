@@ -180,13 +180,13 @@ const Index = () => {
           <BreadcrumbsNav items={[]} />
         </div>
       
-        <section className="relative bg-gradient-to-br from-accent/20 to-background py-24 md:py-32">
+        <section className="relative bg-gradient-to-br from-accent/20 to-background py-12 md:py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-              {getText('home', 'hero_title', 'Цветы, которые дарят эмоции')}
+            <h1 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-in">
+              {getText('home', 'hero_title', 'Цветы - чтобы радовать каждый день!')}
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 animate-fade-in">
+            <p className="text-base md:text-lg text-muted-foreground mb-6 animate-fade-in">
               {getText('home', 'hero_subtitle', 'Свежие букеты с доставкой по городу. Создаем композиции с душой и вниманием к деталям.')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
@@ -205,12 +205,12 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="py-20 bg-background">
+      <section className="py-12 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-3">
             {getText('home', 'popular_title', 'Популярные товары')}
           </h2>
-          <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+          <p className="text-center text-sm text-muted-foreground mb-8 max-w-2xl mx-auto">
             {getText('home', 'popular_subtitle', 'Наши самые любимые композиции, которые выбирают чаще всего')}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
