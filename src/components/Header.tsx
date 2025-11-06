@@ -40,12 +40,30 @@ const Header = ({ cartCount }: HeaderProps) => {
             />
           </Link>
 
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden"
-          >
-            <Icon name={isMenuOpen ? "X" : "Menu"} size={24} />
-          </button>
+          <div className="flex lg:hidden items-center gap-3">
+            <a 
+              href="https://wa.me/79952151096" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex items-center justify-center bg-green-500 text-white p-2 rounded-lg hover:bg-green-600 transition"
+              title="Написать в WhatsApp"
+            >
+              <Icon name="MessageCircle" size={20} />
+            </a>
+            <Link to="/cart" className="relative hover:text-primary transition">
+              <Icon name="ShoppingCart" size={24} />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <Icon name={isMenuOpen ? "X" : "Menu"} size={24} />
+            </button>
+          </div>
 
           <nav className="hidden lg:flex items-center space-x-8">
             <Link to={`/city/${citySlug}`} className="hover:text-primary transition">
