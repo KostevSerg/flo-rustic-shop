@@ -70,13 +70,13 @@ const App = () => (
                 <Toaster />
                 <Sonner />
                 <JivoChat />
-                <CityConfirmModal />
                 <BrowserRouter
                   future={{
                     v7_startTransition: true,
                     v7_relativeSplatPath: true
                   }}
                 >
+                  <CityConfirmModal />
                   <YandexMetrikaTracker />
                   <Routes>
                     <Route path="/" element={<Index />} />
