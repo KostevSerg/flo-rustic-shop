@@ -157,14 +157,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 receipt_items = []
                 for item in items_data:
                     item_price = float(item['price'])
-                    item_qty = int(item['quantity'])
-                    item_total = item_price * item_qty
+                    item_qty = float(item['quantity'])
                     
                     receipt_items.append({
                         'description': item['name'][:128],
-                        'quantity': str(item_qty),
+                        'quantity': item_qty,
                         'amount': {
-                            'value': f'{item_total:.2f}',
+                            'value': f'{item_price:.2f}',
                             'currency': 'RUB'
                         },
                         'vat_code': 1
