@@ -228,7 +228,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'region_id': city['region_id'],
                             'work_hours': city.get('work_hours'),
                             'timezone': city.get('timezone'),
-                            'address': city.get('address')
+                            'address': city.get('address'),
+                            'price_markup_percent': city.get('price_markup_percent'),
+                            'is_active': city.get('is_active', True)
                         })
                     
                     return {

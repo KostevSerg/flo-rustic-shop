@@ -9,6 +9,8 @@ interface City {
   timezone: string;
   work_hours?: any;
   is_active?: boolean;
+  address?: string;
+  price_markup_percent?: number;
 }
 
 interface Region {
