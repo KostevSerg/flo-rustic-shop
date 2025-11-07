@@ -140,6 +140,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     </table>
                     
                     <div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-left: 4px solid #2D5016;">
+                        {f'<p style="margin: 5px 0;"><strong>Промокод:</strong> <span style="color: #28a745; font-weight: bold;">{order_data.get("promoCode", "")} (-{order_data.get("discountAmount", 0)} ₽)</span></p>' if order_data.get('promoCode') else ''}
                         <p style="margin: 5px 0;"><strong>Итого:</strong> {order_data.get('totalPrice', 0)} ₽</p>
                         <p style="margin: 5px 0;"><strong>Способ оплаты:</strong> {order_data.get('paymentMethod', '')}</p>
                         <p style="margin: 5px 0;"><strong>Статус оплаты:</strong> <span style="color: {'#28a745' if order_data.get('paymentStatus') == 'succeeded' else '#dc3545'}; font-weight: bold;">{'✅ ОПЛАЧЕН' if order_data.get('paymentStatus') == 'succeeded' else '❌ НЕ ОПЛАЧЕН'}</span></p>

@@ -272,10 +272,13 @@ const Checkout = () => {
               settlement: settlementName,
               address: formData.address,
               deliveryDate: formData.deliveryDate,
-              deliveryTime: formData.deliveryTime,
+              deliveryTimeFrom: formData.deliveryTimeFrom,
+              deliveryTimeTo: formData.deliveryTimeTo,
               totalPrice: finalPrice,
               paymentMethod: formData.paymentMethod === 'online' ? 'Онлайн оплата' : 'Оплата при получении',
-              comment: formData.postcard
+              comment: formData.postcard,
+              promoCode: appliedPromo?.code || null,
+              discountAmount: discountAmount
             },
             customer: {
               recipient_name: formData.recipientName,
