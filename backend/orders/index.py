@@ -161,7 +161,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     
                     receipt_items.append({
                         'description': item['name'][:128],
-                        'quantity': f'{item_qty:.3f}',
+                        'quantity': round(item_qty, 3),
                         'amount': {
                             'value': f'{item_price:.2f}',
                             'currency': 'RUB'
