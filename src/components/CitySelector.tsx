@@ -42,7 +42,7 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
     if (!isOpen) return;
 
     const fetchCities = async () => {
-      const CACHE_KEY = 'cities_cache';
+      const CACHE_KEY = 'cities_cache_v2';
       const CACHE_DURATION = 24 * 60 * 60 * 1000;
 
       try {
