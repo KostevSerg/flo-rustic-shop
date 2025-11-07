@@ -308,12 +308,17 @@ const Checkout = () => {
                 />
 
                 <CheckoutDeliveryForm
-                  formData={formData}
-                  onChange={handleChange}
+                  selectedCity={selectedCity}
+                  settlementId={formData.settlementId}
+                  address={formData.address}
+                  deliveryDate={formData.deliveryDate}
+                  deliveryTimeFrom={formData.deliveryTimeFrom}
+                  deliveryTimeTo={formData.deliveryTimeTo}
                   settlements={settlements}
                   loadingSettlements={loadingSettlements}
-                  cityWorkHours={cityWorkHours}
+                  onChange={handleChange}
                   getTodayDate={getTodayDate}
+                  cityWorkHours={cityWorkHours}
                 />
 
                 <CheckoutPaymentForm
