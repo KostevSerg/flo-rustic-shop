@@ -409,6 +409,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 region_id = body_data.get('region_id')
                 timezone = body_data.get('timezone', 'Europe/Moscow').strip()
                 address = body_data.get('address', '').strip()
+                price_markup_percent = body_data.get('price_markup_percent', 0)
                 work_hours = body_data.get('work_hours') or None
                 if work_hours and isinstance(work_hours, dict):
                     work_hours = json.dumps(work_hours, ensure_ascii=False)
@@ -432,8 +433,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     region_name = region_row['name'] if region_row else 'Неизвестный регион'
                     
                     cur.execute(
-                        'INSERT INTO cities (name, region, region_id, timezone, work_hours, address) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id, name, region_id, timezone, work_hours, address',
-                        (name, region_name, region_id, timezone, work_hours, address)
+                        'INSERT INTO cities (name, region, region_id, timezone, work_hours, address, price_markup_percent) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id, name, region_id, timezone, work_hours, address, price_markup_percent',
+                        (name, region_name, region_id, timezone, work_hours, address, price_markup_percent)
                     )
                     new_city = cur.fetchone()
                     city_id = new_city['id']
@@ -707,12 +708,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                                 'body': json.dumps({'error': 'Name and region_id are required'})
                             }
                         
+                        cur.execute('SELECT name FROM regions WHERE id = %s', (region_id,))
+                        region_row = cur.fetchone()
+                        region_name = region_row['name'] if region_row else 'Неизвестный регион'
+                        
                         cur.execute('''
                             UPDATE cities 
-                            SET name = %s, region_id = %s, timezone = %s, work_hours = %s, address = %s, price_markup_percent = %s 
+                            SET name = %s, region = %s, region_id = %s, timezone = %s, work_hours = %s, address = %s, price_markup_percent = %s 
                             WHERE id = %s
                             RETURNING id, name, region_id, timezone, work_hours, address, is_active, price_markup_percent
-                        ''', (name, region_id, timezone, work_hours, address, price_markup_percent, city_id))
+                        ''', (name, region_name, region_id, timezone, work_hours, address, price_markup_percent, city_id))
                         
                         updated = cur.fetchone()
                         
