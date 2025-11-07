@@ -163,7 +163,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'description': item['name'][:128],
                         'quantity': str(item_qty),
                         'amount': {
-                            'value': str(item_price),
+                            'value': f'{item_price:.2f}',
                             'currency': 'RUB'
                         },
                         'vat_code': 1
