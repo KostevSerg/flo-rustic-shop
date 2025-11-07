@@ -668,6 +668,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 city_id = params.get('id')
                 is_active = body_data.get('is_active')
                 
+                print(f'UPDATE city {city_id}, body: {json.dumps(body_data, ensure_ascii=False)}')
+                
                 if not city_id:
                     return {
                         'statusCode': 400,
@@ -687,6 +689,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             WHERE id = %s
                             RETURNING id, name, region_id, timezone, work_hours, address, is_active, price_markup_percent
                         ''', (is_active, city_id))
+                        updated = cur.fetchone()
                     else:
                         name = body_data.get('name', '').strip()
                         region_id = body_data.get('region_id')
@@ -714,6 +717,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         region_row = cur.fetchone()
                         region_name = region_row['name'] if region_row else 'Неизвестный регион'
                         
+                        print(f'Updating city: name={name}, region_id={region_id}, address={address}, price_markup={price_markup_percent}')
+                        
                         cur.execute('''
                             UPDATE cities 
                             SET name = %s, region = %s, region_id = %s, timezone = %s, work_hours = %s, address = %s, price_markup_percent = %s 
@@ -722,6 +727,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''', (name, region_name, region_id, timezone, work_hours, address, price_markup_percent, city_id))
                         
                         updated = cur.fetchone()
+                        print(f'After update: {dict(updated)}')
                         
                         if address:
                             cur.execute('''
