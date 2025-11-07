@@ -60,6 +60,9 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
         const data = await response.json();
         const citiesData = data.cities || {};
         
+        console.log('Cities API response:', citiesData);
+        console.log('Иркутская область cities:', citiesData['Иркутская область']);
+        
         setCities(citiesData);
         localStorage.setItem(CACHE_KEY, JSON.stringify({
           data: citiesData,
