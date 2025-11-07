@@ -82,7 +82,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn.commit()
     
     if updated_order and new_payment_status == 'paid':
-        send_order_email(dict(updated_order))
+        order_dict = dict(updated_order)
+        if isinstance(order_dict.get('items'), str):
+            order_dict['items'] = json.loads(order_dict['items'])
+        send_order_email(order_dict)
     
     cursor.close()
     conn.close()

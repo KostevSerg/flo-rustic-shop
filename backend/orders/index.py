@@ -304,7 +304,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 conn.commit()
                 
                 if updated_order:
-                    send_order_notification(dict(updated_order), 'pending')
+                    order_dict = dict(updated_order)
+                    if isinstance(order_dict.get('items'), str):
+                        order_dict['items'] = json.loads(order_dict['items'])
+                    send_order_notification(order_dict, 'pending')
                 
                 return {
                     'statusCode': 200,
