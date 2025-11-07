@@ -157,7 +157,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 receipt_items = []
                 for item in items_data:
                     item_price = float(item['price'])
-                    item_qty = float(item['quantity'])
+                    item_qty = int(item['quantity'])
                     
                     receipt_items.append({
                         'description': item['name'][:128],
@@ -166,7 +166,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             'value': f'{item_price:.2f}',
                             'currency': 'RUB'
                         },
-                        'vat_code': 1
+                        'vat_code': 1,
+                        'payment_subject': 'commodity',
+                        'payment_mode': 'full_prepayment'
                     })
                 
                 payment_data = {
