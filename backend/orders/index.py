@@ -184,17 +184,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     },
                     'capture': True,
                     'description': f'Заказ #{order_id}',
-                    'receipt': {
-                        'customer': {
-                            'email': order_info.get('customer_email') or 'noreply@florustic.ru',
-                            'phone': order_info.get('customer_phone', '')
-                        },
-                        'items': receipt_items
-                    },
                     'metadata': {
                         'order_id': str(order_id)
                     }
                 }
+                
+                print(f'Payment data without receipt: {payment_data}')
                 
                 response = requests.post(
                     'https://api.yookassa.ru/v3/payments',
