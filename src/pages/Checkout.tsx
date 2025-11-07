@@ -30,7 +30,7 @@ interface Settlement {
 
 const Checkout = () => {
   const { items, totalItems, totalPrice, clearCart, removeFromCart, updateQuantity } = useCart();
-  const { selectedCity } = useCity();
+  const { selectedCity, selectedCityRegion } = useCity();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -269,6 +269,7 @@ const Checkout = () => {
             order: {
               order_number: orderId,
               city: selectedCity || 'Не указан',
+              region: selectedCityRegion || '',
               settlement: settlementName,
               address: formData.address,
               deliveryDate: formData.deliveryDate,

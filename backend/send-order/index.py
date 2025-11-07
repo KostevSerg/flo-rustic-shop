@@ -101,8 +101,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         sender_name = customer.get('sender_name', 'Не указан')
         sender_phone = customer.get('sender_phone', '')
         city = order_data.get('city', 'Не указан')
+        region = order_data.get('region', '')
         settlement = order_data.get('settlement', '')
-        full_city = f'{city}, {settlement}' if settlement else city
+        
+        full_city_parts = []
+        if region:
+            full_city_parts.append(region)
+        if city:
+            full_city_parts.append(city)
+        if settlement and settlement != city:
+            full_city_parts.append(settlement)
+        full_city = ', '.join(full_city_parts) if full_city_parts else 'Не указан'
         
         html_body = f'''
         <html>

@@ -122,7 +122,7 @@ const City = () => {
         foundCityName = foundCity.name;
         setCityName(foundCityName);
         setCityData(foundCity);
-        setCity(foundCity.name, foundCity.id);
+        setCity(foundCity.name, foundCity.id, foundCity.region);
         
         let productsUrl = `${API_ENDPOINTS.products}?city=${encodeURIComponent(foundCityName)}`;
         if (activeSubcategory) {

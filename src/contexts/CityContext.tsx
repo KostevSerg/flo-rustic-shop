@@ -3,7 +3,8 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 interface CityContextType {
   selectedCity: string;
   selectedCityId: number;
-  setCity: (city: string, cityId: number) => void;
+  selectedCityRegion: string;
+  setCity: (city: string, cityId: number, region?: string) => void;
   initAutoDetection: () => void;
 }
 
@@ -38,6 +39,7 @@ const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: numbe
 interface CityData {
   id: number;
   name: string;
+  region?: string;
   latitude?: number;
   longitude?: number;
 }
@@ -45,14 +47,19 @@ interface CityData {
 export const CityProvider = ({ children }: { children: ReactNode }) => {
   const [selectedCity, setSelectedCity] = useState('Москва');
   const [selectedCityId, setSelectedCityId] = useState(1);
+  const [selectedCityRegion, setSelectedCityRegion] = useState('Москва');
 
   useEffect(() => {
     const savedCity = localStorage.getItem('selectedCity');
     const savedCityId = localStorage.getItem('selectedCityId');
+    const savedCityRegion = localStorage.getItem('selectedCityRegion');
     
     if (savedCity && savedCityId) {
       setSelectedCity(savedCity);
       setSelectedCityId(parseInt(savedCityId, 10));
+      if (savedCityRegion) {
+        setSelectedCityRegion(savedCityRegion);
+      }
     }
   }, []);
 
@@ -142,6 +149,10 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
         if (nearestCity) {
           setSelectedCity(nearestCity.name);
           setSelectedCityId(nearestCity.id);
+          if (nearestCity.region) {
+            setSelectedCityRegion(nearestCity.region);
+            localStorage.setItem('selectedCityRegion', nearestCity.region);
+          }
           localStorage.setItem('selectedCity', nearestCity.name);
           localStorage.setItem('selectedCityId', nearestCity.id.toString());
           localStorage.setItem('hasDetectedLocation', 'true');
@@ -156,9 +167,13 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const setCity = (city: string, cityId: number) => {
+  const setCity = (city: string, cityId: number, region?: string) => {
     setSelectedCity(city);
     setSelectedCityId(cityId);
+    if (region) {
+      setSelectedCityRegion(region);
+      localStorage.setItem('selectedCityRegion', region);
+    }
     localStorage.setItem('selectedCity', city);
     localStorage.setItem('selectedCityId', cityId.toString());
   };
@@ -168,6 +183,7 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
       value={{
         selectedCity,
         selectedCityId,
+        selectedCityRegion,
         setCity,
         initAutoDetection,
       }}

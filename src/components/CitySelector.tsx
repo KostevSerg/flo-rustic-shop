@@ -12,7 +12,7 @@ interface City {
 
 interface CitySelectorProps {
   value: string;
-  onChange: (city: string, cityId: number) => void;
+  onChange: (city: string, cityId: number, region?: string) => void;
 }
 
 const createSlug = (name: string): string => {
@@ -86,8 +86,8 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
     return acc;
   }, {} as Record<string, City[]>);
 
-  const handleSelect = (cityName: string, cityId: number) => {
-    onChange(cityName, cityId);
+  const handleSelect = (cityName: string, cityId: number, region: string) => {
+    onChange(cityName, cityId, region);
     setIsOpen(false);
     setSearchQuery('');
     
@@ -165,7 +165,7 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
                         {regionCities.map((city) => (
                           <button
                             key={city.id}
-                            onClick={() => handleSelect(city.name, city.id)}
+                            onClick={() => handleSelect(city.name, city.id, region)}
                             className="w-full px-2 py-1.5 text-left text-sm rounded-md hover:bg-primary hover:text-primary-foreground transition-colors"
                           >
                             {city.name}

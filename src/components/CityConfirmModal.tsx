@@ -37,8 +37,8 @@ export const CityConfirmModal = () => {
     setShowSelector(true);
   };
 
-  const handleCitySelect = (city: string, cityId: number) => {
-    setCity(city, cityId);
+  const handleCitySelect = (city: string, cityId: number, region?: string) => {
+    setCity(city, cityId, region);
     localStorage.setItem('cityConfirmed', 'true');
     setIsOpen(false);
     setShowSelector(false);

@@ -140,8 +140,8 @@ const Header = ({ cartCount }: HeaderProps) => {
             </div>
             <CitySelector
               value={selectedCity}
-              onChange={(city, cityId) => {
-                setCity(city, cityId);
+              onChange={(city, cityId, region) => {
+                setCity(city, cityId, region);
                 setShowCitySelector(false);
               }}
             />
