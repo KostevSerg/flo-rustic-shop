@@ -139,6 +139,33 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 idempotence_key = str(uuid.uuid4())
                 
+                cursor.execute('''
+                    SELECT customer_name, customer_email, customer_phone, items
+                    FROM orders WHERE id = %s
+                ''', (order_id,))
+                order_info = cursor.fetchone()
+                
+                if not order_info:
+                    return {
+                        'statusCode': 404,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'error': 'Order not found'}),
+                        'isBase64Encoded': False
+                    }
+                
+                items_data = order_info['items']
+                receipt_items = []
+                for item in items_data:
+                    receipt_items.append({
+                        'description': item['name'],
+                        'quantity': str(item['quantity']),
+                        'amount': {
+                            'value': f'{float(item["price"]):.2f}',
+                            'currency': 'RUB'
+                        },
+                        'vat_code': 1
+                    })
+                
                 payment_data = {
                     'amount': {
                         'value': f'{float(amount):.2f}',
@@ -150,6 +177,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     },
                     'capture': True,
                     'description': f'Заказ #{order_id}',
+                    'receipt': {
+                        'customer': {
+                            'email': order_info.get('customer_email') or 'noreply@florustic.ru',
+                            'phone': order_info.get('customer_phone', '')
+                        },
+                        'items': receipt_items
+                    },
                     'metadata': {
                         'order_id': str(order_id)
                     }
