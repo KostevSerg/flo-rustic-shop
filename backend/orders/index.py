@@ -156,17 +156,22 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 items_data = order_info['items']
                 receipt_items = []
                 for item in items_data:
+                    item_price = float(item['price'])
+                    item_qty = int(item['quantity'])
+                    
                     receipt_items.append({
                         'description': item['name'][:128],
-                        'quantity': float(item['quantity']),
+                        'quantity': str(item_qty),
                         'amount': {
-                            'value': f'{float(item["price"]):.2f}',
+                            'value': f'{item_price:.2f}',
                             'currency': 'RUB'
                         },
                         'vat_code': 1,
                         'payment_mode': 'full_prepayment',
                         'payment_subject': 'commodity'
                     })
+                
+                print(f'Receipt items prepared: {receipt_items}')
                 
                 payment_data = {
                     'amount': {
