@@ -31,7 +31,8 @@ interface Order {
   sender_name?: string | null;
   sender_phone?: string | null;
   delivery_date?: string | null;
-  delivery_time?: string | null;
+  delivery_time_from?: string | null;
+  delivery_time_to?: string | null;
   postcard_text?: string | null;
   payment_method?: string | null;
   payment_status?: string | null;

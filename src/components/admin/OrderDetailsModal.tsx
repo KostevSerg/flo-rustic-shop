@@ -32,7 +32,8 @@ interface Order {
   sender_name?: string | null;
   sender_phone?: string | null;
   delivery_date?: string | null;
-  delivery_time?: string | null;
+  delivery_time_from?: string | null;
+  delivery_time_to?: string | null;
   postcard_text?: string | null;
   payment_method?: string | null;
   payment_status?: string | null;
@@ -137,7 +138,7 @@ const OrderDetailsModal = ({
               <p className="text-sm">{order.delivery_address}</p>
             </div>
 
-            {(order.delivery_date || order.delivery_time) && (
+            {(order.delivery_date || order.delivery_time_from || order.delivery_time_to) && (
               <div className="bg-accent/20 rounded-lg p-4">
                 <h3 className="font-bold mb-3 flex items-center">
                   <Icon name="CalendarClock" size={18} className="mr-2" />
@@ -152,13 +153,15 @@ const OrderDetailsModal = ({
                     })}
                   </p>
                 )}
-                {order.delivery_time && (
+                {(order.delivery_time_from || order.delivery_time_to) && (
                   <p className="text-sm">
-                    {order.delivery_time === 'any' ? 'Любое время' : 
-                     order.delivery_time === 'morning' ? 'Утро (9:00-12:00)' :
-                     order.delivery_time === 'day' ? 'День (12:00-17:00)' :
-                     order.delivery_time === 'evening' ? 'Вечер (17:00-21:00)' :
-                     order.delivery_time}
+                    {order.delivery_time_from && order.delivery_time_to
+                      ? `с ${order.delivery_time_from} до ${order.delivery_time_to}`
+                      : order.delivery_time_from
+                      ? `с ${order.delivery_time_from}`
+                      : order.delivery_time_to
+                      ? `до ${order.delivery_time_to}`
+                      : ''}
                   </p>
                 )}
               </div>

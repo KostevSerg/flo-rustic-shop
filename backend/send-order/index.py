@@ -122,7 +122,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     <p><strong>Город:</strong> {full_city}</p>
                     <p><strong>Адрес:</strong> {order_data.get('address', '')}</p>
                     <p><strong>Дата доставки:</strong> {order_data.get('deliveryDate', 'Не указана')}</p>
-                    <p><strong>Время доставки:</strong> {order_data.get('deliveryTime', 'Не указано')}</p>
+                    <p><strong>Промежуток доставки:</strong> {f"с {order_data.get('deliveryTimeFrom', '')} до {order_data.get('deliveryTimeTo', '')}" if order_data.get('deliveryTimeFrom') or order_data.get('deliveryTimeTo') else 'Не указан'}</p>
                     
                     <h2 style="color: #2D5016; margin-top: 30px;">Состав заказа</h2>
                     <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">

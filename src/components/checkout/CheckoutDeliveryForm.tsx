@@ -17,7 +17,8 @@ interface CheckoutDeliveryFormProps {
   settlementId: string;
   address: string;
   deliveryDate: string;
-  deliveryTime: string;
+  deliveryTimeFrom: string;
+  deliveryTimeTo: string;
   settlements: Settlement[];
   loadingSettlements: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
@@ -30,7 +31,8 @@ const CheckoutDeliveryForm = ({
   settlementId,
   address,
   deliveryDate,
-  deliveryTime,
+  deliveryTimeFrom,
+  deliveryTimeTo,
   settlements,
   loadingSettlements,
   onChange,
@@ -101,34 +103,48 @@ const CheckoutDeliveryForm = ({
         />
       </div>
 
-      <div className="grid md:grid-cols-2 gap-3 md:gap-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Дата доставки</label>
-          <Input
-            type="date"
-            name="deliveryDate"
-            value={deliveryDate}
-            onChange={onChange}
-            min={getTodayDate()}
-          />
+      <div>
+        <label className="block text-sm font-medium mb-1">Дата доставки</label>
+        <Input
+          type="date"
+          name="deliveryDate"
+          value={deliveryDate}
+          onChange={onChange}
+          min={getTodayDate()}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          Промежуток доставки
+        </label>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">С</label>
+            <Input
+              type="time"
+              name="deliveryTimeFrom"
+              value={deliveryTimeFrom}
+              onChange={onChange}
+              placeholder="10:00"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-muted-foreground mb-1">До</label>
+            <Input
+              type="time"
+              name="deliveryTimeTo"
+              value={deliveryTimeTo}
+              onChange={onChange}
+              placeholder="18:00"
+            />
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Желаемое время доставки
-          </label>
-          <Input
-            type="time"
-            name="deliveryTime"
-            value={deliveryTime}
-            onChange={onChange}
-            placeholder="14:00"
-          />
-          {cityWorkHours && (
-            <p className="text-xs text-muted-foreground mt-1">
-              Филиал работает с {cityWorkHours.from} до {cityWorkHours.to}
-            </p>
-          )}
-        </div>
+        {cityWorkHours && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Филиал работает с {cityWorkHours.from} до {cityWorkHours.to}
+          </p>
+        )}
       </div>
     </div>
   );

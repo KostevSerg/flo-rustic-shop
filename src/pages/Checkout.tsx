@@ -50,7 +50,8 @@ const Checkout = () => {
     settlementId: '',
     address: '',
     deliveryDate: '',
-    deliveryTime: '',
+    deliveryTimeFrom: '',
+    deliveryTimeTo: '',
     comment: '',
     postcard: '',
     paymentMethod: 'online'
@@ -208,7 +209,8 @@ const Checkout = () => {
       sender_name: formData.senderName || null,
       sender_phone: formData.senderPhone || null,
       delivery_date: formData.deliveryDate || null,
-      delivery_time: formData.deliveryTime || null,
+      delivery_time_from: formData.deliveryTimeFrom || null,
+      delivery_time_to: formData.deliveryTimeTo || null,
       postcard_text: formData.postcard || null,
       payment_method: formData.paymentMethod
     };
@@ -403,7 +405,8 @@ const Checkout = () => {
                   settlementId={formData.settlementId}
                   address={formData.address}
                   deliveryDate={formData.deliveryDate}
-                  deliveryTime={formData.deliveryTime}
+                  deliveryTimeFrom={formData.deliveryTimeFrom}
+                  deliveryTimeTo={formData.deliveryTimeTo}
                   settlements={settlements}
                   loadingSettlements={loadingSettlements}
                   onChange={handleChange}
