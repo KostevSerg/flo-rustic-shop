@@ -140,7 +140,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 idempotence_key = str(uuid.uuid4())
                 
                 cursor.execute('''
-                    SELECT customer_name, customer_email, customer_phone, items
+                    SELECT customer_name, customer_email, customer_phone, items, total_amount
                     FROM orders WHERE id = %s
                 ''', (order_id,))
                 order_info = cursor.fetchone()
@@ -155,9 +155,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 items_data = order_info['items']
                 receipt_items = []
+                items_total = 0.0
+                
                 for item in items_data:
                     item_price = float(item['price'])
                     item_qty = float(item['quantity'])
+                    item_total = item_price * item_qty
+                    items_total += item_total
                     
                     receipt_items.append({
                         'description': item['name'][:128],
@@ -168,6 +172,22 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         },
                         'vat_code': 1,
                         'payment_subject': 'commodity',
+                        'payment_mode': 'full_prepayment'
+                    })
+                
+                total_amount = float(order_info['total_amount'])
+                delivery_amount = total_amount - items_total
+                
+                if delivery_amount > 0:
+                    receipt_items.append({
+                        'description': 'Доставка',
+                        'quantity': 1.0,
+                        'amount': {
+                            'value': f'{delivery_amount:.2f}',
+                            'currency': 'RUB'
+                        },
+                        'vat_code': 1,
+                        'payment_subject': 'service',
                         'payment_mode': 'full_prepayment'
                     })
                 
