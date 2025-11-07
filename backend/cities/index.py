@@ -670,8 +670,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 city_id = params.get('id')
                 is_active = body_data.get('is_active')
                 
-                print(f'[DEBUG] Update city request: city_id={city_id}, body_data={body_data}')
-                
                 if not city_id:
                     return {
                         'statusCode': 400,
@@ -727,7 +725,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         ''', (name, region_name, region_id, timezone, work_hours, address, price_markup_percent, city_id))
                         
                         updated = cur.fetchone()
-                        print(f'[DEBUG] After update, fetched: {dict(updated) if updated else None}')
                         
                         if address:
                             cur.execute('''
