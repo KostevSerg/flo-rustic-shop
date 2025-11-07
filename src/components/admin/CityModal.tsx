@@ -128,7 +128,11 @@ const CityModal = ({
                 max="999.99"
                 step="0.01"
                 value={formData.price_markup_percent}
-                onChange={(e) => onChange('price_markup_percent', parseFloat(e.target.value) || 0)}
+                onChange={(e) => {
+                  const newValue = parseFloat(e.target.value) || 0;
+                  console.log('Price markup changed:', newValue);
+                  onChange('price_markup_percent', newValue);
+                }}
                 className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder="0"
               />
