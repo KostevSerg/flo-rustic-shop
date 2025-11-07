@@ -30,7 +30,7 @@ interface Settlement {
 
 const Checkout = () => {
   const { items, totalItems, totalPrice, clearCart, removeFromCart, updateQuantity } = useCart();
-  const { selectedCity, selectedCityRegion } = useCity();
+  const { selectedCity, selectedCityRegion, setCity, selectedCityId } = useCity();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -85,6 +85,10 @@ const Checkout = () => {
       if (foundCity) {
         cityId = foundCity.id;
         setCityWorkHours(foundCity.work_hours || null);
+        
+        if (foundCity.region && foundCity.region !== selectedCityRegion) {
+          setCity(foundCity.name, foundCity.id, foundCity.region);
+        }
         
         const settlementsResponse = await fetch(`${API_ENDPOINTS.cities}?action=settlements&city_id=${cityId}`);
         const settlementsData = await settlementsResponse.json();
