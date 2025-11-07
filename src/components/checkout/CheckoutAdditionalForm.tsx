@@ -9,9 +9,9 @@ interface CheckoutAdditionalFormProps {
 
 const CheckoutAdditionalForm = ({ postcard, comment, onChange }: CheckoutAdditionalFormProps) => {
   return (
-    <div className="bg-card rounded-lg p-6 space-y-4">
-      <h2 className="text-xl font-semibold flex items-center gap-2">
-        <Icon name="MessageSquare" size={20} className="text-primary" />
+    <div className="bg-card rounded-lg p-3 md:p-4 space-y-2 md:space-y-3">
+      <h2 className="text-lg md:text-xl font-semibold flex items-center gap-2">
+        <Icon name="MessageSquare" size={18} className="text-primary" />
         Дополнительно
       </h2>
       <div>

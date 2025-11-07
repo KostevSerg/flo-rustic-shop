@@ -17,11 +17,11 @@ interface CheckoutCartProps {
 
 const CheckoutCart = ({ items, onRemove, onUpdateQuantity }: CheckoutCartProps) => {
   return (
-    <div className="bg-card rounded-lg p-6 border border-border">
-      <h2 className="text-xl font-semibold mb-4">Ваш заказ</h2>
-      <div className="space-y-4">
+    <div className="bg-card rounded-lg p-3 md:p-4 border border-border">
+      <h2 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Ваш заказ</h2>
+      <div className="space-y-3">
         {items.map((item) => (
-          <div key={item.id} className="flex gap-4 pb-4 border-b border-border last:border-0">
+          <div key={item.id} className="flex gap-3 pb-3 border-b border-border last:border-0">
             <img 
               src={item.image} 
               alt={item.name}

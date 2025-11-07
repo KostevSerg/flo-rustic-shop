@@ -40,7 +40,7 @@ const CheckoutDeliveryForm = ({
   cityWorkHours
 }: CheckoutDeliveryFormProps) => {
   return (
-    <div className="bg-card rounded-lg p-4 md:p-6 space-y-3 md:space-y-4">
+    <div className="bg-card rounded-lg p-3 md:p-4 space-y-2 md:space-y-3">
       <h2 className="text-lg md:text-xl font-semibold flex items-center gap-2">
         <Icon name="MapPin" size={18} className="text-primary" />
         Доставка

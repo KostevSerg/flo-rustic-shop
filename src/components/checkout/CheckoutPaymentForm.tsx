@@ -27,13 +27,13 @@ const CheckoutPaymentForm = ({ paymentMethod, onChange }: CheckoutPaymentFormPro
   }, []);
 
   return (
-    <div className="bg-card rounded-lg p-6 space-y-4">
-      <h2 className="text-xl font-semibold flex items-center gap-2">
-        <Icon name="CreditCard" size={20} className="text-primary" />
+    <div className="bg-card rounded-lg p-3 md:p-4 space-y-2 md:space-y-3">
+      <h2 className="text-lg md:text-xl font-semibold flex items-center gap-2">
+        <Icon name="CreditCard" size={18} className="text-primary" />
         Оплата
       </h2>
-      <div className="space-y-3">
-        <label className="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
+      <div className="space-y-2">
+        <label className="flex items-center gap-2 p-2 md:p-3 border rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
           <input
             type="radio"
             name="paymentMethod"
@@ -49,7 +49,7 @@ const CheckoutPaymentForm = ({ paymentMethod, onChange }: CheckoutPaymentFormPro
         </label>
       </div>
       {paymentInfoText && (
-        <div className="mt-4 p-4 bg-accent/10 rounded-lg border border-accent/30">
+        <div className="mt-2 p-3 bg-accent/10 rounded-lg border border-accent/30">
           <p className="text-sm text-muted-foreground leading-relaxed">
             {paymentInfoText}
           </p>

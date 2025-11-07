@@ -19,8 +19,8 @@ const CheckoutPromoSection = ({
   onRemove
 }: CheckoutPromoSectionProps) => {
   return (
-    <div className="bg-card rounded-lg p-6 border border-border">
-      <h2 className="text-xl font-semibold mb-4">Промокод</h2>
+    <div className="bg-card rounded-lg p-3 md:p-4 border border-border">
+      <h2 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Промокод</h2>
       {!appliedPromo ? (
         <div className="flex gap-2">
           <input
@@ -39,7 +39,7 @@ const CheckoutPromoSection = ({
           </Button>
         </div>
       ) : (
-        <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+        <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 p-2 md:p-3 rounded-lg border border-green-200 dark:border-green-800">
           <div className="flex items-center gap-2">
             <Icon name="Check" size={20} className="text-green-600 dark:text-green-400" />
             <div>
