@@ -463,8 +463,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 updates.append(f"is_featured = {bool(body_data['is_featured'])}")
             if 'is_active' in body_data:
                 updates.append(f"is_active = {bool(body_data['is_active'])}")
-            if 'is_active' in body_data:
-                updates.append(f"is_active = {bool(body_data['is_active'])}")
             
             if not updates:
                 return {
