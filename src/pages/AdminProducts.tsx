@@ -24,6 +24,7 @@ interface Product {
   category: string;
   categories?: string[];
   is_featured?: boolean;
+  is_active?: boolean;
   subcategory_id?: number | null;
   subcategory_name?: string;
   subcategories?: Array<{subcategory_id: number; name: string; category: string}>;
@@ -62,7 +63,7 @@ const AdminProducts = () => {
   const loadProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_ENDPOINTS.products}?with_relations=true`);
+      const response = await fetch(`${API_ENDPOINTS.products}?with_relations=true&show_all=true`);
       const data = await response.json();
       setProducts(data.products || []);
     } catch (error) {
@@ -298,6 +299,34 @@ const AdminProducts = () => {
     }
   };
 
+  const handleToggleActive = async (productId: number, currentStatus: boolean) => {
+    try {
+      const response = await fetch(API_ENDPOINTS.products, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: productId,
+          is_active: !currentStatus
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to toggle active');
+
+      toast({
+        title: 'Успешно',
+        description: !currentStatus ? 'Товар теперь виден на сайте' : 'Товар скрыт с сайта'
+      });
+
+      loadProducts();
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить видимость товара',
+        variant: 'destructive'
+      });
+    }
+  };
+
   useEffect(() => {
     loadProducts();
     loadCities();
@@ -376,6 +405,7 @@ const AdminProducts = () => {
                     }}
                     onDelete={handleDeleteProduct}
                     onToggleFeatured={handleToggleFeatured}
+                    onToggleActive={handleToggleActive}
                   />
                 ))}
               </div>

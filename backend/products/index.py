@@ -49,6 +49,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             category = query_params.get('category')
             subcategory_id = query_params.get('subcategory_id')
             with_relations = query_params.get('with_relations') == 'true'
+            show_all = query_params.get('show_all') == 'true'
             
             if action == 'subcategories':
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -97,12 +98,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             WHERE p.is_active = true AND p.id = {int(product_id)}
                         ''')
                     else:
+                        active_filter = '' if show_all else 'AND p.is_active = true'
                         cur.execute(f'''
-                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.is_active, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
-                            WHERE p.is_active = true AND p.id = {int(product_id)}
+                            WHERE p.id = {int(product_id)} {active_filter}
                         ''')
                     
                     products = [dict(row) for row in cur.fetchall()]
@@ -173,36 +175,38 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             LIMIT 100
                         ''')
                 else:
+                    active_filter = '' if show_all else 'p.is_active = true AND'
                     if subcategory_id:
                         cur.execute(f'''
-                            SELECT DISTINCT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT DISTINCT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.is_active, p.subcategory_id,
                                    s.name as subcategory_name, p.created_at
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
                             JOIN product_subcategories ps ON ps.product_id = p.id
-                            WHERE p.is_active = true AND ps.subcategory_id = {int(subcategory_id)}
+                            WHERE {active_filter} ps.subcategory_id = {int(subcategory_id)}
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
                     elif category:
                         safe_category = category.replace("'", "''")
                         cur.execute(f'''
-                            SELECT DISTINCT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                            SELECT DISTINCT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.is_active, p.subcategory_id,
                                    s.name as subcategory_name, p.created_at
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
                             JOIN product_categories pc ON pc.product_id = p.id
-                            WHERE p.is_active = true AND pc.category = '{safe_category}'
+                            WHERE {active_filter} pc.category = '{safe_category}'
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
                     else:
-                        cur.execute('''
-                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.subcategory_id,
+                        active_condition = '' if show_all else 'WHERE p.is_active = true'
+                        cur.execute(f'''
+                            SELECT p.id, p.name, p.description, p.composition, p.image_url, p.base_price, p.category, p.is_featured, p.is_active, p.subcategory_id,
                                    s.name as subcategory_name
                             FROM products p
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
-                            WHERE p.is_active = true
+                            {active_condition}
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
@@ -457,6 +461,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     updates.append(f"subcategory_id = {int(body_data['subcategory_id'])}")
             if 'is_featured' in body_data:
                 updates.append(f"is_featured = {bool(body_data['is_featured'])}")
+            if 'is_active' in body_data:
+                updates.append(f"is_active = {bool(body_data['is_active'])}")
             if 'is_active' in body_data:
                 updates.append(f"is_active = {bool(body_data['is_active'])}")
             

@@ -11,6 +11,7 @@ interface Product {
   categories?: string[];
   subcategories?: Array<{subcategory_id: number; name: string; category: string}>;
   is_featured?: boolean;
+  is_active?: boolean;
 }
 
 interface ProductCardItemProps {
@@ -19,11 +20,12 @@ interface ProductCardItemProps {
   onSetPrice: (product: Product) => void;
   onDelete: (productId: number, productName: string) => void;
   onToggleFeatured: (productId: number, currentStatus: boolean) => void;
+  onToggleActive: (productId: number, currentStatus: boolean) => void;
 }
 
-const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatured }: ProductCardItemProps) => {
+const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatured, onToggleActive }: ProductCardItemProps) => {
   return (
-    <div className="bg-card border border-border rounded-lg overflow-hidden">
+    <div className={`bg-card border border-border rounded-lg overflow-hidden ${!product.is_active ? 'opacity-50' : ''}`}>
       {product.image_url && (
         <img
           src={product.image_url}
@@ -39,12 +41,20 @@ const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatur
         <div className="mb-3">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xl font-bold">{product.base_price || 0} ₽</span>
-            {product.is_featured && (
-              <span className="text-xs bg-yellow-500 text-white px-2 py-1 rounded flex items-center gap-1">
-                <Icon name="Star" size={12} />
-                Популярный
-              </span>
-            )}
+            <div className="flex gap-2">
+              {product.is_featured && (
+                <span className="text-xs bg-yellow-500 text-white px-2 py-1 rounded flex items-center gap-1">
+                  <Icon name="Star" size={12} />
+                  Популярный
+                </span>
+              )}
+              {!product.is_active && (
+                <span className="text-xs bg-red-500 text-white px-2 py-1 rounded flex items-center gap-1">
+                  <Icon name="EyeOff" size={12} />
+                  Скрыт
+                </span>
+              )}
+            </div>
           </div>
           {(product.categories && product.categories.length > 0) && (
             <div className="flex flex-wrap gap-1 mb-2">
@@ -96,9 +106,18 @@ const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatur
           </Button>
           <Button
             size="sm"
+            variant={product.is_active ? "outline" : "default"}
+            onClick={() => onToggleActive(product.id, product.is_active || true)}
+            title={product.is_active ? "Скрыть товар" : "Показать товар"}
+          >
+            <Icon name={product.is_active ? "EyeOff" : "Eye"} size={16} />
+          </Button>
+          <Button
+            size="sm"
             variant="ghost"
             onClick={() => onDelete(product.id, product.name)}
             className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            title="Удалить товар"
           >
             <Icon name="Trash2" size={16} />
           </Button>
