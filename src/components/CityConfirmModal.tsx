@@ -16,10 +16,9 @@ export const CityConfirmModal = () => {
   const { selectedCity, setCity } = useCity();
 
   useEffect(() => {
-    const hasConfirmedCity = localStorage.getItem('cityConfirmed');
-    const hasDetectedLocation = localStorage.getItem('hasDetectedLocation');
+    const hasConfirmedThisSession = sessionStorage.getItem('cityConfirmedThisSession');
     
-    if (!hasConfirmedCity && hasDetectedLocation) {
+    if (!hasConfirmedThisSession) {
       const timer = setTimeout(() => {
         setIsOpen(true);
       }, 500);
@@ -29,7 +28,7 @@ export const CityConfirmModal = () => {
   }, []);
 
   const handleConfirm = () => {
-    localStorage.setItem('cityConfirmed', 'true');
+    sessionStorage.setItem('cityConfirmedThisSession', 'true');
     setIsOpen(false);
   };
 
@@ -39,7 +38,7 @@ export const CityConfirmModal = () => {
 
   const handleCitySelect = (city: string, cityId: number, region?: string) => {
     setCity(city, cityId, region);
-    localStorage.setItem('cityConfirmed', 'true');
+    sessionStorage.setItem('cityConfirmedThisSession', 'true');
     setIsOpen(false);
     setShowSelector(false);
   };
