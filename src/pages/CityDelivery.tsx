@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
+import { useCity } from '@/contexts/CityContext';
 import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -41,6 +42,7 @@ const CityDelivery = () => {
   const { citySlug } = useParams<{ citySlug: string }>();
   const navigate = useNavigate();
   const { totalItems } = useCart();
+  const { setCityFromSlug } = useCity();
   
   const [city, setCity] = useState<City | null>(null);
   const [settlements, setSettlements] = useState<Settlement[]>([]);
@@ -78,6 +80,7 @@ const CityDelivery = () => {
         }
         
         setCity(foundCity);
+        setCityFromSlug(citySlug);
 
         const settlementsResponse = await fetch(`${API_ENDPOINTS.citySettlements}?action=settlements&city_id=${foundCity.id}`);
         const settlementsData = await settlementsResponse.json();

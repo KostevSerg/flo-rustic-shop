@@ -6,6 +6,7 @@ interface CityContextType {
   selectedCityRegion: string;
   setCity: (city: string, cityId: number, region?: string) => void;
   initAutoDetection: () => void;
+  setCityFromSlug: (citySlug: string) => Promise<boolean>;
 }
 
 const CityContext = createContext<CityContextType | undefined>(undefined);
@@ -178,6 +179,52 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('selectedCityId', cityId.toString());
   };
 
+  const setCityFromSlug = async (citySlug: string): Promise<boolean> => {
+    try {
+      const CACHE_KEY = 'cities_cache';
+      let data;
+      
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data: cachedData, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+          data = { cities: cachedData };
+        }
+      }
+      
+      if (!data) {
+        const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=list');
+        data = await response.json();
+        
+        if (data.cities) {
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            data: data.cities,
+            timestamp: Date.now()
+          }));
+        }
+      }
+
+      if (data.cities) {
+        const allCities: CityData[] = [];
+        Object.values(data.cities).forEach((regionCities: any) => {
+          allCities.push(...regionCities);
+        });
+
+        const foundCity = allCities.find(c => createSlug(c.name) === citySlug);
+        
+        if (foundCity) {
+          setCity(foundCity.name, foundCity.id, foundCity.region);
+          return true;
+        }
+      }
+      
+      return false;
+    } catch (error) {
+      console.error('Failed to set city from slug:', error);
+      return false;
+    }
+  };
+
   return (
     <CityContext.Provider
       value={{
@@ -186,6 +233,7 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
         selectedCityRegion,
         setCity,
         initAutoDetection,
+        setCityFromSlug,
       }}
     >
       {children}
