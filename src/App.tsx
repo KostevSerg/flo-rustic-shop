@@ -36,6 +36,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminPromoCodes from "./pages/AdminPromoCodes";
 import AdminPageContents from "./pages/AdminPageContents";
 import AdminSubcategories from "./pages/AdminSubcategories";
+import Sitemap from "./pages/Sitemap";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -101,6 +102,7 @@ const App = () => (
                     <Route path="/admin/promo-codes" element={<AdminPromoCodes />} />
                     <Route path="/admin/page-contents" element={<AdminPageContents />} />
                     <Route path="/admin/subcategories" element={<AdminSubcategories />} />
+                    <Route path="/sitemap.xml" element={<Sitemap />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>

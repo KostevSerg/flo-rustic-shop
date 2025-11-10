@@ -11,7 +11,8 @@ const API_ENDPOINTS = {
   pageContents: 'https://functions.poehali.dev/3918d2b6-cf28-40ff-ba75-8c73546c5f37',
   indexNow: 'https://functions.poehali.dev/f9051455-576c-4094-8413-8c03926b2370',
   reviews: 'https://functions.poehali.dev/8ee7f59d-5f11-4251-9175-aaf0350b84b1',
-  adminChangePassword: 'https://functions.poehali.dev/0faea4e0-3a01-4e93-8325-14b08d74c1b1'
+  adminChangePassword: 'https://functions.poehali.dev/0faea4e0-3a01-4e93-8325-14b08d74c1b1',
+  sitemap: 'https://functions.poehali.dev/58b61451-ee69-439e-b94c-195335bd5057'
 };
 
 export default API_ENDPOINTS;
