@@ -63,7 +63,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
             </p>
           )}
           <div className="flex items-center justify-between gap-2">
-            <span className="text-lg md:text-2xl font-bold">{product.price} ₽</span>
+            <span className="text-lg md:text-2xl font-bold">{Math.round(product.price)} ₽</span>
             <Button 
               onClick={handleAddToCart}
               className="bg-primary text-primary-foreground hover:opacity-90 text-xs md:text-sm px-2 md:px-4 py-1.5 md:py-2"

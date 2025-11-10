@@ -29,7 +29,7 @@ const CheckoutCart = ({ items, onRemove, onUpdateQuantity }: CheckoutCartProps) 
             />
             <div className="flex-1">
               <h3 className="font-medium">{item.name}</h3>
-              <p className="text-muted-foreground">{item.price} ₽</p>
+              <p className="text-muted-foreground">{Math.round(item.price)} ₽</p>
               <div className="flex items-center gap-2 mt-2">
                 <Button
                   variant="outline"

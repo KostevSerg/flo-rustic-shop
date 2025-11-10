@@ -100,7 +100,7 @@ const Cart = () => {
                         <Icon name="Plus" size={16} />
                       </button>
                     </div>
-                    <span className="text-lg font-bold">{item.price * item.quantity} ₽</span>
+                    <span className="text-lg font-bold">{Math.round(item.price * item.quantity)} ₽</span>
                   </div>
                 </div>
                 <button 
@@ -135,7 +135,7 @@ const Cart = () => {
                 </div>
                 <div className="flex justify-between text-lg">
                   <span className="text-muted-foreground">Сумма:</span>
-                  <span className="font-semibold">{totalPrice} ₽</span>
+                  <span className="font-semibold">{Math.round(totalPrice)} ₽</span>
                 </div>
                 <div className="flex justify-between text-lg">
                   <span className="text-muted-foreground">Доставка:</span>
@@ -144,7 +144,7 @@ const Cart = () => {
                 <div className="border-t border-border pt-3 mt-3">
                   <div className="flex justify-between text-2xl font-bold">
                     <span>К оплате:</span>
-                    <span>{totalPrice} ₽</span>
+                    <span>{Math.round(totalPrice)} ₽</span>
                   </div>
                 </div>
               </div>

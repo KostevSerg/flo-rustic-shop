@@ -256,7 +256,7 @@ const Product = () => {
             <div className="border-t border-b py-6 mb-6">
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Цена в г. {selectedCity}</span>
-                <span className="text-3xl font-bold">{product.price} ₽</span>
+                <span className="text-3xl font-bold">{Math.round(product.price)} ₽</span>
               </div>
             </div>
 
@@ -288,7 +288,7 @@ const Product = () => {
                 className="w-full text-lg"
               >
                 <Icon name="ShoppingCart" size={20} className="mr-2" />
-                Добавить в корзину за {product.price * quantity} ₽
+                Добавить в корзину за {Math.round(product.price * quantity)} ₽
               </Button>
             </div>
 
