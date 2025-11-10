@@ -5,7 +5,7 @@ interface CityContextType {
   selectedCityId: number;
   selectedCityRegion: string;
   setCity: (city: string, cityId: number, region?: string) => void;
-  initAutoDetection: () => void;
+  initAutoDetection: (fromHomePage?: boolean) => void;
   setCityFromSlug: (citySlug: string) => Promise<boolean>;
 }
 
@@ -64,11 +64,20 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const initAutoDetection = async () => {
+  const initAutoDetection = async (fromHomePage: boolean = false) => {
     const hasDetectedLocation = localStorage.getItem('hasDetectedLocation');
-    if (hasDetectedLocation) return;
+    const savedCity = localStorage.getItem('selectedCity');
     
-    await detectUserLocation();
+    if (fromHomePage && !hasDetectedLocation) {
+      await detectUserLocation();
+      return;
+    }
+    
+    if (!savedCity) {
+      setSelectedCity('Москва');
+      setSelectedCityId(1);
+      setSelectedCityRegion('Москва');
+    }
   };
 
   const detectUserLocation = async () => {
@@ -157,9 +166,6 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
           localStorage.setItem('selectedCity', nearestCity.name);
           localStorage.setItem('selectedCityId', nearestCity.id.toString());
           localStorage.setItem('hasDetectedLocation', 'true');
-          
-          const citySlug = createSlug(nearestCity.name);
-          window.location.href = `/city/${citySlug}`;
         }
       }
     } catch (error) {

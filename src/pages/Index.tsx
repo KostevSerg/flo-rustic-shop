@@ -53,7 +53,7 @@ const Index = () => {
   const isHomePage = location.pathname === '/';
 
   useEffect(() => {
-    initAutoDetection();
+    initAutoDetection(true);
   }, []);
 
   useEffect(() => {

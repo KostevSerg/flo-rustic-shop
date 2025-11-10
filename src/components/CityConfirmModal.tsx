@@ -17,8 +17,10 @@ export const CityConfirmModal = () => {
 
   useEffect(() => {
     const hasConfirmedThisSession = sessionStorage.getItem('cityConfirmedThisSession');
+    const hasDetectedLocation = localStorage.getItem('hasDetectedLocation');
+    const isHomePage = window.location.pathname === '/';
     
-    if (!hasConfirmedThisSession) {
+    if (!hasConfirmedThisSession && hasDetectedLocation && isHomePage) {
       const timer = setTimeout(() => {
         setIsOpen(true);
       }, 500);
