@@ -43,9 +43,7 @@ const Delivery = () => {
     content.metaDescription
   );
 
-  const canonicalUrl = typeof window !== 'undefined' 
-    ? window.location.origin + window.location.pathname
-    : 'https://florustic.ru/delivery';
+  const canonicalUrl = 'https://florustic.ru/delivery';
 
   return (
     <div className="min-h-screen flex flex-col">

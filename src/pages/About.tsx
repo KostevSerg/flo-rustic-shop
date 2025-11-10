@@ -77,9 +77,7 @@ const About = () => {
     content.metaDescription
   );
 
-  const canonicalUrl = typeof window !== 'undefined' 
-    ? window.location.origin + window.location.pathname
-    : 'https://florustic.ru/about';
+  const canonicalUrl = 'https://florustic.ru/about';
 
   return (
     <div className="min-h-screen flex flex-col">

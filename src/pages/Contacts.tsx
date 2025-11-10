@@ -35,9 +35,7 @@ const Contacts = () => {
     `Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Контакты: телефон для заказа, адреса салонов. Работаем 24/7 без выходных. Консультация флориста бесплатно!`
   );
 
-  const canonicalUrl = typeof window !== 'undefined' 
-    ? window.location.origin + window.location.pathname
-    : 'https://florustic.ru/contacts';
+  const canonicalUrl = 'https://florustic.ru/contacts';
 
   useEffect(() => {
     const fetchCityContact = async () => {

@@ -126,9 +126,7 @@ const CityDelivery = () => {
     ? `условия доставки цветов ${city.name}, стоимость доставки ${city.name}, доставка букетов ${city.name}, доставка в населённые пункты ${city.name}, ${content.metaKeywords}`
     : content.metaKeywords;
 
-  const canonicalUrl = typeof window !== 'undefined' 
-    ? window.location.origin + window.location.pathname
-    : `https://florustic.ru/city/${citySlug}/delivery`;
+  const canonicalUrl = `https://florustic.ru/city/${citySlug}/delivery`;
 
   if (loading) {
     return (
