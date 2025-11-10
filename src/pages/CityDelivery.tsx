@@ -111,14 +111,15 @@ const CityDelivery = () => {
     loadData();
   }, [citySlug]);
 
-  const settlementNames = settlements.map(s => s.name).join(', ');
+  const settlementsList = settlements.slice(0, 5).map(s => s.name).join(', ');
+  const settlementsCount = settlements.length;
   
   const pageTitle = city 
-    ? `Условия доставки цветов ${city.name} — FloRustic | Доставка за 2 часа в ${settlementNames ? settlements.slice(0, 3).map(s => s.name).join(', ') : city.name}`
+    ? `Условия доставки цветов ${city.name} — FloRustic | Доставка за 2 часа в ${settlements.slice(0, 3).map(s => s.name).join(', ')}`
     : 'Доставка - FloRustic';
   
   const pageDescription = city
-    ? `Условия и стоимость доставки цветов в ${city.name} от FloRustic. Доставляем букеты в населённые пункты: ${settlementNames}. Быстрая доставка за 1.5-2 часа. Фото букета перед доставкой. Контроль качества 24/7!`
+    ? `Доставка цветов по городу ${city.name} и ${settlementsCount} населённым пунктам области. Развозим букеты в: ${settlementsList}${settlementsCount > 5 ? ` и ещё ${settlementsCount - 5} н.п.` : ''}. Стоимость от 200₽, время 1.5-2 часа. Работаем круглосуточно!`
     : content.metaDescription;
   
   const pageKeywords = city
