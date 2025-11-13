@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Sitemap</title>
+</head>
+<body>
+    <h1>Sitemap Downloader</h1>
+    <button id="downloadBtn">Download Sitemap</button>
+    <pre id="output"></pre>
+    
+    <script>
+        document.getElementById('downloadBtn').addEventListener('click', async () => {
+            const output = document.getElementById('output');
+            output.textContent = 'Fetching sitemap...';
+            
+            try {
+                const url = 'https://functions.poehali.dev/58b61451-ee69-439e-b94c-195335bd5057';
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const text = await response.text();
+                
+                // Save to file
+                const blob = new Blob([text], { type: 'application/xml' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'sitemap.xml';
+                a.click();
+                
+                // Show statistics
+                const lines = text.split('\n');
+                const urlCount = (text.match(/<loc>/g) || []).length;
+                
+                output.textContent = `SUCCESS!\n\nFile size: ${text.length} characters\nTotal URLs: ${urlCount}\n\n`;
+                output.textContent += '=== FIRST 100 LINES ===\n';
+                output.textContent += lines.slice(0, 100).join('\n');
+                output.textContent += '\n\n=== LAST 20 LINES ===\n';
+                output.textContent += lines.slice(-20).join('\n');
+                
+            } catch (error) {
+                output.textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

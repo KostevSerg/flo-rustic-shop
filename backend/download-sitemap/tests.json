@@ -1,0 +1,11 @@
+[
+  {
+    "name": "Download sitemap",
+    "request": {
+      "method": "GET"
+    },
+    "expected": {
+      "status": 200
+    }
+  }
+]
