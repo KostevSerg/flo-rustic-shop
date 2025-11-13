@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Fetch sitemap successfully",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "__type": "string_contains",
+        "value": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+      }
+    }
+  ]
+}
