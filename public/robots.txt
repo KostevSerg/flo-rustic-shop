@@ -57,8 +57,8 @@ Allow: /
 User-agent: TelegramBot
 Allow: /
 
-# Sitemap
-Sitemap: https://florustic.ru/sitemap.xml
+# Sitemap (прямая ссылка на динамический sitemap)
+Sitemap: https://functions.poehali.dev/58b61451-ee69-439e-b94c-195335bd5057
 
 # Дополнительная информация
 # Обновлено: 2025-10-31
