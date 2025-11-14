@@ -118,7 +118,7 @@ const Product = () => {
 
   const pageTitle = `${product.name} — купить в ${selectedCity} | FloRustic`;
   const pageDescription = `Служба доставки цветов в ${selectedCity}. ${product.name} — ${product.price}₽. Свежие цветы в ${selectedCity}, доставка в течение 1.5 часов после оплаты. ${product.description ? product.description.slice(0, 80) : 'Букеты ручной работы'}. Заказ онлайн 24/7!`;
-  const productUrl = `https://florustic.ru/product/${id}`;
+  const productUrl = `https://florustic.ru/product/${id}?city=${encodeURIComponent(selectedCity)}`;
 
   const productSchema = {
     "@context": "https://schema.org",
