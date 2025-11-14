@@ -79,6 +79,7 @@ const Cart = () => {
                 <img 
                   src={item.image} 
                   alt={item.name}
+                  loading="lazy"
                   className="w-24 h-24 object-cover rounded-lg"
                 />
                 <div className="flex-1">

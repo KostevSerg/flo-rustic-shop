@@ -25,6 +25,7 @@ const CheckoutCart = ({ items, onRemove, onUpdateQuantity }: CheckoutCartProps) 
             <img 
               src={item.image} 
               alt={item.name}
+              loading="lazy"
               className="w-20 h-20 object-cover rounded-lg"
             />
             <div className="flex-1">

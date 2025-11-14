@@ -230,6 +230,8 @@ const Product = () => {
             <img 
               src={product.image_url} 
               alt={product.name}
+              loading="eager"
+              fetchpriority="high"
               className="w-full h-full object-cover"
             />
           </div>
