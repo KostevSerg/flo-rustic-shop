@@ -115,7 +115,7 @@ const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
 
   const cityPrepositional = getCityInPrepositional(cityName);
   const regionPart = region ? `, ${region}` : '';
-  const pageTitle = `Доставка цветов ${cityName}${regionPart} — FloRustic | Купить розы, тюльпаны, пионы с доставкой в ${cityPrepositional}`;
+  const pageTitle = `Доставка цветов и букетов в ${cityPrepositional}${regionPart}`;
   const pageDescription = `Заказать свежие цветы с доставкой в ${cityName}${regionPart} от FloRustic. Букеты роз, тюльпанов, пионов, хризантем за 2 часа. Композиции ручной работы, стабилизированный мох. Круглосуточный заказ онлайн в ${cityPrepositional}!`;
   const pageUrl = `https://florustic.ru/city/${citySlug}`;
   const keywords = `доставка цветов ${cityName}, купить розы ${cityName}, букет роз ${cityName}, тюльпаны ${cityName}, пионы ${cityName}, хризантемы ${cityName}, орхидеи ${cityName}, цветы с доставкой ${cityName}, заказать букет ${cityName}, флорист ${cityName}`;
