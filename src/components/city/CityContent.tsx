@@ -165,20 +165,6 @@ const CityContent = ({ cityName }: CityContentProps) => {
           <div className="bg-card rounded-lg p-6 border">
             <div className="flex items-start gap-4">
               <div className="bg-primary/10 rounded-full p-3">
-                <Icon name="Shield" size={24} className="text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Гарантия качества</h3>
-                <p className="text-muted-foreground text-sm">
-                  Если вас не устроит букет, мы вернем деньги или заменим композицию бесплатно.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-card rounded-lg p-6 border">
-            <div className="flex items-start gap-4">
-              <div className="bg-primary/10 rounded-full p-3">
                 <Icon name="CreditCard" size={24} className="text-primary" />
               </div>
               <div>
