@@ -212,12 +212,7 @@ const Product = () => {
         "url": "https://florustic.ru"
       }
     },
-    "category": product.category || "Букеты",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": 5.0,
-      "reviewCount": 2
-    }
+    "category": product.category || "Букеты"
   };
 
   return (
