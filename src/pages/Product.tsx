@@ -28,15 +28,26 @@ const Product = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProduct = async (retryCount = 0) => {
       if (!id) return;
       
       setLoading(true);
+      setError(false);
+      
       try {
         const url = `${API_ENDPOINTS.products}?id=${id}&city=${encodeURIComponent(selectedCity)}`;
-        const response = await fetch(url);
+        const response = await fetch(url, { 
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
         
         if (data.products && data.products.length > 0) {
@@ -54,18 +65,24 @@ const Product = () => {
             });
           }
         } else {
-          navigate('/404');
+          setError(true);
         }
-      } catch (error) {
-        console.error('Failed to fetch product:', error);
-        navigate('/404');
+      } catch (err) {
+        console.error('Failed to fetch product:', err);
+        
+        if (retryCount < 2) {
+          setTimeout(() => fetchProduct(retryCount + 1), 1000);
+          return;
+        }
+        
+        setError(true);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProduct();
-  }, [id, selectedCity, navigate]);
+  }, [id, selectedCity]);
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -112,8 +129,25 @@ const Product = () => {
     );
   }
 
-  if (!product) {
-    return null;
+  if (error || !product) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header cartCount={totalItems} />
+        <main className="flex-1 container mx-auto px-4 py-16">
+          <div className="text-center py-12">
+            <Icon name="AlertCircle" size={64} className="mx-auto mb-4 text-muted-foreground" />
+            <h1 className="text-3xl font-bold mb-4">Товар не найден</h1>
+            <p className="text-muted-foreground mb-8">
+              К сожалению, товар с ID {id} не найден или временно недоступен
+            </p>
+            <Link to="/">
+              <Button size="lg">Вернуться на главную</Button>
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   const pageTitle = `${product.name} — купить в ${selectedCity} | FloRustic`;
