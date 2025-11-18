@@ -267,59 +267,6 @@ const CityContent = ({ cityName }: CityContentProps) => {
         </div>
       </section>
 
-      <section>
-        <h2 className="text-2xl font-bold mb-6">Частые вопросы о доставке цветов в {cityPrepositional}</h2>
-        <div className="space-y-4">
-          <div className="bg-card rounded-lg p-6 border">
-            <h3 className="font-semibold mb-2">Сколько стоит букет роз в {cityPrepositional}?</h3>
-            <p className="text-muted-foreground text-sm">
-              Цена букета роз зависит от количества и сорта: букет из 25 роз от 2500₽, из 51 розы от 4500₽, 
-              из 101 розы от 8500₽. Все цены указаны с учетом доставки по городу.
-            </p>
-          </div>
-
-          <div className="bg-card rounded-lg p-6 border">
-            <h3 className="font-semibold mb-2">Можно ли купить тюльпаны круглый год?</h3>
-            <p className="text-muted-foreground text-sm">
-              Тюльпаны доступны круглый год, но пик сезона — с февраля по май. В этот период самый большой выбор 
-              сортов и расцветок. Зимой и летом ассортимент более ограничен, но основные цвета всегда в наличии.
-            </p>
-          </div>
-
-          <div className="bg-card rounded-lg p-6 border">
-            <h3 className="font-semibold mb-2">Как быстро можно доставить букет из пионов?</h3>
-            <p className="text-muted-foreground text-sm">
-              Стандартная доставка букета из пионов занимает 2-4 часа с момента заказа. 
-              Пионы — сезонные цветы (май-июль), поэтому в остальное время заказ может занять до 24 часов.
-            </p>
-          </div>
-
-          <div className="bg-card rounded-lg p-6 border">
-            <h3 className="font-semibold mb-2">Можно ли заказать букет из орхидей с доставкой?</h3>
-            <p className="text-muted-foreground text-sm">
-              Да, орхидеи доступны круглый год. Можно заказать как срезанные орхидеи в букете, 
-              так и живые орхидеи в горшках. Доставка бережная, с гарантией сохранности цветка.
-            </p>
-          </div>
-
-          <div className="bg-card rounded-lg p-6 border">
-            <h3 className="font-semibold mb-2">Какие способы оплаты вы принимаете?</h3>
-            <p className="text-muted-foreground text-sm">
-              Мы принимаем оплату банковскими картами (Visa, MasterCard, МИР), наличными курьеру при получении, 
-              а также безналичный расчет для юридических лиц.
-            </p>
-          </div>
-
-          <div className="bg-card rounded-lg p-6 border">
-            <h3 className="font-semibold mb-2">Что делать, если букет не понравился?</h3>
-            <p className="text-muted-foreground text-sm">
-              Если вы не удовлетворены качеством букета, свяжитесь с нашей службой поддержки в течение 24 часов. 
-              Мы либо заменим букет бесплатно, либо вернем полную стоимость заказа.
-            </p>
-          </div>
-        </div>
-      </section>
-
       <section className="bg-card rounded-lg p-8 border">
         <h2 className="text-2xl font-bold mb-6">Контакты для заказа цветов в {cityPrepositional}</h2>
         <div className="space-y-4 text-muted-foreground">
