@@ -115,7 +115,7 @@ const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
 
   const cityPrepositional = getCityInPrepositional(cityName);
   const regionPart = region ? `, ${region}` : '';
-  const pageTitle = `Доставка цветов и букетов в ${cityPrepositional}${regionPart}`;
+  const pageTitle = `Доставка цветов ${cityName}${regionPart} — FloRustic | Купить розы, тюльпаны, пионы с доставкой в ${cityPrepositional}`;
   const pageDescription = `Заказать свежие цветы с доставкой в ${cityName}${regionPart} от FloRustic. Букеты роз, тюльпанов, пионов, хризантем за 2 часа. Композиции ручной работы, стабилизированный мох. Круглосуточный заказ онлайн в ${cityPrepositional}!`;
   const pageUrl = `https://florustic.ru/city/${citySlug}`;
   const keywords = `доставка цветов ${cityName}, купить цветы ${cityName}, букет роз ${cityName}, заказать букет ${cityName}, цветы с доставкой ${cityName}, цветы недорого ${cityName}, срочная доставка цветов ${cityName}, круглосуточная доставка букетов ${cityName}, свежие цветы ${cityName}, розы ${cityName}, тюльпаны ${cityName}, пионы ${cityName}, хризантемы ${cityName}, орхидеи ${cityName}, лилии ${cityName}, гортензии ${cityName}, композиции из цветов ${cityName}, букет на день рождения ${cityName}, букет на свадьбу ${cityName}, траурные венки ${cityName}, цветы в коробке ${cityName}, монобукет ${cityName}, флорист ${cityName}, цветочный магазин ${cityName}, служба доставки цветов ${cityName}, интернет-магазин цветов ${cityName}, купить розы недорого ${cityName}, доставка букетов на дом ${cityName}, заказ цветов онлайн ${cityName}, цветы с бесплатной доставкой ${cityName}`;
