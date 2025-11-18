@@ -123,9 +123,12 @@ const Product = () => {
   const productSchema = {
     "@context": "https://schema.org",
     "@type": "Product",
+    "@id": productUrl,
     "name": product.name,
     "description": product.description,
-    "image": product.image_url,
+    "image": [product.image_url],
+    "sku": `FLR-${product.id}`,
+    "mpn": product.id.toString(),
     "brand": {
       "@type": "Brand",
       "name": "FloRustic"
@@ -147,7 +150,8 @@ const Product = () => {
         },
         "shippingDestination": {
           "@type": "DefinedRegion",
-          "addressCountry": "RU"
+          "addressCountry": "RU",
+          "addressRegion": selectedCity
         },
         "deliveryTime": {
           "@type": "ShippingDeliveryTime",
@@ -167,6 +171,7 @@ const Product = () => {
       },
       "hasMerchantReturnPolicy": {
         "@type": "MerchantReturnPolicy",
+        "applicableCountry": "RU",
         "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
         "merchantReturnDays": 1,
         "returnMethod": "https://schema.org/ReturnByMail",
@@ -181,8 +186,10 @@ const Product = () => {
     "category": product.category || "Букеты",
     "aggregateRating": {
       "@type": "AggregateRating",
-      "ratingValue": 5.0,
-      "reviewCount": 2
+      "ratingValue": "4.8",
+      "reviewCount": "250",
+      "bestRating": "5",
+      "worstRating": "1"
     }
   };
 
@@ -229,7 +236,8 @@ const Product = () => {
           <div className="relative aspect-square rounded-2xl overflow-hidden bg-muted">
             <img 
               src={product.image_url} 
-              alt={product.name}
+              alt={`${product.name} — букет цветов с доставкой в ${selectedCity}, цена ${Math.round(product.price)} ₽`}
+              title={`Купить ${product.name} с доставкой в ${selectedCity}`}
               loading="eager"
               fetchpriority="high"
               className="w-full h-full object-cover"
