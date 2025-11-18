@@ -122,78 +122,37 @@ const Index = () => {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            "@id": "https://florustic.ru/#organization",
+            "@type": "FloristShop",
             "name": "FloRustic",
             "description": pageDescription,
             "url": canonicalUrl,
             "telephone": "+7-xxx-xxx-xxxx",
-            "priceRange": "₽₽₽",
-            "image": "https://florustic.ru/logo.png",
+            "priceRange": "₽₽",
             "address": {
               "@type": "PostalAddress",
               "addressLocality": selectedCity || "Россия",
               "addressCountry": "RU"
             },
-            "geo": selectedCity && {
-              "@type": "GeoCoordinates"
-            },
-            "openingHoursSpecification": [
-              {
-                "@type": "OpeningHoursSpecification",
-                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-                "opens": "09:00",
-                "closes": "21:00"
-              }
-            ],
-            "areaServed": [
-              {"@type": "City", "name": "Москва"},
-              {"@type": "City", "name": "Санкт-Петербург"},
-              {"@type": "City", "name": "Казань"},
-              {"@type": "City", "name": "Екатеринбург"},
-              {"@type": "City", "name": "Новосибирск"},
-              {"@type": "Country", "name": "Россия"}
-            ],
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": "4.8",
-              "reviewCount": "250",
-              "bestRating": "5",
-              "worstRating": "1"
-            }
+            "openingHours": "Mo-Su 09:00-21:00",
+            "areaServed": ["Москва", "Санкт-Петербург", "Казань", "Екатеринбург", "Новосибирск", "Россия"]
           })}
         </script>
         
-        {featuredProducts.length > 0 && (
-          <script type="application/ld+json">
-            {JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "ItemList",
-              "itemListElement": featuredProducts.map((product, index) => ({
-                "@type": "ListItem",
-                "position": index + 1,
-                "item": {
-                  "@type": "Product",
-                  "@id": `https://florustic.ru/product/${product.id}`,
-                  "name": product.name,
-                  "description": product.description,
-                  "image": product.image_url,
-                  "offers": {
-                    "@type": "Offer",
-                    "url": `https://florustic.ru/product/${product.id}`,
-                    "priceCurrency": "RUB",
-                    "price": product.price,
-                    "availability": "https://schema.org/InStock",
-                    "seller": {
-                      "@type": "Organization",
-                      "name": "FloRustic"
-                    }
-                  }
-                }
-              }))
-            })}
-          </script>
-        )}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "FloRustic",
+            "description": pageDescription,
+            "url": "https://florustic.ru",
+            "logo": "https://florustic.ru/logo.png",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "contactType": "Customer Service",
+              "availableLanguage": "Russian"
+            }
+          })}
+        </script>
         
         <script type="application/ld+json">
           {JSON.stringify({
@@ -221,14 +180,10 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-in">
-              {selectedCity 
-                ? `Доставка цветов в ${selectedCity} — свежие букеты за 1.5 часа`
-                : 'Доставка цветов по России — свежие букеты за 1.5 часа'
-              }
+              {getText('home', 'hero_title', 'Цветы - чтобы радовать каждый день!')}
             </h1>
             <p className="text-base md:text-lg text-muted-foreground mb-6 animate-fade-in">
-              Более 500 букетов ручной работы. Розы, тюльпаны, пионы с доставкой {selectedCity ? `по ${selectedCity}` : 'по всей России'}. 
-              Работаем ежедневно с 9:00 до 21:00. Бесплатная открытка к каждому заказу.
+              {getText('home', 'hero_subtitle', 'Свежие букеты с доставкой по городу. Создаем композиции с душой и вниманием к деталям.')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
               <Link to={`/city/${citySlug}`}>
@@ -435,70 +390,6 @@ const Index = () => {
                   Корпоративные букеты для партнёров и деловых мероприятий с доставкой.
                 </p>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto prose prose-lg">
-            <h2 className="text-3xl font-bold mb-6">
-              Доставка цветов {selectedCity ? `в ${selectedCity}` : 'по России'} — FloRustic
-            </h2>
-            <p className="text-muted-foreground mb-4">
-              <strong>FloRustic</strong> — это современная служба доставки свежих цветов и букетов{selectedCity ? ` в ${selectedCity}` : ' по всей России'}. 
-              Мы работаем напрямую с лучшими цветочными плантациями и гарантируем свежесть каждого бутона. 
-              Наша миссия — делать приятные моменты ещё более особенными через красоту живых цветов.
-            </p>
-            
-            <h3 className="text-2xl font-bold mt-8 mb-4">Почему стоит заказать цветы в FloRustic?</h3>
-            <p className="text-muted-foreground mb-4">
-              В нашем каталоге представлено более 500 букетов и цветочных композиций на любой вкус и бюджет. 
-              Розы, тюльпаны, пионы, орхидеи, гортензии, хризантемы — мы собираем букеты из самых популярных 
-              и экзотических цветов. Каждый букет создаётся вручную опытными флористами с учётом пожеланий клиента.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              <strong>Быстрая доставка</strong> — наше главное преимущество. Мы доставляем цветы{selectedCity ? ` по ${selectedCity}` : ''} 
-              в течение 1.5-2 часов после оформления заказа. Работаем ежедневно с 9:00 до 21:00, включая выходные и праздники. 
-              Возможна срочная доставка за 60 минут для особых случаев.
-            </p>
-
-            <h3 className="text-2xl font-bold mt-8 mb-4">Цветы для любого случая</h3>
-            <p className="text-muted-foreground mb-4">
-              Букеты FloRustic подходят для любых событий: <strong>день рождения, свадьба, юбилей, романтическое свидание, 
-              8 марта, День матери, выпускной, корпоративные мероприятия</strong>. Мы также предлагаем траурные венки 
-              и композиции для выражения соболезнований.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              Наши флористы помогут подобрать идеальный букет под конкретный повод и бюджет. В комплект входит 
-              бесплатная открытка с вашими пожеланиями и фирменная упаковка. При заказе от 3000 рублей — 
-              доставка бесплатная по {selectedCity || 'городу'}.
-            </p>
-
-            <h3 className="text-2xl font-bold mt-8 mb-4">Как заказать доставку цветов?</h3>
-            <p className="text-muted-foreground mb-4">
-              Оформить заказ очень просто: выберите букет в каталоге, добавьте в корзину, укажите адрес доставки{selectedCity ? ` в ${selectedCity}` : ''}, 
-              желаемое время и текст открытки. Оплата производится онлайн банковской картой или при получении. 
-              После оплаты флористы начинают сборку композиции из самых свежих цветов.
-            </p>
-            <p className="text-muted-foreground mb-4">
-              Мы гарантируем 100% качество и свежесть цветов. Если букет не соответствует фото или цветы увяли 
-              в течение 3 дней — вернём деньги или бесплатно заменим композицию. Фото букета отправляется 
-              перед доставкой для вашего утверждения.
-            </p>
-
-            <div className="bg-accent/10 p-6 rounded-lg mt-8">
-              <h3 className="text-xl font-bold mb-3">Закажите цветы с доставкой прямо сейчас!</h3>
-              <p className="text-muted-foreground mb-4">
-                Более 10 000 довольных клиентов{selectedCity ? ` в ${selectedCity}` : ' по всей России'} уже доверили 
-                нам важные моменты своей жизни. Присоединяйтесь!
-              </p>
-              <Link to={`/city/${citySlug}`}>
-                <Button size="lg" className="text-lg px-8">
-                  Смотреть каталог букетов
-                </Button>
-              </Link>
             </div>
           </div>
         </div>

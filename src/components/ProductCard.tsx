@@ -50,8 +50,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
         <div className="relative overflow-hidden aspect-square">
           <img 
             src={product.image} 
-            alt={`${product.name} — купить букет с доставкой, цена ${Math.round(product.price)} рублей`}
-            title={product.name}
+            alt={product.name}
             loading="lazy"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
