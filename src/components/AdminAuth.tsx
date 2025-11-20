@@ -9,20 +9,48 @@ interface AdminAuthProps {
 }
 
 const AdminAuth = ({ children }: AdminAuthProps) => {
-  const { isAuthenticated, login } = useAdminAuth();
+  const { isAuthenticated, login, failedAttempts, isBlocked, blockTimeLeft } = useAdminAuth();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (isBlocked) {
+      setError(`Доступ заблокирован. Попробуйте через ${blockTimeLeft} сек.`);
+      return;
+    }
+
+    if (!password.trim()) {
+      setError('Введите пароль');
+      return;
+    }
+
+    setIsLoading(true);
+    
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
     const success = login(password);
     
     if (success) {
       setError('');
       setPassword('');
     } else {
-      setError('Неверный пароль');
+      if (isBlocked) {
+        setError(`Превышено количество попыток. Доступ заблокирован на 15 минут.`);
+      } else {
+        const attemptsLeft = 3 - failedAttempts - 1;
+        if (attemptsLeft > 0) {
+          setError(`Неверный пароль. Осталось попыток: ${attemptsLeft}`);
+        } else {
+          setError('Превышено количество попыток. Доступ заблокирован на 15 минут.');
+        }
+      }
+      setPassword('');
     }
+    
+    setIsLoading(false);
   };
 
   if (isAuthenticated) {
@@ -52,6 +80,7 @@ const AdminAuth = ({ children }: AdminAuthProps) => {
               }}
               className={error ? 'border-destructive' : ''}
               autoFocus
+              disabled={isBlocked || isLoading}
             />
             {error && (
               <p className="text-destructive text-sm mt-2 flex items-center">
@@ -59,11 +88,26 @@ const AdminAuth = ({ children }: AdminAuthProps) => {
                 {error}
               </p>
             )}
+            {isBlocked && (
+              <p className="text-yellow-600 dark:text-yellow-500 text-sm mt-2 flex items-center">
+                <Icon name="Clock" size={16} className="mr-1" />
+                Повторите попытку через {Math.floor(blockTimeLeft / 60)}:{String(blockTimeLeft % 60).padStart(2, '0')}
+              </p>
+            )}
           </div>
 
-          <Button type="submit" className="w-full" size="lg">
-            <Icon name="LogIn" size={18} className="mr-2" />
-            Войти
+          <Button type="submit" className="w-full" size="lg" disabled={isBlocked || isLoading}>
+            {isLoading ? (
+              <>
+                <Icon name="Loader2" size={18} className="mr-2 animate-spin" />
+                Проверка...
+              </>
+            ) : (
+              <>
+                <Icon name="LogIn" size={18} className="mr-2" />
+                Войти
+              </>
+            )}
           </Button>
         </form>
 

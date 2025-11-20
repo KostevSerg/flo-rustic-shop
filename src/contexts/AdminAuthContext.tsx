@@ -4,32 +4,110 @@ interface AdminAuthContextType {
   isAuthenticated: boolean;
   login: (password: string) => boolean;
   logout: () => void;
+  failedAttempts: number;
+  isBlocked: boolean;
+  blockTimeLeft: number;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
 
 const ADMIN_PASSWORD = 'MaKs10151996!';
 const AUTH_KEY = 'admin_authenticated';
+const AUTH_TOKEN_KEY = 'admin_token';
+const ATTEMPTS_KEY = 'admin_attempts';
+const BLOCK_UNTIL_KEY = 'admin_block_until';
+const MAX_ATTEMPTS = 3;
+const BLOCK_DURATION = 15 * 60 * 1000;
+
+const generateToken = () => {
+  return `${Date.now()}_${Math.random().toString(36).substring(2, 15)}_${btoa(ADMIN_PASSWORD).substring(0, 10)}`;
+};
+
+const validateToken = (token: string | null): boolean => {
+  if (!token) return false;
+  const parts = token.split('_');
+  if (parts.length !== 3) return false;
+  const timestamp = parseInt(parts[0]);
+  if (isNaN(timestamp)) return false;
+  const age = Date.now() - timestamp;
+  const maxAge = 24 * 60 * 60 * 1000;
+  return age < maxAge;
+};
 
 export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem(AUTH_KEY) === 'true';
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    return validateToken(token);
   });
+
+  const [failedAttempts, setFailedAttempts] = useState<number>(() => {
+    return parseInt(localStorage.getItem(ATTEMPTS_KEY) || '0');
+  });
+
+  const [blockUntil, setBlockUntil] = useState<number>(() => {
+    return parseInt(localStorage.getItem(BLOCK_UNTIL_KEY) || '0');
+  });
+
+  const [blockTimeLeft, setBlockTimeLeft] = useState<number>(0);
+  const [isBlocked, setIsBlocked] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkBlockStatus = () => {
+      const now = Date.now();
+      if (blockUntil > now) {
+        setIsBlocked(true);
+        setBlockTimeLeft(Math.ceil((blockUntil - now) / 1000));
+      } else {
+        setIsBlocked(false);
+        setBlockTimeLeft(0);
+        if (blockUntil > 0) {
+          setBlockUntil(0);
+          setFailedAttempts(0);
+          localStorage.removeItem(BLOCK_UNTIL_KEY);
+          localStorage.removeItem(ATTEMPTS_KEY);
+        }
+      }
+    };
+
+    checkBlockStatus();
+    const interval = setInterval(checkBlockStatus, 1000);
+    return () => clearInterval(interval);
+  }, [blockUntil]);
 
   useEffect(() => {
     if (isAuthenticated) {
-      localStorage.setItem(AUTH_KEY, 'true');
-    } else {
+      const token = generateToken();
+      localStorage.setItem(AUTH_TOKEN_KEY, token);
       localStorage.removeItem(AUTH_KEY);
+    } else {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
     }
   }, [isAuthenticated]);
 
   const login = (password: string): boolean => {
+    if (isBlocked) {
+      return false;
+    }
+
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
+      setFailedAttempts(0);
+      localStorage.removeItem(ATTEMPTS_KEY);
+      localStorage.removeItem(BLOCK_UNTIL_KEY);
       return true;
+    } else {
+      const newAttempts = failedAttempts + 1;
+      setFailedAttempts(newAttempts);
+      localStorage.setItem(ATTEMPTS_KEY, newAttempts.toString());
+
+      if (newAttempts >= MAX_ATTEMPTS) {
+        const blockTime = Date.now() + BLOCK_DURATION;
+        setBlockUntil(blockTime);
+        localStorage.setItem(BLOCK_UNTIL_KEY, blockTime.toString());
+      }
+
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
@@ -37,7 +115,7 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AdminAuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AdminAuthContext.Provider value={{ isAuthenticated, login, logout, failedAttempts, isBlocked, blockTimeLeft }}>
       {children}
     </AdminAuthContext.Provider>
   );
