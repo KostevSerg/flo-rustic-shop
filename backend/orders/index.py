@@ -248,6 +248,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'payment_mode': 'full_prepayment'
                 }]
                 
+                cursor.execute('SELECT order_number FROM orders WHERE id = %s', (order_id,))
+                order_num_row = cursor.fetchone()
+                order_num = order_num_row['order_number'] if order_num_row else str(order_id)
+                
                 payment_data = {
                     'amount': {
                         'value': f'{float(amount):.2f}',
@@ -258,9 +262,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'return_url': return_url
                     },
                     'capture': True,
-                    'description': f'Заказ #{order_id}',
+                    'description': f'Заказ №{order_num}',
                     'metadata': {
-                        'order_id': str(order_id)
+                        'order_id': str(order_id),
+                        'order_number': order_num
                     },
                     'receipt': {
                         'customer': {
