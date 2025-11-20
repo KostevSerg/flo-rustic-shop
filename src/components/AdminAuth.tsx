@@ -9,16 +9,30 @@ interface AdminAuthProps {
 }
 
 const AdminAuth = ({ children }: AdminAuthProps) => {
-  const { isAuthenticated, login, failedAttempts, isBlocked, blockTimeLeft } = useAdminAuth();
+  const { isAuthenticated, login, failedAttempts, isBlocked, blockTimeLeft, hasValidKeyFile } = useAdminAuth();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [keyFile, setKeyFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setKeyFile(file);
+      setError('');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (isBlocked) {
       setError(`Доступ заблокирован. Попробуйте через ${blockTimeLeft} сек.`);
+      return;
+    }
+
+    if (!hasValidKeyFile && !keyFile) {
+      setError('Загрузите файл-ключ для входа');
       return;
     }
 
@@ -31,23 +45,29 @@ const AdminAuth = ({ children }: AdminAuthProps) => {
     
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    const success = login(password);
+    const success = await login(password, keyFile || undefined);
     
     if (success) {
       setError('');
       setPassword('');
+      setKeyFile(null);
     } else {
       if (isBlocked) {
         setError(`Превышено количество попыток. Доступ заблокирован на 15 минут.`);
       } else {
         const attemptsLeft = 3 - failedAttempts - 1;
         if (attemptsLeft > 0) {
-          setError(`Неверный пароль. Осталось попыток: ${attemptsLeft}`);
+          if (!hasValidKeyFile && keyFile) {
+            setError(`Неверный файл-ключ или пароль. Осталось попыток: ${attemptsLeft}`);
+          } else {
+            setError(`Неверный пароль. Осталось попыток: ${attemptsLeft}`);
+          }
         } else {
           setError('Превышено количество попыток. Доступ заблокирован на 15 минут.');
         }
       }
       setPassword('');
+      setKeyFile(null);
     }
     
     setIsLoading(false);
@@ -69,6 +89,34 @@ const AdminAuth = ({ children }: AdminAuthProps) => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {!hasValidKeyFile && (
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Файл-ключ доступа <span className="text-destructive">*</span>
+              </label>
+              <input
+                type="file"
+                accept=".txt"
+                onChange={handleFileChange}
+                disabled={isBlocked || isLoading}
+                className="w-full px-3 py-2 border border-border rounded-lg text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+              />
+              {keyFile && (
+                <p className="text-xs text-muted-foreground mt-1 flex items-center">
+                  <Icon name="FileCheck" size={14} className="mr-1" />
+                  {keyFile.name}
+                </p>
+              )}
+            </div>
+          )}
+          {hasValidKeyFile && (
+            <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+              <p className="text-green-700 dark:text-green-400 text-sm flex items-center">
+                <Icon name="ShieldCheck" size={16} className="mr-2" />
+                Файл-ключ подтверждён
+              </p>
+            </div>
+          )}
           <div>
             <Input
               type="password"
@@ -79,7 +127,6 @@ const AdminAuth = ({ children }: AdminAuthProps) => {
                 setError('');
               }}
               className={error ? 'border-destructive' : ''}
-              autoFocus
               disabled={isBlocked || isLoading}
             />
             {error && (
@@ -111,9 +158,15 @@ const AdminAuth = ({ children }: AdminAuthProps) => {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-muted-foreground mt-6">
-          Забыли пароль? Обратитесь к администратору
-        </p>
+        <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+          <p className="text-xs text-muted-foreground text-center mb-2">
+            <Icon name="Info" size={14} className="inline mr-1" />
+            Для входа требуется файл-ключ
+          </p>
+          <p className="text-xs text-muted-foreground text-center">
+            Обратитесь к администратору для получения доступа
+          </p>
+        </div>
       </div>
     </div>
   );

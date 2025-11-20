@@ -2,11 +2,12 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 interface AdminAuthContextType {
   isAuthenticated: boolean;
-  login: (password: string) => boolean;
+  login: (password: string, file?: File) => Promise<boolean>;
   logout: () => void;
   failedAttempts: number;
   isBlocked: boolean;
   blockTimeLeft: number;
+  hasValidKeyFile: boolean;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | undefined>(undefined);
@@ -16,8 +17,10 @@ const AUTH_KEY = 'admin_authenticated';
 const AUTH_TOKEN_KEY = 'admin_token';
 const ATTEMPTS_KEY = 'admin_attempts';
 const BLOCK_UNTIL_KEY = 'admin_block_until';
+const KEY_FILE_HASH_KEY = 'admin_key_hash';
 const MAX_ATTEMPTS = 3;
 const BLOCK_DURATION = 15 * 60 * 1000;
+const EXPECTED_KEY_CONTENT = 'FLORUSTIC_ADMIN_KEY_2024_SECURE';
 
 const generateToken = () => {
   return `${Date.now()}_${Math.random().toString(36).substring(2, 15)}_${btoa(ADMIN_PASSWORD).substring(0, 10)}`;
@@ -50,6 +53,9 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
 
   const [blockTimeLeft, setBlockTimeLeft] = useState<number>(0);
   const [isBlocked, setIsBlocked] = useState<boolean>(false);
+  const [hasValidKeyFile, setHasValidKeyFile] = useState<boolean>(() => {
+    return localStorage.getItem(KEY_FILE_HASH_KEY) !== null;
+  });
 
   useEffect(() => {
     const checkBlockStatus = () => {
@@ -84,8 +90,42 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [isAuthenticated]);
 
-  const login = (password: string): boolean => {
+  const login = async (password: string, file?: File): Promise<boolean> => {
     if (isBlocked) {
+      return false;
+    }
+
+    let keyFileValid = hasValidKeyFile;
+
+    if (file) {
+      try {
+        const fileContent = await file.text();
+        const trimmedContent = fileContent.trim();
+        
+        if (trimmedContent === EXPECTED_KEY_CONTENT) {
+          const hash = btoa(trimmedContent + Date.now());
+          localStorage.setItem(KEY_FILE_HASH_KEY, hash);
+          setHasValidKeyFile(true);
+          keyFileValid = true;
+        } else {
+          keyFileValid = false;
+        }
+      } catch (error) {
+        keyFileValid = false;
+      }
+    }
+
+    if (!keyFileValid) {
+      const newAttempts = failedAttempts + 1;
+      setFailedAttempts(newAttempts);
+      localStorage.setItem(ATTEMPTS_KEY, newAttempts.toString());
+
+      if (newAttempts >= MAX_ATTEMPTS) {
+        const blockTime = Date.now() + BLOCK_DURATION;
+        setBlockUntil(blockTime);
+        localStorage.setItem(BLOCK_UNTIL_KEY, blockTime.toString());
+      }
+
       return false;
     }
 
@@ -115,7 +155,7 @@ export const AdminAuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AdminAuthContext.Provider value={{ isAuthenticated, login, logout, failedAttempts, isBlocked, blockTimeLeft }}>
+    <AdminAuthContext.Provider value={{ isAuthenticated, login, logout, failedAttempts, isBlocked, blockTimeLeft, hasValidKeyFile }}>
       {children}
     </AdminAuthContext.Provider>
   );
