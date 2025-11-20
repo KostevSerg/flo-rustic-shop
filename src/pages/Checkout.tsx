@@ -139,6 +139,7 @@ const Checkout = () => {
       const result = await response.json();
       console.log('Заказ создан:', result);
       const orderId = result.id;
+      const orderNumber = result.order_number;
 
       if (typeof window.ym !== 'undefined') {
         window.ym(104746725, 'reachGoal', 'purchase');
@@ -169,7 +170,7 @@ const Checkout = () => {
           },
           body: JSON.stringify({
             order: {
-              order_number: orderId,
+              order_number: orderNumber,
               city: selectedCity || 'Не указан',
               region: selectedCityRegion || '',
               settlement: settlementName,
