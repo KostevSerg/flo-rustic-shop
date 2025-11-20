@@ -4,11 +4,17 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 from typing import Dict, Any
 from datetime import datetime
+from decimal import Decimal
 import uuid
 import requests
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
+def decimal_to_float(obj):
+    if isinstance(obj, Decimal):
+        return float(obj)
+    raise TypeError
 
 def send_order_notification(order: dict, payment_status: str):
     smtp_user = os.environ.get('SMTP_USER')
@@ -371,16 +377,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             result = cursor.fetchone()
             order_id = result['id']
-            
-            cursor.execute('SELECT * FROM orders WHERE id = %s', (order_id,))
-            created_order = cursor.fetchone()
+            order_number = result['order_number']
             
             conn.commit()
             
             return {
                 'statusCode': 201,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps(dict(result)),
+                'body': json.dumps({'id': order_id, 'order_number': order_number}),
                 'isBase64Encoded': False
             }
         
