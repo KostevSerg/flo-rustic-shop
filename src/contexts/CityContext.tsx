@@ -99,7 +99,7 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
         const { data: cachedData, timestamp } = JSON.parse(cached);
-        if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+        if (Date.now() - timestamp < 5 * 60 * 1000) {
           data = { cities: cachedData };
         }
       }
@@ -252,7 +252,7 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
         const { data: cachedData, timestamp } = JSON.parse(cached);
-        if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+        if (Date.now() - timestamp < 5 * 60 * 1000) {
           data = { cities: cachedData };
         }
       }
