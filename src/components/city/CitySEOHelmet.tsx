@@ -108,17 +108,17 @@ const getCityInPrepositional = (city: string): string => {
 };
 
 const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
-  // Не рендерим, пока citySlug пустой — иначе будет неправильный canonical
-  if (!citySlug || !cityName) {
+  if (!citySlug) {
     return null;
   }
 
-  const cityPrepositional = getCityInPrepositional(cityName);
+  const effectiveCityName = cityName || citySlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const cityPrepositional = getCityInPrepositional(effectiveCityName);
   const regionPart = region ? `, ${region}` : '';
-  const pageTitle = `Доставка цветов ${cityName}${regionPart} — FloRustic | Купить розы, тюльпаны, пионы с доставкой в ${cityPrepositional}`;
-  const pageDescription = `Заказать свежие цветы с доставкой в ${cityName}${regionPart} от FloRustic. Букеты роз, тюльпанов, пионов, хризантем за 2 часа. Композиции ручной работы, стабилизированный мох. Круглосуточный заказ онлайн в ${cityPrepositional}!`;
+  const pageTitle = `Доставка цветов ${effectiveCityName}${regionPart} — FloRustic | Купить розы, тюльпаны, пионы с доставкой в ${cityPrepositional}`;
+  const pageDescription = `Заказать свежие цветы с доставкой в ${effectiveCityName}${regionPart} от FloRustic. Букеты роз, тюльпанов, пионов, хризантем за 2 часа. Композиции ручной работы, стабилизированный мох. Круглосуточный заказ онлайн в ${cityPrepositional}!`;
   const pageUrl = `https://florustic.ru/city/${citySlug}`;
-  const keywords = `доставка цветов ${cityName}, купить цветы ${cityName}, букет роз ${cityName}, заказать букет ${cityName}, цветы с доставкой ${cityName}, цветы недорого ${cityName}, срочная доставка цветов ${cityName}, круглосуточная доставка букетов ${cityName}, свежие цветы ${cityName}, розы ${cityName}, тюльпаны ${cityName}, пионы ${cityName}, хризантемы ${cityName}, орхидеи ${cityName}, лилии ${cityName}, гортензии ${cityName}, композиции из цветов ${cityName}, букет на день рождения ${cityName}, букет на свадьбу ${cityName}, траурные венки ${cityName}, цветы в коробке ${cityName}, монобукет ${cityName}, флорист ${cityName}, цветочный магазин ${cityName}, служба доставки цветов ${cityName}, интернет-магазин цветов ${cityName}, купить розы недорого ${cityName}, доставка букетов на дом ${cityName}, заказ цветов онлайн ${cityName}, цветы с бесплатной доставкой ${cityName}`;
+  const keywords = `доставка цветов ${effectiveCityName}, купить цветы ${effectiveCityName}, букет роз ${effectiveCityName}, заказать букет ${effectiveCityName}, цветы с доставкой ${effectiveCityName}, цветы недорого ${effectiveCityName}, срочная доставка цветов ${effectiveCityName}, круглосуточная доставка букетов ${effectiveCityName}, свежие цветы ${effectiveCityName}, розы ${effectiveCityName}, тюльпаны ${effectiveCityName}, пионы ${effectiveCityName}, хризантемы ${effectiveCityName}, орхидеи ${effectiveCityName}, лилии ${effectiveCityName}, гортензии ${effectiveCityName}, композиции из цветов ${effectiveCityName}, букет на день рождения ${effectiveCityName}, букет на свадьбу ${effectiveCityName}, траурные венки ${effectiveCityName}, цветы в коробке ${effectiveCityName}, монобукет ${effectiveCityName}, флорист ${effectiveCityName}, цветочный магазин ${effectiveCityName}, служба доставки цветов ${effectiveCityName}, интернет-магазин цветов ${effectiveCityName}, купить розы недорого ${effectiveCityName}, доставка букетов на дом ${effectiveCityName}, заказ цветов онлайн ${effectiveCityName}, цветы с бесплатной доставкой ${effectiveCityName}`;
 
   return (
     <Helmet prioritizeSeoTags>
@@ -169,12 +169,12 @@ const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
           "url": pageUrl,
           "areaServed": {
             "@type": "City",
-            "name": cityName
+            "name": effectiveCityName
           },
           "priceRange": "₽₽",
           "address": {
             "@type": "PostalAddress",
-            "addressLocality": cityName,
+            "addressLocality": effectiveCityName,
             "addressCountry": "RU"
           },
           "openingHours": "Mo-Su 09:00-21:00",

@@ -100,11 +100,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet defer={false}>
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={keywords} />
-        {isHomePage && <link rel="canonical" href={canonicalUrl} />}
+      {isHomePage && (
+        <Helmet defer={false}>
+          <title>{pageTitle}</title>
+          <meta name="description" content={pageDescription} />
+          <meta name="keywords" content={keywords} />
+          <link rel="canonical" href={canonicalUrl} />
         
         <meta property="og:type" content="website" />
         <meta property="og:title" content={pageTitle} />
@@ -170,9 +171,10 @@ const Index = () => {
             }
           })}
         </script>
-      </Helmet>
+        </Helmet>
+      )}
       
-      <SiteLinksMarkup />
+      {isHomePage && <SiteLinksMarkup />}
       <Header cartCount={totalItems} />
       
       <main className="flex-1">
