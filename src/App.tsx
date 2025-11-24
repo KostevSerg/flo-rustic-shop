@@ -38,6 +38,7 @@ const AdminPageContents = lazy(() => import("./pages/AdminPageContents"));
 const AdminSubcategories = lazy(() => import("./pages/AdminSubcategories"));
 const UpdateSitemapPage = lazy(() => import("./pages/UpdateSitemapPage"));
 const SitemapDownloader = lazy(() => import("./pages/SitemapDownloader"));
+const AdminSEO = lazy(() => import("./pages/AdminSEO"));
 
 const queryClient = new QueryClient();
 
@@ -103,6 +104,7 @@ const App = () => (
                       <Route path="/admin/promo-codes" element={<AdminPromoCodes />} />
                       <Route path="/admin/page-contents" element={<AdminPageContents />} />
                       <Route path="/admin/subcategories" element={<AdminSubcategories />} />
+                      <Route path="/admin/seo-generator" element={<AdminSEO />} />
                       <Route path="/update-sitemap" element={<UpdateSitemapPage />} />
                       <Route path="/sitemap-downloader" element={<SitemapDownloader />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

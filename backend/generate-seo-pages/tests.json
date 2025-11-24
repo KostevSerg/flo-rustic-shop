@@ -1,0 +1,25 @@
+{
+  "tests": [
+    {
+      "name": "Check generator status",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "status": "ready"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Generate SEO pages",
+      "method": "POST",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "total_pages": "number"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
