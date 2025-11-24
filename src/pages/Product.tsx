@@ -30,6 +30,9 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState(false);
 
+  const defaultTitle = `Букет цветов — купить в ${selectedCity} | FloRustic`;
+  const defaultDescription = `Служба доставки цветов FloRustic в ${selectedCity}. Свежие букеты ручной работы, доставка 1.5 часа после оплаты. Заказ онлайн 24/7!`;
+
   useEffect(() => {
     const fetchProduct = async (retryCount = 0) => {
       if (!id) return;
@@ -117,6 +120,11 @@ const Product = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
+        <Helmet>
+          <title>{defaultTitle}</title>
+          <meta name="description" content={defaultDescription} />
+          <link rel="canonical" href={`https://florustic.ru/product/${id}`} />
+        </Helmet>
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
           <div className="text-center py-12">
@@ -132,6 +140,11 @@ const Product = () => {
   if (error || !product) {
     return (
       <div className="min-h-screen flex flex-col">
+        <Helmet>
+          <title>{defaultTitle}</title>
+          <meta name="description" content={defaultDescription} />
+          <link rel="canonical" href={`https://florustic.ru/product/${id}`} />
+        </Helmet>
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
           <div className="text-center py-12">

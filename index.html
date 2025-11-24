@@ -39,13 +39,34 @@
     <meta name="pp-name" value="flo-rustic-shop">
       <script src="https://cdn.poehali.dev/intertnal/js/inspector-min.js"></script>
   
-    <!-- Dynamic SEO for city pages -->
+    <!-- Dynamic SEO for city and product pages -->
     <script>
       (function() {
         const path = window.location.pathname;
         const cityMatch = path.match(/^\/city\/([^\/]+)/);
+        const productMatch = path.match(/^\/product\/(\d+)/);
         
-        if (cityMatch) {
+        if (productMatch) {
+          const productId = productMatch[1];
+          document.title = 'Букет цветов — купить с доставкой | FloRustic';
+          
+          let metaDescription = document.querySelector('meta[name="description"]');
+          if (metaDescription) {
+            metaDescription.setAttribute('content', 'Служба доставки цветов FloRustic. Свежие букеты ручной работы с доставкой в течение 1.5 часов после оплаты. Заказ онлайн 24/7!');
+          }
+        } else if (path === '/delivery') {
+          document.title = 'Доставка цветов по России | FloRustic';
+          let metaDescription = document.querySelector('meta[name="description"]');
+          if (metaDescription) {
+            metaDescription.setAttribute('content', 'Служба доставки цветов FloRustic по России. Свежие цветы — доставка в течение 1.5 часов после оплаты. Работаем 24/7 без выходных. Контроль качества. Фото букета перед доставкой!');
+          }
+        } else if (path === '/catalog') {
+          document.title = 'Каталог букетов | FloRustic — Доставка цветов';
+          let metaDescription = document.querySelector('meta[name="description"]');
+          if (metaDescription) {
+            metaDescription.setAttribute('content', 'Служба доставки цветов FloRustic. Свежие букеты — доставка в течение 1.5 часов после оплаты. Каталог: более 500 букетов на любой случай. Розы, тюльпаны, пионы, композиции. Цены от 990₽!');
+          }
+        } else if (cityMatch) {
           const slug = cityMatch[1];
           const cityName = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
           
