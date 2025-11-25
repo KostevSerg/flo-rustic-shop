@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
@@ -53,6 +53,21 @@ const Checkout = () => {
     postcard: '',
     paymentMethod: 'online'
   });
+
+  useEffect(() => {
+    if (!loadingSettlements && settlements.length > 0 && selectedCity && !formData.settlementId) {
+      const matchingSettlement = settlements.find(
+        s => s.name.toLowerCase() === selectedCity.toLowerCase()
+      );
+      
+      if (matchingSettlement) {
+        setFormData(prev => ({
+          ...prev,
+          settlementId: matchingSettlement.id.toString()
+        }));
+      }
+    }
+  }, [settlements, loadingSettlements, selectedCity, formData.settlementId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const value = e.target.value;
