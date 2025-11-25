@@ -61,8 +61,9 @@ const Catalog = () => {
     return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
   });
 
+  const cityForMeta = selectedCity || 'России';
   const pageTitle = 'Каталог букетов | FloRustic — Доставка цветов';
-  const pageDescription = `Служба доставки цветов в ${selectedCity}. Свежие цветы в ${selectedCity} — доставка в течение 1.5 часов после оплаты. Каталог: более 500 букетов на любой случай. Розы, тюльпаны, пионы, композиции. Цены от 990₽!`;
+  const pageDescription = `Служба доставки цветов в ${cityForMeta}. Свежие цветы в ${cityForMeta} — доставка в течение 1.5 часов после оплаты. Каталог: более 500 букетов на любой случай. Розы, тюльпаны, пионы, композиции. Цены от 990₽!`;
 
   return (
     <div className="min-h-screen flex flex-col">

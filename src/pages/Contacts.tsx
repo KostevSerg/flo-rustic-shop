@@ -96,12 +96,14 @@ const Contacts = () => {
     );
   }
 
+  const cityForMeta = selectedCity || 'Россия';
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={`контакты florustic, телефон florustic, адрес florustic ${selectedCity}, магазин цветов контакты, доставка цветов телефон`} />
+        <meta name="keywords" content={`контакты florustic, телефон florustic, адрес florustic ${cityForMeta}, магазин цветов контакты, доставка цветов телефон`} />
         <link rel="canonical" href={canonicalUrl} />
         
         <meta property="og:type" content="website" />

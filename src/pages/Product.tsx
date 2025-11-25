@@ -30,8 +30,9 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState(false);
 
-  const defaultTitle = `Букет цветов — купить в ${selectedCity} | FloRustic`;
-  const defaultDescription = `Служба доставки цветов FloRustic в ${selectedCity}. Свежие букеты ручной работы, доставка 1.5 часа после оплаты. Заказ онлайн 24/7!`;
+  const cityForMeta = selectedCity || 'России';
+  const defaultTitle = `Букет цветов — купить в ${cityForMeta} | FloRustic`;
+  const defaultDescription = `Служба доставки цветов FloRustic в ${cityForMeta}. Свежие букеты ручной работы, доставка 1.5 часа после оплаты. Заказ онлайн 24/7!`;
 
   useEffect(() => {
     const fetchProduct = async (retryCount = 0) => {
@@ -163,9 +164,10 @@ const Product = () => {
     );
   }
 
-  const pageTitle = `${product.name} — купить в ${selectedCity} | FloRustic`;
-  const pageDescription = `Служба доставки цветов в ${selectedCity}. ${product.name} — ${product.price}₽. Свежие цветы в ${selectedCity}, доставка в течение 1.5 часов после оплаты. ${product.description ? product.description.slice(0, 80) : 'Букеты ручной работы'}. Заказ онлайн 24/7!`;
-  const productUrl = `https://florustic.ru/product/${id}?city=${encodeURIComponent(selectedCity)}`;
+  const cityForMeta = selectedCity || 'России';
+  const pageTitle = `${product.name} — купить в ${cityForMeta} | FloRustic`;
+  const pageDescription = `Служба доставки цветов в ${cityForMeta}. ${product.name} — ${product.price}₽. Свежие цветы в ${cityForMeta}, доставка в течение 1.5 часов после оплаты. ${product.description ? product.description.slice(0, 80) : 'Букеты ручной работы'}. Заказ онлайн 24/7!`;
+  const productUrl = `https://florustic.ru/product/${id}${selectedCity ? `?city=${encodeURIComponent(selectedCity)}` : ''}`;
 
   const productSchema = {
     "@context": "https://schema.org",
