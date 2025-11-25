@@ -164,7 +164,6 @@ const Product = () => {
     );
   }
 
-  const cityForMeta = selectedCity || 'России';
   const pageTitle = `${product.name} — купить в ${cityForMeta} | FloRustic`;
   const pageDescription = `Служба доставки цветов в ${cityForMeta}. ${product.name} — ${product.price}₽. Свежие цветы в ${cityForMeta}, доставка в течение 1.5 часов после оплаты. ${product.description ? product.description.slice(0, 80) : 'Букеты ручной работы'}. Заказ онлайн 24/7!`;
   const productUrl = `https://florustic.ru/product/${id}${selectedCity ? `?city=${encodeURIComponent(selectedCity)}` : ''}`;
