@@ -63,10 +63,41 @@ const AdminSubcategories = () => {
       return;
     }
 
-    toast({
-      title: 'Информация',
-      description: 'Функция добавления подкатегорий будет доступна после обновления backend',
-    });
+    try {
+      const response = await fetch(API_ENDPOINTS.products, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'create_subcategory',
+          name: newSubcategory.name,
+          category: newSubcategory.category
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Ошибка при создании подкатегории');
+      }
+
+      toast({
+        title: 'Успех',
+        description: 'Подкатегория успешно создана'
+      });
+
+      setNewSubcategory({ name: '', category: 'Цветы' });
+      setShowAddForm(false);
+      fetchSubcategories();
+    } catch (error) {
+      console.error('Failed to add subcategory:', error);
+      toast({
+        title: 'Ошибка',
+        description: error instanceof Error ? error.message : 'Не удалось добавить подкатегорию',
+        variant: 'destructive'
+      });
+    }
   };
 
   return (

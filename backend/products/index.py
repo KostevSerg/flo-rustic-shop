@@ -280,7 +280,44 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             body_data = json.loads(event.get('body', '{}'))
             action = body_data.get('action', 'create')
             
-            if action == 'create':
+            if action == 'create_subcategory':
+                name = body_data.get('name', '').strip()
+                category = body_data.get('category', '').strip()
+                
+                if not name or not category:
+                    return {
+                        'statusCode': 400,
+                        'headers': {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'error': 'Name and category are required'})
+                    }
+                
+                safe_name = name.replace("'", "''")
+                safe_category = category.replace("'", "''")
+                
+                with conn.cursor() as cur:
+                    cur.execute(f'''
+                        INSERT INTO subcategories (name, category, is_active)
+                        VALUES ('{safe_name}', '{safe_category}', true)
+                        RETURNING id
+                    ''')
+                    subcategory_id = cur.fetchone()[0]
+                    conn.commit()
+                
+                return {
+                    'statusCode': 201,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'isBase64Encoded': False,
+                    'body': json.dumps({'id': subcategory_id, 'message': 'Subcategory created successfully'})
+                }
+            
+            elif action == 'create':
                 name = body_data.get('name', '').strip()
                 description = body_data.get('description', '').strip()
                 composition = body_data.get('composition', '').strip()
