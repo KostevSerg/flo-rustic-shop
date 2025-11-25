@@ -1,4 +1,6 @@
 {
+  "test-bot-rendering": "https://functions.poehali.dev/a3acc79e-1054-472e-ad67-9ead5ec3d0bc",
+  "seo-render": "https://functions.poehali.dev/e5a672ab-ef1b-43eb-a561-e8fb70273463",
   "generate-seo-pages": "https://functions.poehali.dev/b451bedf-c8cc-4b4f-9cbb-787ee21d7499",
   "sitemap-fetcher": "https://functions.poehali.dev/2acdad81-deba-4cdd-8cd1-feb9e24f4226",
   "sitemap-preview": "https://functions.poehali.dev/ce8eb12a-bc2f-47cf-8d0b-215dacbe3110",

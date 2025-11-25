@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Get SEO solutions guide",
+      "method": "GET",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "message": "string",
+        "recommendation": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

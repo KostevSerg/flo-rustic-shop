@@ -1,0 +1,35 @@
+{
+  "tests": [
+    {
+      "name": "Test bot detection - Yandex bot",
+      "method": "GET",
+      "path": "/city/mamontovo",
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (compatible; YandexBot/3.0)"
+      },
+      "expectedStatus": 200,
+      "bodyMatcher": "contains",
+      "expectedBody": "Доставка цветов Мамонтово"
+    },
+    {
+      "name": "Test bot detection - Google bot",
+      "method": "GET",
+      "path": "/city/bijsk",
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)"
+      },
+      "expectedStatus": 200,
+      "bodyMatcher": "contains",
+      "expectedBody": "Доставка цветов"
+    },
+    {
+      "name": "Test regular user redirect",
+      "method": "GET",
+      "path": "/",
+      "headers": {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0"
+      },
+      "expectedStatus": 302
+    }
+  ]
+}
