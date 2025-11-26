@@ -46,8 +46,8 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
 
   return (
     <Link to={`/product/${product.id}`} className="block">
-      <div className="group bg-card border border-border rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer">
-        <div className="relative overflow-hidden aspect-square">
+      <div className="group bg-card border border-border rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer max-w-[280px] md:max-w-none mx-auto">
+        <div className="relative overflow-hidden aspect-square max-h-[280px] md:max-h-none">
           <img 
             src={product.image} 
             alt={product.name}
@@ -55,21 +55,21 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
         </div>
-        <div className="p-2 md:p-6">
-          <h3 className="text-sm md:text-2xl font-bold mb-1 md:mb-2">{product.name}</h3>
-          <p className="text-muted-foreground mb-1 md:mb-2 text-xs md:text-sm line-clamp-2">{product.description}</p>
+        <div className="p-3 md:p-6">
+          <h3 className="text-base md:text-2xl font-bold mb-1 md:mb-2">{product.name}</h3>
+          <p className="text-muted-foreground mb-2 md:mb-2 text-sm md:text-sm line-clamp-2">{product.description}</p>
           {product.composition && (
-            <p className="text-muted-foreground/80 mb-1 md:mb-4 text-xs italic line-clamp-1">
+            <p className="text-muted-foreground/80 mb-2 md:mb-4 text-xs italic line-clamp-1">
               Состав: {product.composition}
             </p>
           )}
-          <div className="flex items-center justify-between gap-1">
-            <span className="text-base md:text-2xl font-bold">{Math.round(product.price)} ₽</span>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-lg md:text-2xl font-bold">{Math.round(product.price)} ₽</span>
             <Button 
               onClick={handleAddToCart}
-              className="bg-primary text-primary-foreground hover:opacity-90 text-xs md:text-sm px-2 md:px-4 py-1 md:py-2"
+              className="bg-primary text-primary-foreground hover:opacity-90 text-sm md:text-sm px-3 md:px-4 py-1.5 md:py-2"
             >
-              <Icon name="ShoppingCart" size={14} className="mr-0.5 md:mr-2" />
+              <Icon name="ShoppingCart" size={16} className="mr-1 md:mr-2" />
               <span className="hidden sm:inline">В корзину</span>
               <span className="sm:hidden">+</span>
             </Button>
