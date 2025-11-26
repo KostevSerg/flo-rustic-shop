@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
@@ -32,10 +32,31 @@ const Catalog = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
+        const CACHE_KEY = `products_${selectedCity}`;
+        const cached = localStorage.getItem(CACHE_KEY);
+        
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          // Кеш на 10 минут
+          if (Date.now() - timestamp < 10 * 60 * 1000) {
+            setProducts(data);
+            setLoading(false);
+            return;
+          }
+        }
+        
         const url = `${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}`;
         const response = await fetch(url);
         const data = await response.json();
-        setProducts(data.products || []);
+        const productsList = data.products || [];
+        
+        setProducts(productsList);
+        
+        // Сохраняем в кеш
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          data: productsList,
+          timestamp: Date.now()
+        }));
       } catch (error) {
         console.error('Failed to fetch products:', error);
       } finally {
@@ -56,10 +77,12 @@ const Catalog = () => {
     });
   };
 
-  const sortedProducts = [...products].sort((a, b) => {
-    if (!sortOrder) return 0;
-    return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
-  });
+  const sortedProducts = useMemo(() => {
+    return [...products].sort((a, b) => {
+      if (!sortOrder) return 0;
+      return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
+    });
+  }, [products, sortOrder]);
 
   const cityForMeta = selectedCity || 'России';
   const pageTitle = 'Каталог букетов | FloRustic — Доставка цветов';

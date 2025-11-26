@@ -42,6 +42,35 @@ const Product = () => {
       setError(false);
       
       try {
+        // Проверяем кеш продуктов
+        const CACHE_KEY = `products_${selectedCity}`;
+        const cached = localStorage.getItem(CACHE_KEY);
+        
+        if (cached) {
+          const { data: cachedProducts, timestamp } = JSON.parse(cached);
+          // Если кеш свежий (10 минут)
+          if (Date.now() - timestamp < 10 * 60 * 1000) {
+            const cachedProduct = cachedProducts.find((p: Product) => p.id === parseInt(id));
+            if (cachedProduct) {
+              setProduct(cachedProduct);
+              
+              if (typeof window.ym !== 'undefined') {
+                window.ym(104746725, 'ecommerce', 'detail', {
+                  products: [{
+                    id: cachedProduct.id.toString(),
+                    name: cachedProduct.name,
+                    price: cachedProduct.price,
+                    category: cachedProduct.category || 'Букеты'
+                  }]
+                });
+              }
+              
+              setLoading(false);
+              return;
+            }
+          }
+        }
+        
         const url = `${API_ENDPOINTS.products}?id=${id}&city=${encodeURIComponent(selectedCity)}`;
         const response = await fetch(url, { 
           method: 'GET',

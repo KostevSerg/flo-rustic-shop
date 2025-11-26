@@ -59,9 +59,31 @@ const Index = () => {
   useEffect(() => {
     const loadFeaturedProducts = async () => {
       try {
+        const CACHE_KEY = `products_${selectedCity}`;
+        const cached = localStorage.getItem(CACHE_KEY);
+        
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached);
+          // Используем кеш на 10 минут
+          if (Date.now() - timestamp < 10 * 60 * 1000) {
+            const featured = data.filter((p: Product) => p.is_featured);
+            setFeaturedProducts(featured.slice(0, 3));
+            setLoading(false);
+            return;
+          }
+        }
+        
         const response = await fetch(`${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}`);
         const data = await response.json();
-        const featured = data.products.filter((p: Product) => p.is_featured);
+        const products = data.products || [];
+        
+        // Сохраняем полный список в кеш
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          data: products,
+          timestamp: Date.now()
+        }));
+        
+        const featured = products.filter((p: Product) => p.is_featured);
         setFeaturedProducts(featured.slice(0, 3));
       } catch (error) {
         console.error('Failed to load featured products:', error);
