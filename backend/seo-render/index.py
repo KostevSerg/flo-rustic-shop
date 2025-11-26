@@ -58,6 +58,18 @@ def fetch_cities() -> Dict[str, Any]:
     with urllib.request.urlopen(req, timeout=5) as response:
         return json.loads(response.read().decode('utf-8'))
 
+def fetch_product(product_id: str) -> Optional[Dict[str, Any]]:
+    """Fetch product from API"""
+    url = f'https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531?id={product_id}'
+    req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    try:
+        with urllib.request.urlopen(req, timeout=5) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            products = data.get('products', [])
+            return products[0] if products else None
+    except Exception:
+        return None
+
 def generate_city_meta(city_name: str, region: str, city_slug: str) -> Dict[str, str]:
     """Generate meta tags for city page"""
     city_prep = get_city_prepositional(city_name)
@@ -75,6 +87,35 @@ def generate_city_meta(city_name: str, region: str, city_slug: str) -> Dict[str,
         'og_description': description
     }
 
+def generate_product_meta(product: Dict[str, Any], product_id: str) -> Dict[str, str]:
+    """Generate meta tags for product page"""
+    name = product.get('name', 'Букет цветов')
+    price = product.get('price', 0)
+    description = product.get('description', '')[:80] if product.get('description') else 'Букеты ручной работы'
+    
+    title = f'{name} — купить в России | FloRustic'
+    desc = f'Служба доставки цветов в России. {name} — {price}₽. Свежие цветы, доставка в течение 1.5 часов после оплаты. {description}. Заказ онлайн 24/7!'
+    url = f'https://florustic.ru/product/{product_id}'
+    
+    return {
+        'title': title,
+        'description': desc,
+        'url': url,
+        'og_title': title,
+        'og_description': desc,
+        'og_image': product.get('image_url', '')
+    }
+
+def generate_catalog_meta() -> Dict[str, str]:
+    """Generate meta tags for catalog page"""
+    return {
+        'title': 'Каталог букетов | FloRustic — Доставка цветов',
+        'description': 'Служба доставки цветов в России. Свежие цветы — доставка в течение 1.5 часов после оплаты. Каталог: более 500 букетов на любой случай. Розы, тюльпаны, пионы, композиции. Цены от 990₽!',
+        'url': 'https://florustic.ru/catalog',
+        'og_title': 'Каталог букетов | FloRustic',
+        'og_description': 'Более 500 букетов на любой случай'
+    }
+
 def generate_default_meta() -> Dict[str, str]:
     """Generate default meta tags"""
     return {
@@ -87,6 +128,8 @@ def generate_default_meta() -> Dict[str, str]:
 
 def get_base_html(meta: Dict[str, str]) -> str:
     """Generate HTML with meta tags"""
+    og_image = f'    <meta property="og:image" content="{meta["og_image"]}" />\n' if meta.get('og_image') else ''
+    
     return f'''<!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -102,7 +145,7 @@ def get_base_html(meta: Dict[str, str]) -> str:
     <meta property="og:description" content="{meta['og_description']}" />
     <meta property="og:url" content="{meta['url']}" />
     <meta property="og:site_name" content="FloRustic" />
-    
+{og_image}    
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="{meta['og_title']}" />
     <meta name="twitter:description" content="{meta['og_description']}" />
@@ -165,7 +208,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     meta = generate_default_meta()
     meta['path'] = path
     
-    if path.startswith('/city/'):
+    # Product pages
+    if path.startswith('/product/'):
+        product_id = path.replace('/product/', '').split('/')[0].split('?')[0]
+        try:
+            product = fetch_product(product_id)
+            if product:
+                meta = generate_product_meta(product, product_id)
+                meta['path'] = path
+        except Exception as e:
+            print(f'Failed to fetch product: {e}')
+    
+    # Catalog page
+    elif path.startswith('/catalog'):
+        meta = generate_catalog_meta()
+        meta['path'] = path
+    
+    # City pages
+    elif path.startswith('/city/'):
         city_slug = path.replace('/city/', '').split('/')[0]
         
         # Fetch cities and find matching city
