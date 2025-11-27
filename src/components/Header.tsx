@@ -103,10 +103,11 @@ const Header = ({ cartCount }: HeaderProps) => {
             <div className="relative" ref={mobileSocialRef}>
               <button 
                 onClick={() => setShowMobileSocial(!showMobileSocial)}
-                className="flex items-center justify-center bg-primary text-primary-foreground p-1.5 rounded-lg hover:bg-primary/90 transition"
+                className="flex items-center gap-1.5 bg-primary text-primary-foreground px-2 py-1.5 rounded-lg hover:bg-primary/90 transition text-xs"
                 title="Социальные сети"
               >
-                <Icon name="Share2" size={18} />
+                <Icon name="Share2" size={16} />
+                <span>Соцсети</span>
               </button>
               {showMobileSocial && (
                 <div className="absolute right-0 top-full mt-2 w-60 bg-white border border-border rounded-lg shadow-lg p-3 z-50">
