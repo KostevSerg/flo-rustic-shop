@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import CitySelector from '@/components/CitySelector';
 import { useCity } from '@/contexts/CityContext';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 
 interface HeaderProps {
   cartCount: number;
@@ -22,6 +23,33 @@ const createSlug = (name: string): string => {
     .replace(/ш/g, 'sh').replace(/щ/g, 'sch').replace(/ъ/g, '').replace(/ы/g, 'y')
     .replace(/ь/g, '').replace(/э/g, 'e').replace(/ю/g, 'yu').replace(/я/g, 'ya');
 };
+
+const socialLinks = [
+  {
+    name: 'WhatsApp',
+    url: 'https://wa.me/79952151096',
+    icon: 'MessageCircle',
+    color: 'text-green-500'
+  },
+  {
+    name: 'Telegram',
+    url: 'https://t.me/yourusername',
+    icon: 'Send',
+    color: 'text-blue-500'
+  },
+  {
+    name: 'Instagram',
+    url: 'https://instagram.com/yourusername',
+    icon: 'Instagram',
+    color: 'text-pink-500'
+  },
+  {
+    name: 'VK',
+    url: 'https://vk.com/yourusername',
+    icon: 'Users',
+    color: 'text-blue-600'
+  }
+];
 
 const Header = ({ cartCount }: HeaderProps) => {
   const { selectedCity, setCity } = useCity();
@@ -50,15 +78,33 @@ const Header = ({ cartCount }: HeaderProps) => {
               <Icon name="MapPin" size={18} />
               <span className="max-w-[80px] truncate">{selectedCity}</span>
             </button>
-            <a 
-              href="https://wa.me/79952151096" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="flex items-center justify-center bg-green-500 text-white p-1.5 rounded-lg hover:bg-green-600 transition"
-              title="Написать в WhatsApp"
-            >
-              <Icon name="MessageCircle" size={18} />
-            </a>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button 
+                  className="flex items-center justify-center bg-primary text-primary-foreground p-1.5 rounded-lg hover:bg-primary/90 transition"
+                  title="Социальные сети"
+                >
+                  <Icon name="Share2" size={18} />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-60">
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-sm mb-3">Наши социальные сети</h3>
+                  {socialLinks.map((social) => (
+                    <a
+                      key={social.name}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors"
+                    >
+                      <Icon name={social.icon} size={20} className={social.color} />
+                      <span className="font-medium">{social.name}</span>
+                    </a>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
             <Link to="/cart" className="relative hover:text-primary transition">
               <Icon name="ShoppingCart" size={22} />
               {cartCount > 0 && (
@@ -107,16 +153,33 @@ const Header = ({ cartCount }: HeaderProps) => {
                 <Icon name="Phone" size={20} />
                 <span className="whitespace-nowrap">+7 995 215-10-96</span>
               </a>
-              <a 
-                href="https://wa.me/79952151096" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="flex items-center gap-2 hover:text-primary transition bg-green-500 text-white px-3 py-2 rounded-lg"
-                title="Написать в WhatsApp"
-              >
-                <Icon name="MessageCircle" size={20} />
-                <span className="whitespace-nowrap">WhatsApp</span>
-              </a>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button 
+                    className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition"
+                  >
+                    <Icon name="Share2" size={20} />
+                    <span className="whitespace-nowrap">Социальные сети</span>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64" align="end">
+                  <div className="space-y-2">
+                    <h3 className="font-semibold mb-3">Наши социальные сети</h3>
+                    {socialLinks.map((social) => (
+                      <a
+                        key={social.name}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors"
+                      >
+                        <Icon name={social.icon} size={22} className={social.color} />
+                        <span className="font-medium">{social.name}</span>
+                      </a>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
 
             <Link to="/cart" className="relative hover:text-primary transition">
@@ -170,15 +233,21 @@ const Header = ({ cartCount }: HeaderProps) => {
                 <Icon name="Phone" size={20} />
                 <span>+7 995 215-10-96</span>
               </a>
-              <a 
-                href="https://wa.me/79952151096" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="flex items-center gap-2 hover:text-primary transition bg-green-500 text-white px-3 py-2 rounded-lg"
-              >
-                <Icon name="MessageCircle" size={20} />
-                <span>WhatsApp</span>
-              </a>
+              <div className="space-y-2">
+                <p className="text-sm font-semibold">Социальные сети:</p>
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors"
+                  >
+                    <Icon name={social.icon} size={20} className={social.color} />
+                    <span>{social.name}</span>
+                  </a>
+                ))}
+              </div>
               <div className="flex items-center justify-end space-x-4">
                 <Link to="/cart" className="relative hover:text-primary transition">
                   <Icon name="ShoppingCart" size={24} />
