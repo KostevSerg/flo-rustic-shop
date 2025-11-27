@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { CartProvider } from "@/contexts/CartContext";
+import { CartNotificationProvider } from "@/contexts/CartNotificationContext";
 import { CityProvider } from "@/contexts/CityContext";
 import { SiteTextsProvider } from "@/contexts/SiteTextsContext";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
@@ -67,7 +68,8 @@ const App = () => (
         <SiteTextsProvider>
           <CityProvider>
             <CartProvider>
-              <TooltipProvider>
+              <CartNotificationProvider>
+                <TooltipProvider>
                 <Toaster />
                 <Sonner />
                 <BrowserRouter
@@ -112,7 +114,8 @@ const App = () => (
                     </Routes>
                   </Suspense>
                 </BrowserRouter>
-              </TooltipProvider>
+                </TooltipProvider>
+              </CartNotificationProvider>
             </CartProvider>
           </CityProvider>
         </SiteTextsProvider>

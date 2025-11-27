@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
+import { useCartNotification } from '@/contexts/CartNotificationContext';
 import Icon from '@/components/ui/icon';
 
 interface Product {
@@ -18,7 +18,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
-  const { toast } = useToast();
+  const { showNotification } = useCartNotification();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -38,10 +38,7 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
       });
     }
     
-    toast({
-      title: "Добавлено в корзину",
-      description: `${product.name} успешно добавлен в корзину`
-    });
+    showNotification(product.name, 1);
   };
 
   return (

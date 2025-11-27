@@ -3,9 +3,9 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
+import { useCartNotification } from '@/contexts/CartNotificationContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { CartNotification } from '@/components/CartNotification';
 
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
@@ -26,11 +26,11 @@ const Product = () => {
   const navigate = useNavigate();
   const { addToCart, totalItems } = useCart();
   const { selectedCity } = useCity();
+  const { showNotification } = useCartNotification();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
 
   const cityForMeta = selectedCity || 'России';
   const defaultTitle = `Букет цветов — купить в ${cityForMeta} | FloRustic`;
@@ -146,7 +146,7 @@ const Product = () => {
       });
     }
     
-    setShowNotification(true);
+    showNotification(product.name, quantity);
   };
 
   if (loading) {
@@ -389,14 +389,6 @@ const Product = () => {
       </main>
 
       <Footer />
-      
-      {showNotification && product && (
-        <CartNotification
-          productName={product.name}
-          quantity={quantity}
-          onClose={() => setShowNotification(false)}
-        />
-      )}
     </div>
   );
 };
