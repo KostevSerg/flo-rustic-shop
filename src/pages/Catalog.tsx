@@ -46,7 +46,19 @@ const Catalog = () => {
         }
         
         const url = `${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}`;
-        const response = await fetch(url);
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const response = await fetch(url, {
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        
         const data = await response.json();
         const productsList = data.products || [];
         
@@ -59,6 +71,7 @@ const Catalog = () => {
         }));
       } catch (error) {
         console.error('Failed to fetch products:', error);
+        setProducts([]);
       } finally {
         setLoading(false);
       }

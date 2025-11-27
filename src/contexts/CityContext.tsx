@@ -81,7 +81,10 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const detectUserLocation = async () => {
-    if (!navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      localStorage.setItem('hasDetectedLocation', 'true');
+      return;
+    }
 
     try {
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
@@ -106,14 +109,32 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
       }
       
       if (!data) {
-        const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=list');
-        data = await response.json();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
         
-        if (data.cities) {
-          localStorage.setItem(CACHE_KEY, JSON.stringify({
-            data: data.cities,
-            timestamp: Date.now()
-          }));
+        try {
+          const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=list', {
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) {
+            throw new Error('Failed to fetch cities');
+          }
+          
+          data = await response.json();
+          
+          if (data.cities) {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+              data: data.cities,
+              timestamp: Date.now()
+            }));
+          }
+        } catch (fetchError) {
+          clearTimeout(timeoutId);
+          console.log('Ошибка загрузки городов:', fetchError);
+          localStorage.setItem('hasDetectedLocation', 'true');
+          return;
         }
       }
 
@@ -260,14 +281,31 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
       }
       
       if (!data) {
-        const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=list');
-        data = await response.json();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
         
-        if (data.cities) {
-          localStorage.setItem(CACHE_KEY, JSON.stringify({
-            data: data.cities,
-            timestamp: Date.now()
-          }));
+        try {
+          const response = await fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459?action=list', {
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) {
+            return false;
+          }
+          
+          data = await response.json();
+          
+          if (data.cities) {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+              data: data.cities,
+              timestamp: Date.now()
+            }));
+          }
+        } catch (fetchError) {
+          clearTimeout(timeoutId);
+          console.log('Ошибка загрузки городов:', fetchError);
+          return false;
         }
       }
 

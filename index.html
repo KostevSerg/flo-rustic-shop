@@ -93,8 +93,47 @@
   </head>
 
 <body>
-<div id="root"></div>
+<div id="root">
+  <noscript>
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #fff; font-family: Inter, system-ui, sans-serif; padding: 20px; text-align: center;">
+      <div>
+        <h1 style="color: #1a1a1a; font-size: 24px; margin-bottom: 16px;">FloRustic - Доставка цветов</h1>
+        <p style="color: #666; font-size: 16px;">Для работы сайта необходим JavaScript. Пожалуйста, включите его в настройках браузера.</p>
+      </div>
+    </div>
+  </noscript>
+  <div id="app-loader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #fff;">
+    <div style="text-align: center;">
+      <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+      <p style="color: #666; font-family: Inter, system-ui, sans-serif;">Загрузка...</p>
+    </div>
+  </div>
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</div>
 <script type="module" src="/src/main.tsx"></script>
+<script>
+  // Убираем loader после успешной загрузки React
+  setTimeout(function() {
+    var loader = document.getElementById('app-loader');
+    if (loader && document.querySelector('#root > *:not(#app-loader)')) {
+      loader.style.display = 'none';
+    }
+  }, 1000);
+  
+  // Если через 10 секунд сайт не загрузился - показываем ошибку
+  setTimeout(function() {
+    var loader = document.getElementById('app-loader');
+    var root = document.getElementById('root');
+    if (loader && root && root.children.length <= 2) {
+      loader.innerHTML = '<div style="text-align: center; padding: 20px;"><h2 style="color: #1a1a1a; font-family: Inter, system-ui, sans-serif; margin-bottom: 16px;">Ошибка загрузки</h2><p style="color: #666; font-family: Inter, system-ui, sans-serif; margin-bottom: 16px;">Попробуйте обновить страницу</p><button onclick="location.reload()" style="background: #10b981; color: white; padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; font-family: Inter, system-ui, sans-serif;">Обновить</button></div>';
+    }
+  }, 10000);
+</script>
 
 <!-- Service Worker Registration for better caching -->
 <script>
