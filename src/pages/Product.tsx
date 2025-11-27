@@ -9,6 +9,8 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
+import { useToast } from '@/hooks/use-toast';
+import { ToastAction } from '@/components/ui/toast';
 
 interface Product {
   id: number;
@@ -25,6 +27,7 @@ const Product = () => {
   const navigate = useNavigate();
   const { addToCart, totalItems } = useCart();
   const { selectedCity } = useCity();
+  const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -144,7 +147,15 @@ const Product = () => {
       });
     }
     
-    navigate('/cart');
+    toast({
+      title: "Товар добавлен в корзину",
+      description: `${product.name} — ${quantity} шт.`,
+      action: (
+        <ToastAction altText="Перейти в корзину" onClick={() => navigate('/cart')}>
+          В корзину
+        </ToastAction>
+      ),
+    });
   };
 
   if (loading) {
