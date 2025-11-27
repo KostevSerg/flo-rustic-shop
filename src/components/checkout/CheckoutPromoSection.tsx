@@ -22,18 +22,19 @@ const CheckoutPromoSection = ({
     <div className="bg-card rounded-lg p-3 md:p-4 border border-border">
       <h2 className="text-lg md:text-xl font-semibold mb-2 md:mb-3">Промокод</h2>
       {!appliedPromo ? (
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <input
             type="text"
             value={promoCode}
             onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
             placeholder="Введите промокод"
-            className="flex-1 px-4 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
+            className="flex-1 px-3 md:px-4 py-2 text-sm md:text-base rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary"
             disabled={checkingPromo}
           />
           <Button 
             onClick={onApply}
             disabled={checkingPromo || !promoCode.trim()}
+            className="w-full sm:w-auto text-sm md:text-base"
           >
             {checkingPromo ? 'Проверка...' : 'Применить'}
           </Button>

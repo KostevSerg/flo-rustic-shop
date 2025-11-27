@@ -358,7 +358,7 @@ const Checkout = () => {
               </div>
 
               <div className="lg:col-span-1">
-                <div className="sticky top-4">
+                <div className="lg:sticky lg:top-4">
                   <CheckoutOrderSummary
                     totalPrice={totalPrice}
                     deliveryPrice={deliveryPrice}
