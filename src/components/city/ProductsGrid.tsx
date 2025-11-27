@@ -37,26 +37,26 @@ const ProductsGrid = ({ products, cityName, onAddToCart, sortOrder, onSortChange
 
   return (
     <>
-      <div className="flex justify-center gap-3 mb-8">
+      <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 mb-6 md:mb-8 px-4">
         <Button
           variant={sortOrder === 'asc' ? 'default' : 'outline'}
           onClick={() => onSortChange(sortOrder === 'asc' ? null : 'asc')}
-          className="flex items-center gap-2"
+          className="flex items-center justify-center gap-2 text-sm md:text-base h-9 md:h-10"
         >
           <Icon name="ArrowUpNarrowWide" size={16} />
-          По возрастанию цены
+          <span className="whitespace-nowrap">По возрастанию</span>
         </Button>
         <Button
           variant={sortOrder === 'desc' ? 'default' : 'outline'}
           onClick={() => onSortChange(sortOrder === 'desc' ? null : 'desc')}
-          className="flex items-center gap-2"
+          className="flex items-center justify-center gap-2 text-sm md:text-base h-9 md:h-10"
         >
           <Icon name="ArrowDownWideNarrow" size={16} />
-          По убыванию цены
+          <span className="whitespace-nowrap">По убыванию</span>
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-12 md:mb-16">
         {sortedProducts.map(product => (
           <ProductCard 
             key={product.id} 

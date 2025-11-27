@@ -70,23 +70,43 @@ const Cart = () => {
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
 
-        <h1 className="text-5xl font-bold text-center mb-12">Корзина</h1>
+        <h1 className="text-3xl md:text-5xl font-bold text-center mb-6 md:mb-12">Корзина</h1>
         
         <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           <div className="lg:col-span-2 space-y-4">
             {items.map(item => (
-              <div key={item.id} className="bg-card border border-border rounded-lg p-6 flex gap-6">
+              <div key={item.id} className="bg-card border border-border rounded-lg p-3 md:p-6 flex flex-col sm:flex-row gap-3 md:gap-6">
                 <img 
                   src={item.image} 
                   alt={item.name}
                   loading="lazy"
-                  className="w-24 h-24 object-cover rounded-lg"
+                  className="w-full sm:w-24 h-48 sm:h-24 object-cover rounded-lg"
                 />
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold mb-1">{item.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 bg-accent/20 rounded-lg px-3 py-1">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h3 className="text-lg md:text-xl font-bold">{item.name}</h3>
+                    <button 
+                      onClick={() => {
+                        removeFromCart(item.id);
+                        if (typeof window.ym !== 'undefined') {
+                          window.ym(104746725, 'ecommerce', 'remove', {
+                            products: [{
+                              id: item.id.toString(),
+                              name: item.name,
+                              price: item.price,
+                              quantity: item.quantity
+                            }]
+                          });
+                        }
+                      }}
+                      className="text-muted-foreground hover:text-destructive transition shrink-0"
+                    >
+                      <Icon name="Trash2" size={20} />
+                    </button>
+                  </div>
+                  <p className="text-xs md:text-sm text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                    <div className="flex items-center gap-2 bg-accent/20 rounded-lg px-3 py-1.5">
                       <button 
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
                         className="hover:text-primary transition"
@@ -101,33 +121,15 @@ const Cart = () => {
                         <Icon name="Plus" size={16} />
                       </button>
                     </div>
-                    <span className="text-lg font-bold">{Math.round(item.price * item.quantity)} ₽</span>
+                    <span className="text-lg md:text-xl font-bold">{Math.round(item.price * item.quantity)} ₽</span>
                   </div>
                 </div>
-                <button 
-                  onClick={() => {
-                    removeFromCart(item.id);
-                    if (typeof window.ym !== 'undefined') {
-                      window.ym(104746725, 'ecommerce', 'remove', {
-                        products: [{
-                          id: item.id.toString(),
-                          name: item.name,
-                          price: item.price,
-                          quantity: item.quantity
-                        }]
-                      });
-                    }
-                  }}
-                  className="text-muted-foreground hover:text-destructive transition"
-                >
-                  <Icon name="Trash2" size={20} />
-                </button>
               </div>
             ))}
           </div>
 
           <div className="lg:col-span-1">
-            <div className="bg-accent/20 rounded-lg p-6 sticky top-24">
+            <div className="bg-accent/20 rounded-lg p-4 md:p-6 lg:sticky lg:top-24">
               <h2 className="text-2xl font-bold mb-6">Итого</h2>
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-lg">

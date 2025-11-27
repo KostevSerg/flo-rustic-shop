@@ -111,29 +111,29 @@ const Catalog = () => {
       <main className="flex-1 container mx-auto px-4 py-16">
 
         
-        <h1 className="text-5xl font-bold text-center mb-4">
+        <h1 className="text-3xl md:text-5xl font-bold text-center mb-3 md:mb-4">
           {getText('catalog', 'title', 'Каталог')}
         </h1>
-        <p className="text-center text-muted-foreground mb-8 max-w-2xl mx-auto">
+        <p className="text-sm md:text-base text-center text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-4">
           {getText('catalog', 'subtitle', 'Выберите идеальный букет для любого случая')}
         </p>
 
-        <div className="flex justify-center gap-3 mb-12">
+        <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 mb-8 md:mb-12 px-4">
           <Button
             variant={sortOrder === 'asc' ? 'default' : 'outline'}
             onClick={() => setSortOrder(sortOrder === 'asc' ? null : 'asc')}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2 text-sm md:text-base h-9 md:h-10"
           >
             <Icon name="ArrowUpNarrowWide" size={16} />
-            По возрастанию цены
+            <span className="whitespace-nowrap">По возрастанию</span>
           </Button>
           <Button
             variant={sortOrder === 'desc' ? 'default' : 'outline'}
             onClick={() => setSortOrder(sortOrder === 'desc' ? null : 'desc')}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2 text-sm md:text-base h-9 md:h-10"
           >
             <Icon name="ArrowDownWideNarrow" size={16} />
-            По убыванию цены
+            <span className="whitespace-nowrap">По убыванию</span>
           </Button>
         </div>
 
