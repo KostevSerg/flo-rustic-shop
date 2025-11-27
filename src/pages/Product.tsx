@@ -5,12 +5,11 @@ import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { CartNotification } from '@/components/CartNotification';
 
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
-import { useToast } from '@/hooks/use-toast';
-import { ToastAction } from '@/components/ui/toast';
 
 interface Product {
   id: number;
@@ -27,11 +26,11 @@ const Product = () => {
   const navigate = useNavigate();
   const { addToCart, totalItems } = useCart();
   const { selectedCity } = useCity();
-  const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
 
   const cityForMeta = selectedCity || 'России';
   const defaultTitle = `Букет цветов — купить в ${cityForMeta} | FloRustic`;
@@ -147,15 +146,7 @@ const Product = () => {
       });
     }
     
-    toast({
-      title: "Товар добавлен в корзину",
-      description: `${product.name} — ${quantity} шт.`,
-      action: (
-        <ToastAction altText="Перейти в корзину" onClick={() => navigate('/cart')}>
-          В корзину
-        </ToastAction>
-      ),
-    });
+    setShowNotification(true);
   };
 
   if (loading) {
@@ -398,6 +389,14 @@ const Product = () => {
       </main>
 
       <Footer />
+      
+      {showNotification && product && (
+        <CartNotification
+          productName={product.name}
+          quantity={quantity}
+          onClose={() => setShowNotification(false)}
+        />
+      )}
     </div>
   );
 };
