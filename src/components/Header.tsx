@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import CitySelector from '@/components/CitySelector';
 import { useCity } from '@/contexts/CityContext';
+import { useSiteTexts } from '@/contexts/SiteTextsContext';
 
 interface HeaderProps {
   cartCount: number;
@@ -23,35 +24,9 @@ const createSlug = (name: string): string => {
     .replace(/ь/g, '').replace(/э/g, 'e').replace(/ю/g, 'yu').replace(/я/g, 'ya');
 };
 
-const socialLinks = [
-  {
-    name: 'WhatsApp',
-    url: 'https://wa.me/79952151096',
-    icon: 'MessageCircle',
-    color: 'text-green-500'
-  },
-  {
-    name: 'Telegram',
-    url: 'https://t.me/yourusername',
-    icon: 'Send',
-    color: 'text-blue-500'
-  },
-  {
-    name: 'Instagram',
-    url: 'https://instagram.com/yourusername',
-    icon: 'Instagram',
-    color: 'text-pink-500'
-  },
-  {
-    name: 'VK',
-    url: 'https://vk.com/yourusername',
-    icon: 'Users',
-    color: 'text-blue-600'
-  }
-];
-
 const Header = ({ cartCount }: HeaderProps) => {
   const { selectedCity, setCity } = useCity();
+  const { getText } = useSiteTexts();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showCitySelector, setShowCitySelector] = useState(false);
   const [showSocialMenu, setShowSocialMenu] = useState(false);
@@ -59,6 +34,37 @@ const Header = ({ cartCount }: HeaderProps) => {
   const socialMenuRef = useRef<HTMLDivElement>(null);
   const mobileSocialRef = useRef<HTMLDivElement>(null);
   const citySlug = createSlug(selectedCity);
+
+  const socialLinks = [
+    {
+      name: 'WhatsApp',
+      url: getText('social', 'whatsapp', 'https://wa.me/79991234567'),
+      icon: 'MessageCircle',
+      color: 'text-green-500',
+      type: 'icon' as const
+    },
+    {
+      name: 'Telegram',
+      url: getText('social', 'telegram', 'https://t.me/florustic'),
+      icon: 'Send',
+      color: 'text-blue-500',
+      type: 'icon' as const
+    },
+    {
+      name: 'VK',
+      url: getText('social', 'vk', 'https://vk.com/florustic'),
+      icon: 'vk',
+      color: 'text-blue-600',
+      type: 'svg' as const
+    },
+    {
+      name: 'Max',
+      url: getText('social', 'max', 'https://max.ru/u/f9LHodD0cOLaj4fsu5wKI6LNXgNQIoYrIHyE1shHRfAm_B2ofo1AohePtMA'),
+      icon: 'https://cdn.poehali.dev/files/57988f4d-dee7-4f5f-87a4-68a574db22b2.png',
+      color: '',
+      type: 'image' as const
+    }
+  ];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -115,7 +121,29 @@ const Header = ({ cartCount }: HeaderProps) => {
                         className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors"
                         onClick={() => setShowMobileSocial(false)}
                       >
-                        <Icon name={social.icon} size={20} className={social.color} />
+                        {social.type === 'icon' && (
+                          <Icon name={social.icon} size={20} className={social.color} />
+                        )}
+                        {social.type === 'svg' && (
+                          <svg 
+                            viewBox="0 0 24 24" 
+                            width="20" 
+                            height="20" 
+                            fill="currentColor"
+                            className={social.color}
+                          >
+                            <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.18 14.23h-1.8c-.68 0-.89-.54-2.11-1.76-1.06-1.02-1.53-1.16-1.8-1.16-.37 0-.48.11-.48.63v1.61c0 .43-.14.69-1.27.69-1.89 0-3.99-1.15-5.47-3.3-2.22-3.17-2.83-5.56-2.83-6.05 0-.27.11-.52.63-.52h1.8c.47 0 .65.21.83.72.96 2.58 2.57 4.84 3.23 4.84.25 0 .36-.11.36-.74v-2.88c-.09-1.55-.91-1.68-.91-2.23 0-.22.18-.43.47-.43h2.83c.4 0 .54.21.54.68v3.88c0 .4.18.54.3.54.25 0 .45-.14.9-.59 1.38-1.56 2.37-3.96 2.37-3.96.13-.27.34-.52.81-.52h1.8c.54 0 .66.28.54.68-.21.98-2.23 3.7-2.23 3.7-.21.34-.29.49 0 .88.21.29.9.88 1.36 1.41.84.94 1.49 1.73 1.67 2.28.17.56-.1.84-.65.84z"/>
+                          </svg>
+                        )}
+                        {social.type === 'image' && (
+                          <img 
+                            src={social.icon}
+                            alt={social.name}
+                            width="20"
+                            height="20"
+                            className="rounded"
+                          />
+                        )}
                         <span className="font-medium">{social.name}</span>
                       </a>
                     ))}
@@ -192,7 +220,29 @@ const Header = ({ cartCount }: HeaderProps) => {
                           className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors"
                           onClick={() => setShowSocialMenu(false)}
                         >
-                          <Icon name={social.icon} size={22} className={social.color} />
+                          {social.type === 'icon' && (
+                            <Icon name={social.icon} size={22} className={social.color} />
+                          )}
+                          {social.type === 'svg' && (
+                            <svg 
+                              viewBox="0 0 24 24" 
+                              width="22" 
+                              height="22" 
+                              fill="currentColor"
+                              className={social.color}
+                            >
+                              <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.18 14.23h-1.8c-.68 0-.89-.54-2.11-1.76-1.06-1.02-1.53-1.16-1.8-1.16-.37 0-.48.11-.48.63v1.61c0 .43-.14.69-1.27.69-1.89 0-3.99-1.15-5.47-3.3-2.22-3.17-2.83-5.56-2.83-6.05 0-.27.11-.52.63-.52h1.8c.47 0 .65.21.83.72.96 2.58 2.57 4.84 3.23 4.84.25 0 .36-.11.36-.74v-2.88c-.09-1.55-.91-1.68-.91-2.23 0-.22.18-.43.47-.43h2.83c.4 0 .54.21.54.68v3.88c0 .4.18.54.3.54.25 0 .45-.14.9-.59 1.38-1.56 2.37-3.96 2.37-3.96.13-.27.34-.52.81-.52h1.8c.54 0 .66.28.54.68-.21.98-2.23 3.7-2.23 3.7-.21.34-.29.49 0 .88.21.29.9.88 1.36 1.41.84.94 1.49 1.73 1.67 2.28.17.56-.1.84-.65.84z"/>
+                            </svg>
+                          )}
+                          {social.type === 'image' && (
+                            <img 
+                              src={social.icon}
+                              alt={social.name}
+                              width="22"
+                              height="22"
+                              className="rounded"
+                            />
+                          )}
                           <span className="font-medium">{social.name}</span>
                         </a>
                       ))}
@@ -263,7 +313,29 @@ const Header = ({ cartCount }: HeaderProps) => {
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors"
                   >
-                    <Icon name={social.icon} size={20} className={social.color} />
+                    {social.type === 'icon' && (
+                      <Icon name={social.icon} size={20} className={social.color} />
+                    )}
+                    {social.type === 'svg' && (
+                      <svg 
+                        viewBox="0 0 24 24" 
+                        width="20" 
+                        height="20" 
+                        fill="currentColor"
+                        className={social.color}
+                      >
+                        <path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14c5.6 0 6.93-1.33 6.93-6.93V8.93C22 3.33 20.67 2 15.07 2zm3.18 14.23h-1.8c-.68 0-.89-.54-2.11-1.76-1.06-1.02-1.53-1.16-1.8-1.16-.37 0-.48.11-.48.63v1.61c0 .43-.14.69-1.27.69-1.89 0-3.99-1.15-5.47-3.3-2.22-3.17-2.83-5.56-2.83-6.05 0-.27.11-.52.63-.52h1.8c.47 0 .65.21.83.72.96 2.58 2.57 4.84 3.23 4.84.25 0 .36-.11.36-.74v-2.88c-.09-1.55-.91-1.68-.91-2.23 0-.22.18-.43.47-.43h2.83c.4 0 .54.21.54.68v3.88c0 .4.18.54.3.54.25 0 .45-.14.9-.59 1.38-1.56 2.37-3.96 2.37-3.96.13-.27.34-.52.81-.52h1.8c.54 0 .66.28.54.68-.21.98-2.23 3.7-2.23 3.7-.21.34-.29.49 0 .88.21.29.9.88 1.36 1.41.84.94 1.49 1.73 1.67 2.28.17.56-.1.84-.65.84z"/>
+                      </svg>
+                    )}
+                    {social.type === 'image' && (
+                      <img 
+                        src={social.icon}
+                        alt={social.name}
+                        width="20"
+                        height="20"
+                        className="rounded"
+                      />
+                    )}
                     <span>{social.name}</span>
                   </a>
                 ))}
