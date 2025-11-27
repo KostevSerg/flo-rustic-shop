@@ -68,8 +68,7 @@ const App = () => (
         <SiteTextsProvider>
           <CityProvider>
             <CartProvider>
-              <CartNotificationProvider>
-                <TooltipProvider>
+              <TooltipProvider>
                 <Toaster />
                 <Sonner />
                 <BrowserRouter
@@ -78,8 +77,9 @@ const App = () => (
                     v7_relativeSplatPath: true
                   }}
                 >
-                  <CityConfirmModal />
-                  <YandexMetrikaTracker />
+                  <CartNotificationProvider>
+                    <CityConfirmModal />
+                    <YandexMetrikaTracker />
                   <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Загрузка...</div>}>
                     <Routes>
                       <Route path="/" element={<Index />} />
@@ -113,9 +113,9 @@ const App = () => (
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
+                  </CartNotificationProvider>
                 </BrowserRouter>
-                </TooltipProvider>
-              </CartNotificationProvider>
+              </TooltipProvider>
             </CartProvider>
           </CityProvider>
         </SiteTextsProvider>
