@@ -26,7 +26,7 @@ export const CartNotification = ({ productName, quantity, onClose }: CartNotific
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] max-w-md animate-in slide-in-from-bottom-5 fade-in">
+    <div className="fixed top-20 right-6 z-[9999] max-w-md animate-in slide-in-from-top-5 fade-in">
       <div className="bg-card border border-primary/20 rounded-lg shadow-2xl p-6 backdrop-blur-sm">
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
