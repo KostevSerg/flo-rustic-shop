@@ -18,9 +18,8 @@ const ImageUpload = ({ currentImage, onImageChange, label = 'Изображен�
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-    if (!allowedTypes.includes(file.type.toLowerCase())) {
-      setError('Поддерживаются только форматы: JPG, PNG, GIF, WebP');
+    if (!file.type.startsWith('image/')) {
+      setError('Пожалуйста, выберите изображение');
       return;
     }
 
@@ -109,7 +108,7 @@ const ImageUpload = ({ currentImage, onImageChange, label = 'Изображен�
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+          accept="image/*"
           onChange={handleFileSelect}
           className="hidden"
         />
@@ -143,7 +142,7 @@ const ImageUpload = ({ currentImage, onImageChange, label = 'Изображен�
       )}
 
       <p className="text-xs text-muted-foreground">
-        Форматы: JPG, PNG, GIF, WebP. Максимальный размер: 5 МБ
+        Форматы: JPG, PNG, GIF. Максимальный размер: 5 МБ
       </p>
     </div>
   );

@@ -1,13 +1,14 @@
 import json
 import base64
 import uuid
+import os
 from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Convert uploaded image to base64 data URL for storage
+    Business: Upload images to S3 and return public URL
     Args: event with httpMethod, body (base64 image data)
-    Returns: HTTP response with base64 data URL
+    Returns: HTTP response with image URL
     '''
     method: str = event.get('httpMethod', 'POST')
     
@@ -35,6 +36,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     try:
+        import boto3
+        
         body_data = json.loads(event.get('body', '{}'))
         image_data = body_data.get('image')
         filename = body_data.get('filename', 'image.jpg')
@@ -50,25 +53,34 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'No image data provided'})
             }
         
-        if not image_data.startswith('data:'):
-            file_ext = filename.split('.')[-1].lower() if '.' in filename else 'jpg'
-            mime_types = {
-                'jpg': 'image/jpeg',
-                'jpeg': 'image/jpeg',
-                'png': 'image/png',
-                'gif': 'image/gif',
-                'webp': 'image/webp'
-            }
-            mime_type = mime_types.get(file_ext, 'image/jpeg')
-            
-            if ',' in image_data:
-                image_data = image_data.split(',')[1]
-            
-            data_url = f"data:{mime_type};base64,{image_data}"
-        else:
-            data_url = image_data
+        if ',' in image_data:
+            image_data = image_data.split(',')[1]
         
-        unique_id = str(uuid.uuid4())[:8]
+        image_bytes = base64.b64decode(image_data)
+        
+        file_ext = filename.split('.')[-1] if '.' in filename else 'jpg'
+        unique_filename = f"{uuid.uuid4()}.{file_ext}"
+        
+        s3_client = boto3.client(
+            's3',
+            endpoint_url=os.environ.get('S3_ENDPOINT'),
+            aws_access_key_id=os.environ.get('S3_ACCESS_KEY'),
+            aws_secret_access_key=os.environ.get('S3_SECRET_KEY'),
+            region_name='ru-central1'
+        )
+        
+        bucket_name = os.environ.get('S3_BUCKET')
+        s3_key = f"images/{unique_filename}"
+        
+        s3_client.put_object(
+            Bucket=bucket_name,
+            Key=s3_key,
+            Body=image_bytes,
+            ContentType=f"image/{file_ext}",
+            ACL='public-read'
+        )
+        
+        public_url = f"https://{bucket_name}.storage.yandexcloud.net/{s3_key}"
         
         return {
             'statusCode': 200,
@@ -78,8 +90,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             },
             'isBase64Encoded': False,
             'body': json.dumps({
-                'url': data_url,
-                'filename': f"{unique_id}.{filename.split('.')[-1] if '.' in filename else 'jpg'}"
+                'url': public_url,
+                'filename': unique_filename
             })
         }
         

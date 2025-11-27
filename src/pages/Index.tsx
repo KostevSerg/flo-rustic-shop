@@ -73,18 +73,7 @@ const Index = () => {
           }
         }
         
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-        
-        const response = await fetch(`${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}`, {
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch products');
-        }
-        
+        const response = await fetch(`${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}`);
         const data = await response.json();
         const products = data.products || [];
         
@@ -98,7 +87,6 @@ const Index = () => {
         setFeaturedProducts(featured.slice(0, 3));
       } catch (error) {
         console.error('Failed to load featured products:', error);
-        setFeaturedProducts([]);
       } finally {
         setLoading(false);
       }
