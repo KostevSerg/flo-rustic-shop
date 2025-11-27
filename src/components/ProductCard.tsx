@@ -44,11 +44,12 @@ const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
   return (
     <Link to={`/product/${product.id}`} className="block">
       <div className="group bg-card border border-border rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer max-w-[280px] md:max-w-none mx-auto">
-        <div className="relative overflow-hidden aspect-square max-h-[280px] md:max-h-none">
+        <div className="relative overflow-hidden aspect-square max-h-[280px] md:max-h-none bg-muted">
           <img 
             src={product.image} 
             alt={product.name}
             loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
         </div>
