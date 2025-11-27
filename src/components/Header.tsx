@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import CitySelector from '@/components/CitySelector';
 import { useCity } from '@/contexts/CityContext';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 
 interface HeaderProps {
   cartCount: number;
@@ -55,7 +54,24 @@ const Header = ({ cartCount }: HeaderProps) => {
   const { selectedCity, setCity } = useCity();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showCitySelector, setShowCitySelector] = useState(false);
+  const [showSocialMenu, setShowSocialMenu] = useState(false);
+  const [showMobileSocial, setShowMobileSocial] = useState(false);
+  const socialMenuRef = useRef<HTMLDivElement>(null);
+  const mobileSocialRef = useRef<HTMLDivElement>(null);
   const citySlug = createSlug(selectedCity);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (socialMenuRef.current && !socialMenuRef.current.contains(event.target as Node)) {
+        setShowSocialMenu(false);
+      }
+      if (mobileSocialRef.current && !mobileSocialRef.current.contains(event.target as Node)) {
+        setShowMobileSocial(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <header className="bg-white border-b border-border sticky top-0 z-50">
@@ -78,33 +94,35 @@ const Header = ({ cartCount }: HeaderProps) => {
               <Icon name="MapPin" size={18} />
               <span className="max-w-[80px] truncate">{selectedCity}</span>
             </button>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button 
-                  className="flex items-center justify-center bg-primary text-primary-foreground p-1.5 rounded-lg hover:bg-primary/90 transition"
-                  title="Социальные сети"
-                >
-                  <Icon name="Share2" size={18} />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-60">
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-sm mb-3">Наши социальные сети</h3>
-                  {socialLinks.map((social) => (
-                    <a
-                      key={social.name}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors"
-                    >
-                      <Icon name={social.icon} size={20} className={social.color} />
-                      <span className="font-medium">{social.name}</span>
-                    </a>
-                  ))}
+            <div className="relative" ref={mobileSocialRef}>
+              <button 
+                onClick={() => setShowMobileSocial(!showMobileSocial)}
+                className="flex items-center justify-center bg-primary text-primary-foreground p-1.5 rounded-lg hover:bg-primary/90 transition"
+                title="Социальные сети"
+              >
+                <Icon name="Share2" size={18} />
+              </button>
+              {showMobileSocial && (
+                <div className="absolute right-0 top-full mt-2 w-60 bg-white border border-border rounded-lg shadow-lg p-3 z-50">
+                  <div className="space-y-2">
+                    <h3 className="font-semibold text-sm mb-3">Наши социальные сети</h3>
+                    {socialLinks.map((social) => (
+                      <a
+                        key={social.name}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors"
+                        onClick={() => setShowMobileSocial(false)}
+                      >
+                        <Icon name={social.icon} size={20} className={social.color} />
+                        <span className="font-medium">{social.name}</span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </PopoverContent>
-            </Popover>
+              )}
+            </div>
             <Link to="/cart" className="relative hover:text-primary transition">
               <Icon name="ShoppingCart" size={22} />
               {cartCount > 0 && (
@@ -153,33 +171,35 @@ const Header = ({ cartCount }: HeaderProps) => {
                 <Icon name="Phone" size={20} />
                 <span className="whitespace-nowrap">+7 995 215-10-96</span>
               </a>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button 
-                    className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition"
-                  >
-                    <Icon name="Share2" size={20} />
-                    <span className="whitespace-nowrap">Социальные сети</span>
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-64" align="end">
-                  <div className="space-y-2">
-                    <h3 className="font-semibold mb-3">Наши социальные сети</h3>
-                    {socialLinks.map((social) => (
-                      <a
-                        key={social.name}
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors"
-                      >
-                        <Icon name={social.icon} size={22} className={social.color} />
-                        <span className="font-medium">{social.name}</span>
-                      </a>
-                    ))}
+              <div className="relative" ref={socialMenuRef}>
+                <button 
+                  onClick={() => setShowSocialMenu(!showSocialMenu)}
+                  className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition"
+                >
+                  <Icon name="Share2" size={20} />
+                  <span className="whitespace-nowrap">Социальные сети</span>
+                </button>
+                {showSocialMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-border rounded-lg shadow-lg p-4 z-50">
+                    <div className="space-y-2">
+                      <h3 className="font-semibold mb-3">Наши социальные сети</h3>
+                      {socialLinks.map((social) => (
+                        <a
+                          key={social.name}
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent transition-colors"
+                          onClick={() => setShowSocialMenu(false)}
+                        >
+                          <Icon name={social.icon} size={22} className={social.color} />
+                          <span className="font-medium">{social.name}</span>
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                </PopoverContent>
-              </Popover>
+                )}
+              </div>
             </div>
 
             <Link to="/cart" className="relative hover:text-primary transition">
