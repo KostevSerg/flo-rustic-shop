@@ -197,7 +197,8 @@ const Product = () => {
 
   const pageTitle = `${product.name} — купить в ${cityForMeta} | FloRustic`;
   const pageDescription = `Служба доставки цветов в ${cityForMeta}. ${product.name} — ${product.price}₽. Свежие цветы в ${cityForMeta}, доставка в течение 1.5 часов после оплаты. ${product.description ? product.description.slice(0, 80) : 'Букеты ручной работы'}. Заказ онлайн 24/7!`;
-  const productUrl = `https://florustic.ru/product/${id}${selectedCity ? `?city=${encodeURIComponent(selectedCity)}` : ''}`;
+  const productUrl = `https://florustic.ru/product/${id}`;
+  const canonicalUrl = `https://florustic.ru/product/${id}`;
 
   const productSchema = {
     "@context": "https://schema.org",
@@ -266,13 +267,13 @@ const Product = () => {
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <meta name="keywords" content={`${product.name}, купить ${product.name} ${selectedCity}, букет ${selectedCity}, цветы ${selectedCity}, florustic`} />
-        <link rel="canonical" href={productUrl} />
+        <link rel="canonical" href={canonicalUrl} />
         
         <meta property="og:type" content="product" />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:image" content={product.image_url} />
-        <meta property="og:url" content={productUrl} />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="product:price:amount" content={product.price.toString()} />
         <meta property="product:price:currency" content="RUB" />
         
