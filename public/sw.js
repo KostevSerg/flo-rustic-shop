@@ -1,4 +1,4 @@
-const CACHE_NAME = 'florustic-v1';
+const CACHE_NAME = 'florustic-v2-' + Date.now();
 const urlsToCache = [
   '/',
   '/src/main.tsx',

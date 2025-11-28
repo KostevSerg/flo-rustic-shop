@@ -2,6 +2,9 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8"/>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
     <title>Доставка цветов — FloRustic | Свежие букеты роз, тюльпанов, пионов с доставкой за 2 часа по всей России</title>
     <meta name="description" content="Служба доставки цветов FloRustic. Свежие букеты с доставкой за 1.5 часа после оплаты. Розы, тюльпаны, пионы, хризантемы, композиции ручной работы. Работаем 24/7 без выходных. Каталог более 500 букетов. Доставка по Москве, Санкт-Петербургу, Новосибирску и всей России. Цены от 990₽!"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -105,7 +108,16 @@
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
       navigator.serviceWorker.register('/sw.js')
-        .then(function() { /* Registered */ })
+        .then(function(registration) {
+          registration.addEventListener('updatefound', function() {
+            const newWorker = registration.installing;
+            newWorker.addEventListener('statechange', function() {
+              if (newWorker.state === 'activated') {
+                window.location.reload();
+              }
+            });
+          });
+        })
         .catch(function() { /* Failed silently */ });
     });
   }
