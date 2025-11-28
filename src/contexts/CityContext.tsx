@@ -69,7 +69,9 @@ export const CityProvider = ({ children }: { children: ReactNode }) => {
     const savedCity = localStorage.getItem('selectedCity');
     
     if (fromHomePage && !hasDetectedLocation) {
-      await detectUserLocation();
+      detectUserLocation().catch(err => {
+        console.error('Geo detection failed:', err);
+      });
       return;
     }
     
