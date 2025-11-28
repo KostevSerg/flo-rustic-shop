@@ -3,10 +3,18 @@ import App from './App'
 import './index.css'
 
 window.addEventListener('error', (event) => {
+  if (event.filename?.includes('poehali.dev') || event.message?.includes('CORS')) {
+    event.preventDefault();
+    return;
+  }
   console.error('Global error:', event.error);
 });
 
 window.addEventListener('unhandledrejection', (event) => {
+  if (event.reason?.message?.includes('CORS') || event.reason?.message?.includes('XMLHttpRequest')) {
+    event.preventDefault();
+    return;
+  }
   console.error('Unhandled promise rejection:', event.reason);
 });
 
