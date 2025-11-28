@@ -118,10 +118,10 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
             className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
           />
-          <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[101] w-[90vw] max-w-2xl bg-card border border-border rounded-xl shadow-2xl overflow-hidden animate-fade-in">
-            <div className="p-6 border-b border-border bg-card">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold">Выберите город доставки</h3>
+          <div className="fixed inset-x-0 top-0 md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-[101] w-full md:w-[90vw] max-w-2xl h-full md:h-auto bg-card border-0 md:border md:border-border md:rounded-xl shadow-2xl overflow-hidden animate-fade-in">
+            <div className="p-4 md:p-6 border-b border-border bg-card">
+              <div className="flex items-center justify-between mb-3 md:mb-4">
+                <h3 className="text-lg md:text-xl font-bold">Выберите город доставки</h3>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="hover:bg-accent/50 rounded-lg p-2 transition-colors"
@@ -143,7 +143,7 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
               </div>
             </div>
 
-            <div className="overflow-y-auto max-h-[70vh]">
+            <div className="overflow-y-auto h-[calc(100vh-140px)] md:max-h-[70vh]">
               {loading ? (
                 <div className="p-8 text-center text-muted-foreground">
                   <div className="animate-spin mx-auto mb-3 w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
