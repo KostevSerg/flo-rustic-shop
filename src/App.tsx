@@ -52,6 +52,8 @@ const YandexMetrikaTracker = () => {
   const location = useLocation();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    
     if (typeof window.ym !== 'undefined') {
       window.ym(104746725, 'hit', window.location.href);
     }
