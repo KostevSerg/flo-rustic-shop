@@ -129,6 +129,15 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
                   <Icon name="X" size={24} />
                 </button>
               </div>
+              <div className="mb-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                <p className="text-sm text-foreground">
+                  Выберите город доставки, если вы не обнаружили в списке нужный, то позвоните по тел.{' '}
+                  <a href="tel:+79952151096" className="font-semibold text-primary hover:underline">
+                    +7 (995) 215-10-96
+                  </a>
+                  {' '}и наши специалисты вам помогут
+                </p>
+              </div>
               <div className="relative">
                 <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <input
