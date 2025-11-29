@@ -129,10 +129,10 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
                   <Icon name="X" size={24} />
                 </button>
               </div>
-              <div className="mb-3 p-3 bg-primary/10 border border-primary/20 rounded-lg">
-                <p className="text-sm text-foreground">
+              <div className="mb-3 p-3 bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-600 rounded-lg">
+                <p className="text-sm text-amber-900 dark:text-amber-100 leading-relaxed">
                   Выберите город доставки, если вы не обнаружили в списке нужный, то позвоните по тел.{' '}
-                  <a href="tel:+79952151096" className="font-semibold text-primary hover:underline">
+                  <a href="tel:+79952151096" className="font-bold text-amber-700 dark:text-amber-300 hover:underline">
                     +7 (995) 215-10-96
                   </a>
                   {' '}и наши специалисты вам помогут
