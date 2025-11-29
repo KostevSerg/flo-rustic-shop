@@ -118,8 +118,8 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
             className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
           />
-          <div className="fixed inset-x-0 top-0 md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-[101] w-full md:w-[90vw] max-w-2xl h-full md:h-auto bg-card border-0 md:border md:border-border md:rounded-xl shadow-2xl overflow-hidden animate-fade-in">
-            <div className="p-4 md:p-6 border-b border-border bg-card">
+          <div className="fixed inset-x-0 top-0 md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-[101] w-full md:w-[90vw] max-w-2xl h-full md:h-auto bg-card border-0 md:border md:border-border md:rounded-xl shadow-2xl overflow-hidden animate-fade-in flex flex-col">
+            <div className="p-4 md:p-6 border-b border-border bg-card flex-shrink-0">
               <div className="flex items-center justify-between mb-3 md:mb-4">
                 <h3 className="text-lg md:text-xl font-bold">Выберите город доставки</h3>
                 <button
@@ -128,15 +128,6 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
                 >
                   <Icon name="X" size={24} />
                 </button>
-              </div>
-              <div className="mb-3 p-3 bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-600 rounded-lg">
-                <p className="text-sm text-amber-900 dark:text-amber-100 leading-relaxed">
-                  Выберите город доставки, если вы не обнаружили в списке нужный, то позвоните по тел.{' '}
-                  <a href="tel:+79952151096" className="font-bold text-amber-700 dark:text-amber-300 hover:underline">
-                    +7 (995) 215-10-96
-                  </a>
-                  {' '}и наши специалисты вам помогут
-                </p>
               </div>
               <div className="relative">
                 <Icon name="Search" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -152,7 +143,16 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
               </div>
             </div>
 
-            <div className="overflow-y-auto h-[calc(100vh-140px)] md:max-h-[70vh]">
+            <div className="overflow-y-auto flex-1">
+              <div className="sticky top-0 z-10 m-4 p-3 bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-600 rounded-lg shadow-md">
+                <p className="text-sm text-amber-900 dark:text-amber-100 leading-relaxed">
+                  Выберите город доставки, если вы не обнаружили в списке нужный, то позвоните по тел.{' '}
+                  <a href="tel:+79952151096" className="font-bold text-amber-700 dark:text-amber-300 hover:underline">
+                    +7 (995) 215-10-96
+                  </a>
+                  {' '}и наши специалисты вам помогут
+                </p>
+              </div>
               {loading ? (
                 <div className="p-8 text-center text-muted-foreground">
                   <div className="animate-spin mx-auto mb-3 w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
