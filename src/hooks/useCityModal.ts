@@ -125,8 +125,8 @@ export const useCityModal = (refetchData: () => void) => {
           description: editingCity ? 'Город обновлен' : 'Город добавлен'
         });
         closeModal();
-        await refetchData();
-        console.log('refetchData completed');
+        refetchData();
+        console.log('refetchData called');
       } else {
         throw new Error(data.error || 'Operation failed');
       }
