@@ -414,7 +414,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 region_id = body_data.get('region_id')
                 timezone = body_data.get('timezone', 'Europe/Moscow').strip()
                 address = body_data.get('address', '').strip()
-                price_markup_percent = body_data.get('price_markup_percent', 0)
+                
+                price_markup_percent = body_data.get('price_markup_percent')
+                if price_markup_percent is None:
+                    price_markup_percent = 0
+                else:
+                    price_markup_percent = float(price_markup_percent)
+                
+                print(f'Creating city with price_markup_percent: {price_markup_percent}')
+                
                 work_hours = body_data.get('work_hours') or None
                 if work_hours and isinstance(work_hours, dict):
                     work_hours = json.dumps(work_hours, ensure_ascii=False)
@@ -696,7 +704,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         region_id = body_data.get('region_id')
                         timezone = body_data.get('timezone', '').strip()
                         address = body_data.get('address', '').strip()
+                        
                         price_markup_percent = body_data.get('price_markup_percent')
+                        if price_markup_percent is None:
+                            price_markup_percent = 0
+                        else:
+                            price_markup_percent = float(price_markup_percent)
+                        
+                        print(f'Updating city with price_markup_percent: {price_markup_percent}')
+                        
                         work_hours = body_data.get('work_hours') or None
                         if work_hours and isinstance(work_hours, dict):
                             work_hours = json.dumps(work_hours, ensure_ascii=False)
