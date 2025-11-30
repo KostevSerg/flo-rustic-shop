@@ -35,9 +35,10 @@ export const useRegionsAndCities = (isAuthenticated: boolean) => {
   const fetchData = async () => {
     setLoading(true);
     try {
+      const timestamp = Date.now();
       const [regionsRes, citiesRes] = await Promise.all([
-        fetch(`${API_ENDPOINTS.cities}?action=regions&all=true`, { cache: 'no-store' }),
-        fetch(`${API_ENDPOINTS.cities}?all=true`, { cache: 'no-store' })
+        fetch(`${API_ENDPOINTS.cities}?action=regions&all=true&_t=${timestamp}`, { cache: 'no-store' }),
+        fetch(`${API_ENDPOINTS.cities}?all=true&_t=${timestamp}`, { cache: 'no-store' })
       ]);
 
       const regionsData = await regionsRes.json();
