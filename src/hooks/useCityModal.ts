@@ -119,12 +119,14 @@ export const useCityModal = (refetchData: () => void) => {
       console.log('Backend response:', response.status, data);
 
       if (response.ok && data.success) {
+        console.log('City saved successfully, calling refetchData...');
         toast({
           title: 'Успешно',
           description: editingCity ? 'Город обновлен' : 'Город добавлен'
         });
         closeModal();
-        refetchData();
+        await refetchData();
+        console.log('refetchData completed');
       } else {
         throw new Error(data.error || 'Operation failed');
       }

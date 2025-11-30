@@ -33,6 +33,7 @@ export const useRegionsAndCities = (isAuthenticated: boolean) => {
   }, [isAuthenticated]);
 
   const fetchData = async () => {
+    console.log('fetchData called, loading fresh data...');
     setLoading(true);
     try {
       const timestamp = Date.now();
@@ -43,6 +44,7 @@ export const useRegionsAndCities = (isAuthenticated: boolean) => {
 
       const regionsData = await regionsRes.json();
       const citiesData = await citiesRes.json();
+      console.log('Fresh cities data loaded:', citiesData);
 
       const regionsWithCities = (regionsData.regions || []).map((region: Region) => {
         const regionCities: City[] = [];
