@@ -1,18 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import AdminAuth from '@/components/AdminAuth';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import { useCart } from '@/contexts/CartContext';
-import API_ENDPOINTS from '@/config/api';
 import ProductFormAdd from '@/components/admin/ProductFormAdd';
 import ProductFormEdit from '@/components/admin/ProductFormEdit';
 import ProductCardItem from '@/components/admin/ProductCardItem';
 import CityPriceModal from '@/components/admin/CityPriceModal';
-import { submitProductToIndexNow } from '@/utils/indexnow';
+import { useProductsData } from '@/hooks/useProductsData';
+import { useProductOperations } from '@/hooks/useProductOperations';
+import { useProductToggles } from '@/hooks/useProductToggles';
+import { useCityPrice } from '@/hooks/useCityPrice';
 
 interface Product {
   id: number;
@@ -30,19 +31,14 @@ interface Product {
   subcategories?: Array<{subcategory_id: number; name: string; category: string}>;
 }
 
-interface City {
-  id: number;
-  name: string;
-  region: string;
-}
-
 const AdminProducts = () => {
   const { totalItems } = useCart();
-  const { toast } = useToast();
   const navigate = useNavigate();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [cities, setCities] = useState<Record<string, City[]>>({});
-  const [loading, setLoading] = useState(false);
+  const { products, cities, loading, loadProducts, clearProductsCache } = useProductsData();
+  const { handleAddProduct, handleUpdateProduct, handleDeleteProduct } = useProductOperations(loadProducts);
+  const { handleToggleFeatured, handleToggleActive, handleToggleGift, handleToggleRecommended } = useProductToggles(loadProducts, clearProductsCache);
+  const { handleSetCityPrice } = useCityPrice();
+
   const [showAddForm, setShowAddForm] = useState(false);
   const [showPriceModal, setShowPriceModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -60,345 +56,19 @@ const AdminProducts = () => {
     subcategory_ids: [] as number[]
   });
 
-  const clearProductsCache = () => {
-    const keys = Object.keys(localStorage);
-    keys.forEach(key => {
-      if (key.startsWith('products_')) {
-        localStorage.removeItem(key);
-      }
-    });
-  };
-
-  const loadProducts = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_ENDPOINTS.products}?with_relations=true&show_all=true`);
-      const data = await response.json();
-      setProducts(data.products || []);
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось загрузить товары',
-        variant: 'destructive'
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const sortedProducts = [...products].sort((a, b) => {
     if (!sortOrder) return 0;
     return sortOrder === 'asc' ? a.base_price - b.base_price : b.base_price - a.base_price;
   });
 
-  const loadCities = async () => {
-    try {
-      const response = await fetch(API_ENDPOINTS.cities);
-      const data = await response.json();
-      setCities(data.cities || {});
-    } catch (error) {
-      console.error('Failed to load cities:', error);
-    }
+  const onAddProductSuccess = () => {
+    setNewProduct({ name: '', description: '', composition: '', image_url: '', base_price: '', category: 'Цветы', categories: ['Цветы'], subcategory_id: null, subcategory_ids: [] });
+    setShowAddForm(false);
   };
 
-  const handleAddProduct = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!newProduct.name || !newProduct.base_price) {
-      toast({
-        title: 'Ошибка',
-        description: 'Заполните обязательные поля',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    try {
-      const payload = {
-        action: 'create',
-        ...newProduct,
-        base_price: parseInt(newProduct.base_price)
-      };
-      console.log('Creating product with payload:', payload);
-      
-      const response = await fetch(API_ENDPOINTS.products, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) throw new Error('Failed to add product');
-
-      const result = await response.json();
-      const productId = result.product_id;
-
-      toast({
-        title: 'Успешно',
-        description: `Товар "${newProduct.name}" добавлен`
-      });
-
-      if (productId) {
-        submitProductToIndexNow(productId).then(indexResult => {
-          if (indexResult.success) {
-            toast({
-              title: '🚀 IndexNow',
-              description: 'Товар отправлен в поисковики (Bing, Yandex)',
-              duration: 3000
-            });
-          }
-        }).catch(err => console.error('IndexNow error:', err));
-      }
-
-      setNewProduct({ name: '', description: '', composition: '', image_url: '', base_price: '', category: 'Цветы', categories: ['Цветы'], subcategory_id: null, subcategory_ids: [] });
-      setShowAddForm(false);
-      loadProducts();
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось добавить товар',
-        variant: 'destructive'
-      });
-    }
+  const onUpdateProductSuccess = () => {
+    setEditingProduct(null);
   };
-
-  const handleUpdateProduct = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingProduct) return;
-
-    if (!editingProduct.base_price || editingProduct.base_price <= 0) {
-      toast({
-        title: 'Ошибка',
-        description: 'Укажите корректную базовую цену',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    try {
-      const payload = {
-        id: editingProduct.id,
-        name: editingProduct.name,
-        description: editingProduct.description,
-        composition: editingProduct.composition,
-        image_url: editingProduct.image_url,
-        base_price: Number(editingProduct.base_price),
-        category: editingProduct.category,
-        categories: editingProduct.categories,
-        subcategory_id: editingProduct.subcategory_id,
-        subcategory_ids: editingProduct.subcategory_ids
-      };
-      console.log('Updating product with payload:', payload);
-      
-      const response = await fetch(API_ENDPOINTS.products, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) throw new Error('Failed to update product');
-
-      toast({
-        title: 'Успешно',
-        description: `Товар "${editingProduct.name}" обновлен`
-      });
-
-      submitProductToIndexNow(editingProduct.id).then(indexResult => {
-        if (indexResult.success) {
-          toast({
-            title: '🚀 IndexNow',
-            description: 'Изменения отправлены в поисковики',
-            duration: 3000
-          });
-        }
-      }).catch(err => console.error('IndexNow error:', err));
-
-      setEditingProduct(null);
-      loadProducts();
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось обновить товар',
-        variant: 'destructive'
-      });
-    }
-  };
-
-  const handleDeleteProduct = async (productId: number, productName: string) => {
-    if (!confirm(`Удалить товар "${productName}"?`)) return;
-
-    try {
-      const response = await fetch(API_ENDPOINTS.products, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: productId })
-      });
-
-      if (!response.ok) throw new Error('Failed to delete product');
-
-      toast({
-        title: 'Успешно',
-        description: `Товар "${productName}" удален`
-      });
-
-      loadProducts();
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось удалить товар',
-        variant: 'destructive'
-      });
-    }
-  };
-
-  const handleSetCityPrice = async (cityId: number, cityName: string, price: string) => {
-    if (!selectedProduct || !price) return;
-
-    try {
-      const response = await fetch(API_ENDPOINTS.products, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'set_city_price',
-          product_id: selectedProduct.id,
-          city_id: cityId,
-          price: parseInt(price)
-        })
-      });
-
-      if (!response.ok) throw new Error('Failed to set price');
-
-      toast({
-        title: 'Успешно',
-        description: `Цена для города ${cityName} установлена: ${price} ₽`
-      });
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось установить цену',
-        variant: 'destructive'
-      });
-    }
-  };
-
-  const handleToggleFeatured = async (productId: number, currentStatus: boolean) => {
-    try {
-      const response = await fetch(API_ENDPOINTS.products, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: productId,
-          is_featured: !currentStatus
-        })
-      });
-
-      if (!response.ok) throw new Error('Failed to toggle featured');
-
-      toast({
-        title: 'Успешно',
-        description: !currentStatus ? 'Товар добавлен в популярные' : 'Товар убран из популярных'
-      });
-
-      clearProductsCache();
-      loadProducts();
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось обновить статус товара',
-        variant: 'destructive'
-      });
-    }
-  };
-
-  const handleToggleActive = async (productId: number, currentStatus: boolean) => {
-    try {
-      const response = await fetch(API_ENDPOINTS.products, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: productId,
-          is_active: !currentStatus
-        })
-      });
-
-      if (!response.ok) throw new Error('Failed to toggle active');
-
-      toast({
-        title: 'Успешно',
-        description: !currentStatus ? 'Товар теперь виден на сайте' : 'Товар скрыт с сайта'
-      });
-
-      loadProducts();
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось обновить видимость товара',
-        variant: 'destructive'
-      });
-    }
-  };
-
-  const handleToggleGift = async (productId: number, currentStatus: boolean) => {
-    try {
-      const response = await fetch(API_ENDPOINTS.products, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: productId,
-          is_gift: !currentStatus
-        })
-      });
-
-      if (!response.ok) throw new Error('Failed to toggle gift');
-
-      toast({
-        title: 'Успешно',
-        description: !currentStatus ? 'Товар добавлен в подарки' : 'Товар убран из подарков'
-      });
-
-      clearProductsCache();
-      loadProducts();
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось обновить статус товара',
-        variant: 'destructive'
-      });
-    }
-  };
-
-  const handleToggleRecommended = async (productId: number, currentStatus: boolean) => {
-    try {
-      const response = await fetch(API_ENDPOINTS.products, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: productId,
-          is_recommended: !currentStatus
-        })
-      });
-
-      if (!response.ok) throw new Error('Failed to toggle recommended');
-
-      toast({
-        title: 'Успешно',
-        description: !currentStatus ? 'Товар добавлен в рекомендации' : 'Товар убран из рекомендаций'
-      });
-
-      clearProductsCache();
-      loadProducts();
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось обновить статус товара',
-        variant: 'destructive'
-      });
-    }
-  };
-
-  useEffect(() => {
-    loadProducts();
-    loadCities();
-  }, []);
 
   return (
     <AdminAuth>
@@ -429,10 +99,13 @@ const AdminProducts = () => {
               <ProductFormAdd
                 newProduct={newProduct}
                 setNewProduct={setNewProduct}
-                onSubmit={handleAddProduct}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleAddProduct(newProduct, onAddProductSuccess);
+                }}
                 onCancel={() => {
                   setShowAddForm(false);
-                  setNewProduct({ name: '', description: '', image_url: '', base_price: '', category: 'Цветы' });
+                  setNewProduct({ name: '', description: '', composition: '', image_url: '', base_price: '', category: 'Цветы', categories: ['Цветы'], subcategory_id: null, subcategory_ids: [] });
                 }}
               />
             )}
@@ -485,7 +158,10 @@ const AdminProducts = () => {
               <ProductFormEdit
                 editingProduct={editingProduct}
                 setEditingProduct={setEditingProduct}
-                onSubmit={handleUpdateProduct}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleUpdateProduct(editingProduct, onUpdateProductSuccess);
+                }}
                 onCancel={() => setEditingProduct(null)}
               />
             )}
@@ -495,7 +171,9 @@ const AdminProducts = () => {
                 selectedProduct={selectedProduct}
                 cities={cities}
                 onClose={() => setShowPriceModal(false)}
-                onSetPrice={handleSetCityPrice}
+                onSetPrice={(cityId, cityName, price) => 
+                  handleSetCityPrice(selectedProduct, cityId, cityName, price)
+                }
               />
             )}
           </div>
