@@ -47,6 +47,8 @@ const Index = () => {
   const { selectedCity, initAutoDetection } = useCity();
   const citySlug = createSlug(selectedCity);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [giftProducts, setGiftProducts] = useState<Product[]>([]);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   
   // Не рендерим Helmet Index, если мы не на главной странице
@@ -85,6 +87,12 @@ const Index = () => {
         
         const featured = products.filter((p: Product) => p.is_featured);
         setFeaturedProducts(featured.slice(0, 3));
+        
+        const gifts = products.filter((p: Product) => p.is_gift);
+        setGiftProducts(gifts.slice(0, 3));
+        
+        const recommended = products.filter((p: Product) => p.is_recommended);
+        setRecommendedProducts(recommended.slice(0, 3));
       } catch (error) {
         console.error('Failed to load featured products:', error);
       } finally {
@@ -269,6 +277,82 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {giftProducts.length > 0 && (
+        <section className="py-12 bg-accent/10">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-3">
+              <Icon name="Gift" size={32} className="inline-block mr-2 text-primary" />
+              Подарки
+            </h2>
+            <p className="text-center text-sm text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Готовые подарочные наборы для ваших близких
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {giftProducts.map(product => (
+                <ProductCard 
+                  key={product.id} 
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    description: product.description,
+                    composition: product.composition,
+                    price: product.price,
+                    image: product.image_url || 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=800&fit=crop'
+                  }} 
+                  onAddToCart={() => handleAddToCart(product)} 
+                />
+              ))}
+            </div>
+            <div className="text-center">
+              <Link to={`/city/${citySlug}`}>
+                <Button size="lg" variant="outline" className="text-lg px-8">
+                  Все подарки
+                  <Icon name="ArrowRight" size={20} className="ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {recommendedProducts.length > 0 && (
+        <section className="py-12 bg-background">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-3">
+              <Icon name="ThumbsUp" size={32} className="inline-block mr-2 text-primary" />
+              Рекомендуем
+            </h2>
+            <p className="text-center text-sm text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Специально подобранные букеты для особых моментов
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {recommendedProducts.map(product => (
+                <ProductCard 
+                  key={product.id} 
+                  product={{
+                    id: product.id,
+                    name: product.name,
+                    description: product.description,
+                    composition: product.composition,
+                    price: product.price,
+                    image: product.image_url || 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=800&fit=crop'
+                  }} 
+                  onAddToCart={() => handleAddToCart(product)} 
+                />
+              ))}
+            </div>
+            <div className="text-center">
+              <Link to={`/city/${citySlug}`}>
+                <Button size="lg" variant="outline" className="text-lg px-8">
+                  Смотреть каталог
+                  <Icon name="ArrowRight" size={20} className="ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       <ReviewsSection />
 

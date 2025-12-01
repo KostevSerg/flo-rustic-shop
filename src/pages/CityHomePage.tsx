@@ -46,6 +46,8 @@ const CityHomePage = () => {
   const { setCity } = useCity();
   const [cityName, setCityName] = useState<string>('');
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [giftProducts, setGiftProducts] = useState<Product[]>([]);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -87,6 +89,13 @@ const CityHomePage = () => {
           if (Date.now() - timestamp < 10 * 60 * 1000) {
             const featured = data.filter((p: Product) => p.is_featured);
             setFeaturedProducts(featured.slice(0, 3));
+            
+            const gifts = data.filter((p: Product) => p.is_gift);
+            setGiftProducts(gifts.slice(0, 3));
+            
+            const recommended = data.filter((p: Product) => p.is_recommended);
+            setRecommendedProducts(recommended.slice(0, 3));
+            
             setLoading(false);
             return;
           }
@@ -103,6 +112,12 @@ const CityHomePage = () => {
         
         const featured = products.filter((p: Product) => p.is_featured);
         setFeaturedProducts(featured.slice(0, 3));
+        
+        const gifts = products.filter((p: Product) => p.is_gift);
+        setGiftProducts(gifts.slice(0, 3));
+        
+        const recommended = products.filter((p: Product) => p.is_recommended);
+        setRecommendedProducts(recommended.slice(0, 3));
       } catch (err) {
         console.error('Failed to load city products:', err);
         setError(true);
@@ -279,6 +294,88 @@ const CityHomePage = () => {
             )}
           </div>
         </section>
+
+        {giftProducts.length > 0 && (
+          <section className="py-12 md:py-20 bg-accent/10">
+            <div className="container mx-auto px-4">
+              <div className="text-center mb-8 md:mb-12">
+                <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">
+                  <Icon name="Gift" size={32} className="inline-block mr-2 text-primary" />
+                  Подарки
+                </h2>
+                <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Готовые подарочные наборы для ваших близких. Цены для города {cityName}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-12">
+                {giftProducts.map(product => (
+                  <ProductCard 
+                    key={product.id} 
+                    product={{
+                      id: product.id,
+                      name: product.name,
+                      description: product.description,
+                      price: product.price,
+                      image: product.image_url || ''
+                    }} 
+                    onAddToCart={() => handleAddToCart(product)} 
+                  />
+                ))}
+              </div>
+              
+              <div className="text-center">
+                <Link to={`/city/${citySlug}`}>
+                  <Button size="lg" variant="outline" className="group">
+                    Все подарки
+                    <Icon name="ArrowRight" size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {recommendedProducts.length > 0 && (
+          <section className="py-12 md:py-20 bg-background">
+            <div className="container mx-auto px-4">
+              <div className="text-center mb-8 md:mb-12">
+                <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">
+                  <Icon name="ThumbsUp" size={32} className="inline-block mr-2 text-primary" />
+                  Рекомендуем
+                </h2>
+                <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto">
+                  Специально подобранные букеты для особых моментов. Цены для города {cityName}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-12">
+                {recommendedProducts.map(product => (
+                  <ProductCard 
+                    key={product.id} 
+                    product={{
+                      id: product.id,
+                      name: product.name,
+                      description: product.description,
+                      price: product.price,
+                      image: product.image_url || ''
+                    }} 
+                    onAddToCart={() => handleAddToCart(product)} 
+                  />
+                ))}
+              </div>
+              
+              <div className="text-center">
+                <Link to={`/city/${citySlug}`}>
+                  <Button size="lg" variant="outline" className="group">
+                    Смотреть каталог
+                    <Icon name="ArrowRight" size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
 
         <section className="py-12 md:py-20 bg-accent/10">
           <div className="container mx-auto px-4">

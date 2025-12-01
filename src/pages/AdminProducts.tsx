@@ -327,6 +327,62 @@ const AdminProducts = () => {
     }
   };
 
+  const handleToggleGift = async (productId: number, currentStatus: boolean) => {
+    try {
+      const response = await fetch(API_ENDPOINTS.products, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: productId,
+          is_gift: !currentStatus
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to toggle gift');
+
+      toast({
+        title: 'Успешно',
+        description: !currentStatus ? 'Товар добавлен в подарки' : 'Товар убран из подарков'
+      });
+
+      loadProducts();
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить статус товара',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const handleToggleRecommended = async (productId: number, currentStatus: boolean) => {
+    try {
+      const response = await fetch(API_ENDPOINTS.products, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: productId,
+          is_recommended: !currentStatus
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to toggle recommended');
+
+      toast({
+        title: 'Успешно',
+        description: !currentStatus ? 'Товар добавлен в рекомендации' : 'Товар убран из рекомендаций'
+      });
+
+      loadProducts();
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить статус товара',
+        variant: 'destructive'
+      });
+    }
+  };
+
   useEffect(() => {
     loadProducts();
     loadCities();
@@ -406,6 +462,8 @@ const AdminProducts = () => {
                     onDelete={handleDeleteProduct}
                     onToggleFeatured={handleToggleFeatured}
                     onToggleActive={handleToggleActive}
+                    onToggleGift={handleToggleGift}
+                    onToggleRecommended={handleToggleRecommended}
                   />
                 ))}
               </div>

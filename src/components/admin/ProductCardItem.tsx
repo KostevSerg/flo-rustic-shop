@@ -12,6 +12,8 @@ interface Product {
   subcategories?: Array<{subcategory_id: number; name: string; category: string}>;
   is_featured?: boolean;
   is_active?: boolean;
+  is_gift?: boolean;
+  is_recommended?: boolean;
 }
 
 interface ProductCardItemProps {
@@ -21,9 +23,11 @@ interface ProductCardItemProps {
   onDelete: (productId: number, productName: string) => void;
   onToggleFeatured: (productId: number, currentStatus: boolean) => void;
   onToggleActive: (productId: number, currentStatus: boolean) => void;
+  onToggleGift: (productId: number, currentStatus: boolean) => void;
+  onToggleRecommended: (productId: number, currentStatus: boolean) => void;
 }
 
-const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatured, onToggleActive }: ProductCardItemProps) => {
+const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatured, onToggleActive, onToggleGift, onToggleRecommended }: ProductCardItemProps) => {
   return (
     <div className={`bg-card border border-border rounded-lg overflow-hidden ${!product.is_active ? 'opacity-50' : ''}`}>
       {product.image_url && (
@@ -46,6 +50,18 @@ const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatur
                 <span className="text-xs bg-yellow-500 text-white px-2 py-1 rounded flex items-center gap-1">
                   <Icon name="Star" size={12} />
                   Популярный
+                </span>
+              )}
+              {product.is_gift && (
+                <span className="text-xs bg-purple-500 text-white px-2 py-1 rounded flex items-center gap-1">
+                  <Icon name="Gift" size={12} />
+                  Подарок
+                </span>
+              )}
+              {product.is_recommended && (
+                <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded flex items-center gap-1">
+                  <Icon name="ThumbsUp" size={12} />
+                  Рекомендуем
                 </span>
               )}
               {!product.is_active && (
@@ -92,6 +108,22 @@ const ProductCardItem = ({ product, onEdit, onSetPrice, onDelete, onToggleFeatur
             title={product.is_featured ? "Убрать из популярных" : "Добавить в популярные"}
           >
             <Icon name="Star" size={16} />
+          </Button>
+          <Button
+            size="sm"
+            variant={product.is_gift ? "default" : "outline"}
+            onClick={() => onToggleGift(product.id, product.is_gift || false)}
+            title={product.is_gift ? "Убрать из подарков" : "Добавить в подарки"}
+          >
+            <Icon name="Gift" size={16} />
+          </Button>
+          <Button
+            size="sm"
+            variant={product.is_recommended ? "default" : "outline"}
+            onClick={() => onToggleRecommended(product.id, product.is_recommended || false)}
+            title={product.is_recommended ? "Убрать из рекомендаций" : "Добавить в рекомендации"}
+          >
+            <Icon name="ThumbsUp" size={16} />
           </Button>
         </div>
         <div className="flex gap-2 mt-2">
