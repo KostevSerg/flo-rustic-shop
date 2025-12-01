@@ -100,14 +100,26 @@
   </head>
 
 <body>
-<div id="root"></div>
+<div id="root">
+  <div style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #0a0a0a; color: white; font-family: system-ui, -apple-system, sans-serif;">
+    <div style="text-align: center;">
+      <div style="width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
+      <p style="font-size: 14px; opacity: 0.7;">Загрузка FloRustic...</p>
+    </div>
+  </div>
+</div>
+<style>
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
 <script type="module" src="/src/main.tsx"></script>
 
 
 
-<!-- JivoChat widget - Load after user interaction or 3 seconds -->
+<!-- JivoChat widget - Load after 5 seconds or user interaction -->
 <script>
-  window.addEventListener('load', function() {
+  setTimeout(function() {
     var jivoLoaded = false;
     function loadJivo() {
       if (!jivoLoaded) {
@@ -122,9 +134,9 @@
     ['scroll', 'click', 'touchstart'].forEach(function(event) {
       document.addEventListener(event, loadJivo, { once: true, passive: true });
     });
-    // Or after 3 seconds
-    setTimeout(loadJivo, 3000);
-  });
+    // Or after 5 seconds
+    setTimeout(loadJivo, 5000);
+  }, 1000);
 </script>
 <!-- /JivoChat widget -->
 </body>
