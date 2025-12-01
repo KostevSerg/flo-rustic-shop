@@ -65,8 +65,8 @@ const Index = () => {
         const cached = localStorage.getItem(CACHE_KEY);
         
         if (cached) {
-          const { data, timestamp } = JSON.parse(cached);
-          if (Date.now() - timestamp < 10 * 60 * 1000) {
+          const { data, timestamp, version } = JSON.parse(cached);
+          if (Date.now() - timestamp < 10 * 60 * 1000 && version === 2) {
             const featured = data.filter((p: Product) => p.is_featured);
             setFeaturedProducts(featured.slice(0, 3));
             
@@ -87,7 +87,8 @@ const Index = () => {
         
         localStorage.setItem(CACHE_KEY, JSON.stringify({
           data: products,
-          timestamp: Date.now()
+          timestamp: Date.now(),
+          version: 2
         }));
         
         const featured = products.filter((p: Product) => p.is_featured);
