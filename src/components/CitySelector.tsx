@@ -143,16 +143,17 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
               </div>
             </div>
 
+            <div className="m-4 p-3 bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-600 rounded-lg shadow-md">
+              <p className="text-sm text-amber-900 dark:text-amber-100 leading-relaxed">
+                Выберите город доставки, если вы не обнаружили в списке нужный, то позвоните по тел.{' '}
+                <a href="tel:+79952151096" className="font-bold text-amber-700 dark:text-amber-300 hover:underline">
+                  +7 (995) 215-10-96
+                </a>
+                {' '}и наши специалисты вам помогут
+              </p>
+            </div>
+
             <div className="overflow-y-auto flex-1">
-              <div className="sticky top-0 z-10 m-4 p-3 bg-amber-50 dark:bg-amber-950/30 border-2 border-amber-400 dark:border-amber-600 rounded-lg shadow-md">
-                <p className="text-sm text-amber-900 dark:text-amber-100 leading-relaxed">
-                  Выберите город доставки, если вы не обнаружили в списке нужный, то позвоните по тел.{' '}
-                  <a href="tel:+79952151096" className="font-bold text-amber-700 dark:text-amber-300 hover:underline">
-                    +7 (995) 215-10-96
-                  </a>
-                  {' '}и наши специалисты вам помогут
-                </p>
-              </div>
               {loading ? (
                 <div className="p-8 text-center text-muted-foreground">
                   <div className="animate-spin mx-auto mb-3 w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
