@@ -88,13 +88,13 @@ const CityHomePage = () => {
           const { data, timestamp } = JSON.parse(cached);
           if (Date.now() - timestamp < 10 * 60 * 1000) {
             const featured = data.filter((p: Product) => p.is_featured);
-            setFeaturedProducts(featured.slice(0, 3));
+            setFeaturedProducts(featured);
             
             const gifts = data.filter((p: Product) => p.is_gift);
-            setGiftProducts(gifts.slice(0, 3));
+            setGiftProducts(gifts);
             
             const recommended = data.filter((p: Product) => p.is_recommended);
-            setRecommendedProducts(recommended.slice(0, 3));
+            setRecommendedProducts(recommended);
             
             setLoading(false);
             return;
@@ -111,13 +111,13 @@ const CityHomePage = () => {
         }));
         
         const featured = products.filter((p: Product) => p.is_featured);
-        setFeaturedProducts(featured.slice(0, 3));
+        setFeaturedProducts(featured);
         
         const gifts = products.filter((p: Product) => p.is_gift);
-        setGiftProducts(gifts.slice(0, 3));
+        setGiftProducts(gifts);
         
         const recommended = products.filter((p: Product) => p.is_recommended);
-        setRecommendedProducts(recommended.slice(0, 3));
+        setRecommendedProducts(recommended);
       } catch (err) {
         console.error('Failed to load city products:', err);
         setError(true);
