@@ -63,10 +63,13 @@ const Index = () => {
       try {
         const CACHE_KEY = `products_${selectedCity}`;
         const cached = localStorage.getItem(CACHE_KEY);
+        let shouldFetchFresh = true;
         
         if (cached) {
           const { data, timestamp, version } = JSON.parse(cached);
-          if (Date.now() - timestamp < 10 * 60 * 1000 && version === 2) {
+          const cacheAge = Date.now() - timestamp;
+          
+          if (cacheAge < 2 * 60 * 1000 && version === 2) {
             const featured = data.filter((p: Product) => p.is_featured);
             setFeaturedProducts(featured);
             
@@ -77,28 +80,30 @@ const Index = () => {
             setRecommendedProducts(recommended);
             
             setLoading(false);
-            return;
+            shouldFetchFresh = false;
           }
         }
         
-        const response = await fetch(`${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}`);
-        const data = await response.json();
-        const products = data.products || [];
-        
-        localStorage.setItem(CACHE_KEY, JSON.stringify({
-          data: products,
-          timestamp: Date.now(),
-          version: 2
-        }));
-        
-        const featured = products.filter((p: Product) => p.is_featured);
-        setFeaturedProducts(featured);
-        
-        const gifts = products.filter((p: Product) => p.is_gift);
-        setGiftProducts(gifts);
-        
-        const recommended = products.filter((p: Product) => p.is_recommended);
-        setRecommendedProducts(recommended);
+        if (shouldFetchFresh) {
+          const response = await fetch(`${API_ENDPOINTS.products}?city=${encodeURIComponent(selectedCity)}`);
+          const data = await response.json();
+          const products = data.products || [];
+          
+          localStorage.setItem(CACHE_KEY, JSON.stringify({
+            data: products,
+            timestamp: Date.now(),
+            version: 2
+          }));
+          
+          const featured = products.filter((p: Product) => p.is_featured);
+          setFeaturedProducts(featured);
+          
+          const gifts = products.filter((p: Product) => p.is_gift);
+          setGiftProducts(gifts);
+          
+          const recommended = products.filter((p: Product) => p.is_recommended);
+          setRecommendedProducts(recommended);
+        }
       } catch (error) {
         console.error('Failed to load featured products:', error);
       } finally {
