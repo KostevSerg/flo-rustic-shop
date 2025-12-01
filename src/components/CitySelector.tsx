@@ -118,7 +118,7 @@ const CitySelector = ({ value, onChange }: CitySelectorProps) => {
             className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
           />
-          <div className="fixed inset-x-0 top-0 md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-[101] w-full md:w-[90vw] max-w-2xl h-full md:h-auto bg-card border-0 md:border md:border-border md:rounded-xl shadow-2xl overflow-hidden animate-fade-in flex flex-col">
+          <div className="fixed inset-x-0 top-0 md:left-1/2 md:top-[5vh] md:-translate-x-1/2 z-[101] w-full md:w-[90vw] max-w-2xl h-full md:h-[90vh] md:max-h-[800px] bg-card border-0 md:border md:border-border md:rounded-xl shadow-2xl overflow-hidden animate-fade-in flex flex-col">
             <div className="p-4 md:p-6 border-b border-border bg-card flex-shrink-0">
               <div className="flex items-center justify-between mb-3 md:mb-4">
                 <h3 className="text-lg md:text-xl font-bold">Выберите город доставки</h3>
