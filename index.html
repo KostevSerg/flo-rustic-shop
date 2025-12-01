@@ -103,25 +103,7 @@
 <div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
 
-<!-- Service Worker Registration for better caching -->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/sw.js')
-        .then(function(registration) {
-          registration.addEventListener('updatefound', function() {
-            const newWorker = registration.installing;
-            newWorker.addEventListener('statechange', function() {
-              if (newWorker.state === 'activated') {
-                window.location.reload();
-              }
-            });
-          });
-        })
-        .catch(function() { /* Failed silently */ });
-    });
-  }
-</script>
+
 
 <!-- JivoChat widget - Load after user interaction or 3 seconds -->
 <script>
