@@ -60,6 +60,15 @@ const AdminProducts = () => {
     subcategory_ids: [] as number[]
   });
 
+  const clearProductsCache = () => {
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+      if (key.startsWith('products_')) {
+        localStorage.removeItem(key);
+      }
+    });
+  };
+
   const loadProducts = async () => {
     setLoading(true);
     try {
@@ -289,6 +298,7 @@ const AdminProducts = () => {
         description: !currentStatus ? 'Товар добавлен в популярные' : 'Товар убран из популярных'
       });
 
+      clearProductsCache();
       loadProducts();
     } catch (error) {
       toast({
@@ -345,6 +355,7 @@ const AdminProducts = () => {
         description: !currentStatus ? 'Товар добавлен в подарки' : 'Товар убран из подарков'
       });
 
+      clearProductsCache();
       loadProducts();
     } catch (error) {
       toast({
@@ -373,6 +384,7 @@ const AdminProducts = () => {
         description: !currentStatus ? 'Товар добавлен в рекомендации' : 'Товар убран из рекомендаций'
       });
 
+      clearProductsCache();
       loadProducts();
     } catch (error) {
       toast({
