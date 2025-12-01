@@ -39,13 +39,10 @@ const ProductsSection = ({
   return (
     <section className={`py-12 ${bgClassName}`}>
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-3">
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
           {iconName && <Icon name={iconName} size={32} className="inline-block mr-2 text-primary" />}
           {title}
         </h2>
-        <p className="text-center text-sm text-muted-foreground mb-8 max-w-2xl mx-auto">
-          {subtitle}
-        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {products.map(product => (
             <ProductCard 

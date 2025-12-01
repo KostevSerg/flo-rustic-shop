@@ -68,13 +68,13 @@ const Index = () => {
           const { data, timestamp, version } = JSON.parse(cached);
           if (Date.now() - timestamp < 10 * 60 * 1000 && version === 2) {
             const featured = data.filter((p: Product) => p.is_featured);
-            setFeaturedProducts(featured.slice(0, 3));
+            setFeaturedProducts(featured);
             
             const gifts = data.filter((p: Product) => p.is_gift);
-            setGiftProducts(gifts.slice(0, 3));
+            setGiftProducts(gifts);
             
             const recommended = data.filter((p: Product) => p.is_recommended);
-            setRecommendedProducts(recommended.slice(0, 3));
+            setRecommendedProducts(recommended);
             
             setLoading(false);
             return;
@@ -92,13 +92,13 @@ const Index = () => {
         }));
         
         const featured = products.filter((p: Product) => p.is_featured);
-        setFeaturedProducts(featured.slice(0, 3));
+        setFeaturedProducts(featured);
         
         const gifts = products.filter((p: Product) => p.is_gift);
-        setGiftProducts(gifts.slice(0, 3));
+        setGiftProducts(gifts);
         
         const recommended = products.filter((p: Product) => p.is_recommended);
-        setRecommendedProducts(recommended.slice(0, 3));
+        setRecommendedProducts(recommended);
       } catch (error) {
         console.error('Failed to load featured products:', error);
       } finally {
@@ -139,7 +139,6 @@ const Index = () => {
           products={giftProducts}
           citySlug={citySlug}
           title="Подарки"
-          subtitle="Готовые подарочные наборы для ваших близких"
           iconName="Gift"
           bgClassName="bg-accent/10"
           buttonText="Все подарки"
@@ -150,7 +149,6 @@ const Index = () => {
           products={recommendedProducts}
           citySlug={citySlug}
           title="Рекомендуем"
-          subtitle="Специально подобранные букеты для особых моментов"
           iconName="ThumbsUp"
           bgClassName="bg-background"
           buttonText="Смотреть каталог"
