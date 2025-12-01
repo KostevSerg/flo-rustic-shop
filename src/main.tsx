@@ -43,9 +43,9 @@ window.addEventListener('unhandledrejection', (event) => {
 
 const rootElement = document.getElementById("root")!;
 
-const loader = document.getElementById('app-loader');
+const loader = document.getElementById('loader');
 if (loader) {
-  loader.remove();
+  setTimeout(() => loader.remove(), 100);
 }
 
 if (!rootElement) {
