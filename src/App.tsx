@@ -39,6 +39,7 @@ const AdminSubcategories = lazy(() => import("./pages/AdminSubcategories"));
 const UpdateSitemapPage = lazy(() => import("./pages/UpdateSitemapPage"));
 const SitemapDownloader = lazy(() => import("./pages/SitemapDownloader"));
 const AdminSEO = lazy(() => import("./pages/AdminSEO"));
+const CityHomePage = lazy(() => import("./pages/CityHomePage"));
 
 const queryClient = new QueryClient();
 
@@ -111,6 +112,7 @@ const App = () => (
                       <Route path="/update-sitemap" element={<UpdateSitemapPage />} />
                       <Route path="/sitemap-downloader" element={<SitemapDownloader />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                      <Route path="/:citySlug" element={<CityHomePage />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
