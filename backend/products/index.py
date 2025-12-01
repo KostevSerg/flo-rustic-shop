@@ -462,6 +462,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             body_data = json.loads(event.get('body', '{}'))
             product_id = body_data.get('id')
             
+            print(f"PUT request body: {json.dumps(body_data)}")
+            
             if not product_id:
                 return {
                     'statusCode': 400,
