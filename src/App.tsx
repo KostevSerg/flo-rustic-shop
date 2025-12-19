@@ -97,7 +97,6 @@ const App = () => (
                       <Route path="/cart" element={<Cart />} />
                       <Route path="/checkout" element={<Checkout />} />
                       <Route path="/admin" element={<AdminDashboard />} />
-
                       <Route path="/admin/cities" element={<AdminCities />} />
                       <Route path="/admin/products" element={<AdminProducts />} />
                       <Route path="/admin/orders" element={<AdminOrders />} />
@@ -111,7 +110,7 @@ const App = () => (
                       <Route path="/admin/seo-generator" element={<AdminSEO />} />
                       <Route path="/update-sitemap" element={<UpdateSitemapPage />} />
                       <Route path="/sitemap-downloader" element={<SitemapDownloader />} />
-                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                      {/* City slug route must be after all static routes */}
                       <Route path="/:citySlug" element={<CityHomePage />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>

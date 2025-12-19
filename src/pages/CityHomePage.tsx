@@ -52,9 +52,12 @@ const CityHomePage = () => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (!citySlug || citySlug.trim() === '') {
+      navigate('/', { replace: true });
+      return;
+    }
+
     const fetchCityAndProducts = async () => {
-      if (!citySlug) return;
-      
       setLoading(true);
       setError(false);
       
