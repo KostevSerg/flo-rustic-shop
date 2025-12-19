@@ -2,6 +2,15 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import './index.css'
 
+// Block indexing of pages with ?generating=true parameter
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has('generating')) {
+  const metaRobots = document.createElement('meta');
+  metaRobots.name = 'robots';
+  metaRobots.content = 'noindex, nofollow';
+  document.head.appendChild(metaRobots);
+}
+
 const APP_VERSION = '2.0.0';
 const storedVersion = localStorage.getItem('app_version');
 
