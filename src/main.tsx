@@ -13,9 +13,14 @@ if (urlParams.has('generating')) {
 
 const APP_VERSION = new Date().toISOString().split('T')[0].replace(/-/g, '');
 const storedVersion = localStorage.getItem('app_version');
+const BUILD_TIMESTAMP = Date.now().toString();
 
 if (storedVersion !== APP_VERSION) {
-  console.log('New version detected, clearing caches...');
+  console.log('New version detected, clearing all caches...');
+  
+  const cartData = localStorage.getItem('cart');
+  const selectedCity = localStorage.getItem('selected-city');
+  
   localStorage.clear();
   sessionStorage.clear();
   
@@ -26,6 +31,12 @@ if (storedVersion !== APP_VERSION) {
   }
   
   localStorage.setItem('app_version', APP_VERSION);
+  localStorage.setItem('build_timestamp', BUILD_TIMESTAMP);
+  
+  if (cartData) localStorage.setItem('cart', cartData);
+  if (selectedCity) localStorage.setItem('selected-city', selectedCity);
+  
+  console.log('Caches cleared, important data restored');
 }
 
 window.addEventListener('error', (event) => {
