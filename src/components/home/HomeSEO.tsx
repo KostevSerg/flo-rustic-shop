@@ -25,7 +25,8 @@ const HomeSEO = ({ isHomePage, selectedCity }: HomeSEOProps) => {
 
   return (
     <>
-      <Helmet defer={false}>
+      <Helmet prioritizeSeoTags defer={false}>
+        <html lang="ru" />
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <meta name="keywords" content={keywords} />

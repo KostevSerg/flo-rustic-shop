@@ -100,7 +100,8 @@ const Contacts = () => {
   
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet>
+      <Helmet prioritizeSeoTags defer={false}>
+        <html lang="ru" />
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <meta name="keywords" content={`контакты florustic, телефон florustic, адрес florustic ${cityForMeta}, магазин цветов контакты, доставка цветов телефон`} />
@@ -110,6 +111,8 @@ const Contacts = () => {
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="FloRustic" />
+        <meta property="og:locale" content="ru_RU" />
         <meta property="og:image" content="https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png" />
         
         <meta name="twitter:card" content="summary" />

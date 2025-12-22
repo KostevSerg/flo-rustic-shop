@@ -121,7 +121,8 @@ const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
   const keywords = `доставка цветов ${effectiveCityName}, купить цветы ${effectiveCityName}, букет роз ${effectiveCityName}, заказать букет ${effectiveCityName}, цветы с доставкой ${effectiveCityName}, цветы недорого ${effectiveCityName}, срочная доставка цветов ${effectiveCityName}, круглосуточная доставка букетов ${effectiveCityName}, свежие цветы ${effectiveCityName}, розы ${effectiveCityName}, тюльпаны ${effectiveCityName}, пионы ${effectiveCityName}, хризантемы ${effectiveCityName}, орхидеи ${effectiveCityName}, лилии ${effectiveCityName}, гортензии ${effectiveCityName}, композиции из цветов ${effectiveCityName}, букет на день рождения ${effectiveCityName}, букет на свадьбу ${effectiveCityName}, траурные венки ${effectiveCityName}, цветы в коробке ${effectiveCityName}, монобукет ${effectiveCityName}, флорист ${effectiveCityName}, цветочный магазин ${effectiveCityName}, служба доставки цветов ${effectiveCityName}, интернет-магазин цветов ${effectiveCityName}, купить розы недорого ${effectiveCityName}, доставка букетов на дом ${effectiveCityName}, заказ цветов онлайн ${effectiveCityName}, цветы с бесплатной доставкой ${effectiveCityName}`;
 
   return (
-    <Helmet prioritizeSeoTags>
+    <Helmet prioritizeSeoTags defer={false}>
+      <html lang="ru" />
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
       <meta name="keywords" content={keywords} />

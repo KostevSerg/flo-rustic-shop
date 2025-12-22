@@ -152,7 +152,8 @@ const Product = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Helmet>
+        <Helmet prioritizeSeoTags defer={false}>
+          <html lang="ru" />
           <title>{defaultTitle}</title>
           <meta name="description" content={defaultDescription} />
           <link rel="canonical" href={`https://florustic.ru/product/${id}`} />
@@ -172,7 +173,8 @@ const Product = () => {
   if (error || !product) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Helmet>
+        <Helmet prioritizeSeoTags defer={false}>
+          <html lang="ru" />
           <title>{defaultTitle}</title>
           <meta name="description" content={defaultDescription} />
           <link rel="canonical" href={`https://florustic.ru/product/${id}`} />
@@ -263,7 +265,8 @@ const Product = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet>
+      <Helmet prioritizeSeoTags defer={false}>
+        <html lang="ru" />
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <meta name="keywords" content={`${product.name}, купить ${product.name} ${selectedCity}, букет ${selectedCity}, цветы ${selectedCity}, florustic`} />
@@ -274,6 +277,8 @@ const Product = () => {
         <meta property="og:description" content={pageDescription} />
         <meta property="og:image" content={product.image_url} />
         <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="FloRustic" />
+        <meta property="og:locale" content="ru_RU" />
         <meta property="product:price:amount" content={product.price.toString()} />
         <meta property="product:price:currency" content="RUB" />
         

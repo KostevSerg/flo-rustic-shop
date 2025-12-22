@@ -92,7 +92,8 @@ const Reviews = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet>
+      <Helmet prioritizeSeoTags defer={false}>
+        <html lang="ru" />
         <title>Отзывы о FloRustic — Реальные мнения клиентов о доставке цветов</title>
         <meta name="description" content={`Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Отзывы: ${reviews.length} реальных мнений клиентов. Средний рейтинг ${averageRating}/5. Оценка качества букетов и сервиса!`} />
         <meta name="keywords" content="отзывы florustic, отзывы о доставке цветов, качество цветов отзывы, букеты отзывы, florustic мнения клиентов" />
@@ -102,6 +103,8 @@ const Reviews = () => {
         <meta property="og:title" content="Отзывы о FloRustic — Реальные мнения клиентов" />
         <meta property="og:description" content="Читайте отзывы клиентов о FloRustic. Реальные мнения о качестве цветов и доставке." />
         <meta property="og:url" content="https://florustic.ru/reviews" />
+        <meta property="og:site_name" content="FloRustic" />
+        <meta property="og:locale" content="ru_RU" />
         <meta property="og:image" content="https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png" />
         
         <meta name="twitter:card" content="summary" />

@@ -81,7 +81,8 @@ const About = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet>
+      <Helmet prioritizeSeoTags defer={false}>
+        <html lang="ru" />
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <meta name="keywords" content={content.metaKeywords} />
@@ -91,6 +92,8 @@ const About = () => {
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="FloRustic" />
+        <meta property="og:locale" content="ru_RU" />
         
         <script type="application/ld+json">
           {JSON.stringify({

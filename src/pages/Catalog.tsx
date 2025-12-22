@@ -90,21 +90,23 @@ const Catalog = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet>
+      <Helmet prioritizeSeoTags defer={false}>
+        <html lang="ru" />
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
         <meta name="keywords" content="каталог цветов, букеты цены, купить букет, цветочные композиции, розы, тюльпаны, лилии" />
+        <link rel="canonical" href="https://florustic.ru/catalog" />
         
         <meta property="og:type" content="website" />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content="https://florustic.ru/catalog" />
+        <meta property="og:site_name" content="FloRustic" />
+        <meta property="og:locale" content="ru_RU" />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
-        
-        <link rel="canonical" href="https://florustic.ru/catalog" />
       </Helmet>
       
       <Header cartCount={totalItems} />

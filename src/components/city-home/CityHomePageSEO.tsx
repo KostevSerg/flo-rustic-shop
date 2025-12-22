@@ -13,7 +13,8 @@ const CityHomePageSEO = ({ cityName, cityInPrepositional, citySlug }: CityHomePa
   const canonicalUrl = `https://florustic.ru/${citySlug}`;
 
   return (
-    <Helmet>
+    <Helmet prioritizeSeoTags defer={false}>
+      <html lang="ru" />
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
       <meta name="keywords" content={keywords} />

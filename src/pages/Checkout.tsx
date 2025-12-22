@@ -288,7 +288,8 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-accent/5">
-      <Helmet>
+      <Helmet prioritizeSeoTags defer={false}>
+        <html lang="ru" />
         <title>Оформление заказа — FloRustic | Доставка цветов</title>
         <meta name="description" content="Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Оформление заказа за 2 минуты. Выбор оплаты: онлайн или при получении. Промокоды и скидки!" />
         <meta name="robots" content="noindex, follow" />

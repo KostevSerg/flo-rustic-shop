@@ -27,7 +27,8 @@ const Cart = () => {
   if (items.length === 0) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Helmet>
+        <Helmet prioritizeSeoTags defer={false}>
+          <html lang="ru" />
           <title>Корзина — FloRustic | Оформление заказа цветов</title>
           <meta name="description" content="Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Корзина: оформите заказ онлайн за 2 минуты. Безопасная оплата картой или наличными!" />
           <meta name="robots" content="noindex, follow" />
@@ -60,7 +61,8 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet>
+      <Helmet prioritizeSeoTags defer={false}>
+        <html lang="ru" />
         <title>{`Корзина (${itemsCount}) — FloRustic | Оформление заказа`}</title>
         <meta name="description" content={`В корзине ${itemsCount} товаров на ${formattedPrice}₽. Оформите заказ за 2 минуты. Доставка цветов по России. Оплата картой или наличными. Гарантия свежести!`} />
         <meta name="robots" content="noindex, follow" />
