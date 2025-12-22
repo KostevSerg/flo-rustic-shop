@@ -43,7 +43,7 @@ const AdminProductAvailability = () => {
     try {
       const [productsRes, citiesRes, exclusionsRes] = await Promise.all([
         fetch('https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531?show_all=true'),
-        fetch('https://functions.poehali.dev/f0bbad86-72e5-485e-a2bf-fb7d6ec24b21'),
+        fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459'),
         fetch('https://functions.poehali.dev/3d5447c1-b58a-433c-baf2-2d7d74403326')
       ]);
 
