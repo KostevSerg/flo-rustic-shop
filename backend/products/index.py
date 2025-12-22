@@ -101,6 +101,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                                 SELECT 1 FROM t_p90017259_flo_rustic_shop.product_city_exclusions pce
                                 WHERE pce.product_id = p.id AND pce.city_id = c.id
                             )
+                            AND NOT EXISTS (
+                                SELECT 1 FROM t_p90017259_flo_rustic_shop.product_region_exclusions pre
+                                WHERE pre.product_id = p.id AND pre.region_id = c.region_id
+                            )
                         ''')
                     else:
                         active_filter = '' if show_all else 'AND p.is_active = true'
@@ -149,6 +153,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                                 SELECT 1 FROM t_p90017259_flo_rustic_shop.product_city_exclusions pce
                                 WHERE pce.product_id = p.id AND pce.city_id = c.id
                             )
+                            AND NOT EXISTS (
+                                SELECT 1 FROM t_p90017259_flo_rustic_shop.product_region_exclusions pre
+                                WHERE pre.product_id = p.id AND pre.region_id = c.region_id
+                            )
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
@@ -189,6 +197,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             AND NOT EXISTS (
                                 SELECT 1 FROM t_p90017259_flo_rustic_shop.product_city_exclusions pce
                                 WHERE pce.product_id = p.id AND pce.city_id = c.id
+                            )
+                            AND NOT EXISTS (
+                                SELECT 1 FROM t_p90017259_flo_rustic_shop.product_region_exclusions pre
+                                WHERE pre.product_id = p.id AND pre.region_id = c.region_id
                             )
                             ORDER BY p.created_at DESC
                             LIMIT 100
