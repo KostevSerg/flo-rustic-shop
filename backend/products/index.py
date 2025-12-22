@@ -95,7 +95,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             LEFT JOIN cities c ON c.name = '{safe_city_name}' AND c.is_active = true
                             LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
-                            WHERE p.is_active = true AND p.id = {int(product_id)}
+                            WHERE p.is_active = true 
+                            AND p.id = {int(product_id)}
+                            AND NOT EXISTS (
+                                SELECT 1 FROM t_p90017259_flo_rustic_shop.product_city_exclusions pce
+                                WHERE pce.product_id = p.id AND pce.city_id = c.id
+                            )
                         ''')
                     else:
                         active_filter = '' if show_all else 'AND p.is_active = true'
@@ -138,7 +143,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
                             JOIN product_subcategories ps ON ps.product_id = p.id
-                            WHERE p.is_active = true AND ps.subcategory_id = {int(subcategory_id)}
+                            WHERE p.is_active = true 
+                            AND ps.subcategory_id = {int(subcategory_id)}
+                            AND NOT EXISTS (
+                                SELECT 1 FROM t_p90017259_flo_rustic_shop.product_city_exclusions pce
+                                WHERE pce.product_id = p.id AND pce.city_id = c.id
+                            )
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
@@ -155,7 +165,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
                             JOIN product_categories pc ON pc.product_id = p.id
-                            WHERE p.is_active = true AND pc.category = '{safe_category}'
+                            WHERE p.is_active = true 
+                            AND pc.category = '{safe_category}'
+                            AND NOT EXISTS (
+                                SELECT 1 FROM t_p90017259_flo_rustic_shop.product_city_exclusions pce
+                                WHERE pce.product_id = p.id AND pce.city_id = c.id
+                            )
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
@@ -171,6 +186,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                             LEFT JOIN product_city_prices pcp ON pcp.product_id = p.id AND pcp.city_id = c.id
                             LEFT JOIN subcategories s ON s.id = p.subcategory_id
                             WHERE p.is_active = true
+                            AND NOT EXISTS (
+                                SELECT 1 FROM t_p90017259_flo_rustic_shop.product_city_exclusions pce
+                                WHERE pce.product_id = p.id AND pce.city_id = c.id
+                            )
                             ORDER BY p.created_at DESC
                             LIMIT 100
                         ''')
