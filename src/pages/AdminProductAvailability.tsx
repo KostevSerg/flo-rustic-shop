@@ -52,7 +52,18 @@ const AdminProductAvailability = () => {
       const exclusionsData = await exclusionsRes.json();
 
       setProducts(productsData.products || []);
-      setCities(citiesData.cities || []);
+      
+      // Преобразуем объект с регионами в плоский массив городов
+      const allCities: City[] = [];
+      if (citiesData.cities) {
+        Object.values(citiesData.cities).forEach((regionCities: any) => {
+          if (Array.isArray(regionCities)) {
+            allCities.push(...regionCities);
+          }
+        });
+      }
+      setCities(allCities);
+      
       setExclusions(exclusionsData.exclusions || []);
     } catch (error) {
       toast({
