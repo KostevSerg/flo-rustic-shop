@@ -11,7 +11,7 @@ if (urlParams.has('generating')) {
   document.head.appendChild(metaRobots);
 }
 
-const APP_VERSION = '2.0.0';
+const APP_VERSION = new Date().toISOString().split('T')[0].replace(/-/g, '');
 const storedVersion = localStorage.getItem('app_version');
 
 if (storedVersion !== APP_VERSION) {
