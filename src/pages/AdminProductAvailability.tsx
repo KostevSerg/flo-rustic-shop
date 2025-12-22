@@ -12,7 +12,7 @@ interface Product {
   name: string;
 }
 
-interface City {
+interface Region {
   id: number;
   name: string;
 }
@@ -20,8 +20,8 @@ interface City {
 interface Exclusion {
   id: number;
   product_id: number;
-  city_id: number;
-  city_name?: string;
+  region_id: number;
+  region_name?: string;
   product_name?: string;
 }
 
@@ -29,10 +29,10 @@ const AdminProductAvailability = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
-  const [cities, setCities] = useState<City[]>([]);
+  const [regions, setRegions] = useState<Region[]>([]);
   const [exclusions, setExclusions] = useState<Exclusion[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<string>('');
-  const [selectedCity, setSelectedCity] = useState<string>('');
+  const [selectedRegion, setSelectedRegion] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -41,28 +41,34 @@ const AdminProductAvailability = () => {
 
   const loadData = async () => {
     try {
-      const [productsRes, citiesRes, exclusionsRes] = await Promise.all([
+      const [productsRes, regionsRes, exclusionsRes] = await Promise.all([
         fetch('https://functions.poehali.dev/f3ffc9b4-fbea-48e8-959d-c34ea68e6531?show_all=true'),
         fetch('https://functions.poehali.dev/3f4d37f0-b84f-4157-83b7-55bdb568e459'),
-        fetch('https://functions.poehali.dev/3d5447c1-b58a-433c-baf2-2d7d74403326')
+        fetch('https://functions.poehali.dev/f1685790-c2c6-4e36-b81b-aa4a25d7c812')
       ]);
 
       const productsData = await productsRes.json();
-      const citiesData = await citiesRes.json();
+      const citiesData = await regionsRes.json();
       const exclusionsData = await exclusionsRes.json();
 
       setProducts(productsData.products || []);
       
-      // Преобразуем объект с регионами в плоский массив городов
-      const allCities: City[] = [];
+      // Извлекаем список регионов из структуры с городами
+      const regionsMap = new Map<number, Region>();
       if (citiesData.cities) {
-        Object.values(citiesData.cities).forEach((regionCities: any) => {
-          if (Array.isArray(regionCities)) {
-            allCities.push(...regionCities);
+        Object.entries(citiesData.cities).forEach(([regionName, cities]: [string, any]) => {
+          if (Array.isArray(cities) && cities.length > 0) {
+            const firstCity = cities[0];
+            if (firstCity.region_id) {
+              regionsMap.set(firstCity.region_id, {
+                id: firstCity.region_id,
+                name: regionName
+              });
+            }
           }
         });
       }
-      setCities(allCities);
+      setRegions(Array.from(regionsMap.values()).sort((a, b) => a.name.localeCompare(b.name)));
       
       setExclusions(exclusionsData.exclusions || []);
     } catch (error) {
@@ -75,10 +81,10 @@ const AdminProductAvailability = () => {
   };
 
   const addExclusion = async () => {
-    if (!selectedProduct || !selectedCity) {
+    if (!selectedProduct || !selectedRegion) {
       toast({
         title: 'Ошибка',
-        description: 'Выберите товар и город',
+        description: 'Выберите товар и регион',
         variant: 'destructive',
       });
       return;
@@ -86,28 +92,28 @@ const AdminProductAvailability = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/3d5447c1-b58a-433c-baf2-2d7d74403326', {
+      const response = await fetch('https://functions.poehali.dev/f1685790-c2c6-4e36-b81b-aa4a25d7c812', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           product_id: parseInt(selectedProduct),
-          city_id: parseInt(selectedCity),
+          region_id: parseInt(selectedRegion),
         }),
       });
 
       if (response.ok) {
         toast({
           title: 'Успешно',
-          description: 'Товар отключен в выбранном городе',
+          description: 'Товар отключен в выбранном регионе',
         });
         setSelectedProduct('');
-        setSelectedCity('');
+        setSelectedRegion('');
         loadData();
       }
     } catch (error) {
       toast({
         title: 'Ошибка',
-        description: 'Не удалось отключить товар',
+        description: 'Не удалось отключить товар в регионе',
         variant: 'destructive',
       });
     } finally {
@@ -115,25 +121,25 @@ const AdminProductAvailability = () => {
     }
   };
 
-  const removeExclusion = async (productId: number, cityId: number) => {
+  const removeExclusion = async (productId: number, regionId: number) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://functions.poehali.dev/3d5447c1-b58a-433c-baf2-2d7d74403326?product_id=${productId}&city_id=${cityId}`,
+        `https://functions.poehali.dev/f1685790-c2c6-4e36-b81b-aa4a25d7c812?product_id=${productId}&region_id=${regionId}`,
         { method: 'DELETE' }
       );
 
       if (response.ok) {
         toast({
           title: 'Успешно',
-          description: 'Товар снова доступен в городе',
+          description: 'Товар снова доступен в регионе',
         });
         loadData();
       }
     } catch (error) {
       toast({
         title: 'Ошибка',
-        description: 'Не удалось включить товар',
+        description: 'Не удалось включить товар в регионе',
         variant: 'destructive',
       });
     } finally {
@@ -141,17 +147,17 @@ const AdminProductAvailability = () => {
     }
   };
 
-  const getProductsByCity = () => {
+  const getProductsByRegion = () => {
     const grouped: { [key: string]: Exclusion[] } = {};
     exclusions.forEach((exc) => {
-      const cityName = exc.city_name || '';
-      if (!grouped[cityName]) grouped[cityName] = [];
-      grouped[cityName].push(exc);
+      const regionName = exc.region_name || '';
+      if (!grouped[regionName]) grouped[regionName] = [];
+      grouped[regionName].push(exc);
     });
     return grouped;
   };
 
-  const groupedExclusions = getProductsByCity();
+  const groupedExclusions = getProductsByRegion();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 p-8">
@@ -163,15 +169,15 @@ const AdminProductAvailability = () => {
           </Button>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Доступность товаров</h1>
-            <p className="text-gray-600">Управление доступностью товаров в городах</p>
+            <p className="text-gray-600">Управление доступностью товаров в регионах</p>
           </div>
         </div>
 
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Отключить товар в городе</CardTitle>
+            <CardTitle>Отключить товар в регионе</CardTitle>
             <CardDescription>
-              По умолчанию все товары доступны во всех городах. Здесь вы можете отключить товар для конкретного города.
+              По умолчанию все товары доступны во всех регионах. Здесь вы можете отключить товар для конкретного региона.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -189,14 +195,14 @@ const AdminProductAvailability = () => {
                 </SelectContent>
               </Select>
 
-              <Select value={selectedCity} onValueChange={setSelectedCity}>
+              <Select value={selectedRegion} onValueChange={setSelectedRegion}>
                 <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Выберите город" />
+                  <SelectValue placeholder="Выберите регион" />
                 </SelectTrigger>
                 <SelectContent>
-                  {cities.map((city) => (
-                    <SelectItem key={city.id} value={city.id.toString()}>
-                      {city.name}
+                  {regions.map((region) => (
+                    <SelectItem key={region.id} value={region.id.toString()}>
+                      {region.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -216,31 +222,31 @@ const AdminProductAvailability = () => {
               <CardContent className="pt-6">
                 <div className="text-center text-gray-500">
                   <Icon name="CheckCircle" className="mx-auto h-12 w-12 mb-4 text-green-500" />
-                  <p>Все товары доступны во всех городах</p>
+                  <p>Все товары доступны во всех регионах</p>
                 </div>
               </CardContent>
             </Card>
           ) : (
-            Object.entries(groupedExclusions).map(([cityName, cityExclusions]) => (
-              <Card key={cityName}>
+            Object.entries(groupedExclusions).map(([regionName, regionExclusions]) => (
+              <Card key={regionName}>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Icon name="MapPin" className="h-5 w-5" />
-                    {cityName}
-                    <Badge variant="secondary">{cityExclusions.length}</Badge>
+                    {regionName}
+                    <Badge variant="secondary">{regionExclusions.length}</Badge>
                   </CardTitle>
-                  <CardDescription>Недоступные товары в этом городе</CardDescription>
+                  <CardDescription>Недоступные товары в этом регионе</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    {cityExclusions.map((exc) => (
+                    {regionExclusions.map((exc) => (
                       <Badge key={exc.id} variant="outline" className="px-3 py-2">
                         {exc.product_name}
                         <Button
                           variant="ghost"
                           size="sm"
                           className="ml-2 h-4 w-4 p-0"
-                          onClick={() => removeExclusion(exc.product_id, exc.city_id)}
+                          onClick={() => removeExclusion(exc.product_id, exc.region_id)}
                           disabled={loading}
                         >
                           <Icon name="X" className="h-3 w-3" />
