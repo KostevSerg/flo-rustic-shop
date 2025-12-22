@@ -1,9 +1,16 @@
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import API_ENDPOINTS from '@/config/api';
 
 interface CitySEOHelmetProps {
   cityName: string;
   citySlug: string;
   region?: string;
+}
+
+interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
 }
 
 const getCityInPrepositional = (city: string): string => {
@@ -108,6 +115,30 @@ const getCityInPrepositional = (city: string): string => {
 };
 
 const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
+  const [reviewStats, setReviewStats] = useState<ReviewStats>({ averageRating: 0, totalReviews: 0 });
+
+  useEffect(() => {
+    const fetchReviewStats = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.reviews);
+        const data = await response.json();
+        const approvedReviews = (data.reviews || []).filter((r: any) => r.status === 'approved');
+        
+        if (approvedReviews.length > 0) {
+          const avgRating = approvedReviews.reduce((sum: number, r: any) => sum + r.rating, 0) / approvedReviews.length;
+          setReviewStats({
+            averageRating: Math.round(avgRating * 10) / 10,
+            totalReviews: approvedReviews.length
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch review stats:', error);
+      }
+    };
+
+    fetchReviewStats();
+  }, []);
+
   if (!citySlug) {
     return null;
   }
@@ -179,6 +210,15 @@ const CitySEOHelmet = ({ cityName, citySlug, region }: CitySEOHelmetProps) => {
             "addressCountry": "RU"
           },
           "openingHours": "Mo-Su 09:00-21:00",
+          ...(reviewStats.totalReviews > 0 && {
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": reviewStats.averageRating.toString(),
+              "bestRating": "5",
+              "worstRating": "1",
+              "reviewCount": reviewStats.totalReviews.toString()
+            }
+          }),
           "hasOfferCatalog": {
             "@type": "OfferCatalog",
             "name": `Доставка цветов в ${cityPrepositional}`,

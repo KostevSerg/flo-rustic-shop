@@ -1,12 +1,44 @@
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SiteLinksMarkup from '@/components/SiteLinksMarkup';
+import API_ENDPOINTS from '@/config/api';
 
 interface HomeSEOProps {
   isHomePage: boolean;
   selectedCity: string;
 }
 
+interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+}
+
 const HomeSEO = ({ isHomePage, selectedCity }: HomeSEOProps) => {
+  const [reviewStats, setReviewStats] = useState<ReviewStats>({ averageRating: 0, totalReviews: 0 });
+
+  useEffect(() => {
+    const fetchReviewStats = async () => {
+      try {
+        const response = await fetch(API_ENDPOINTS.reviews);
+        const data = await response.json();
+        const approvedReviews = (data.reviews || []).filter((r: any) => r.status === 'approved');
+        
+        if (approvedReviews.length > 0) {
+          const avgRating = approvedReviews.reduce((sum: number, r: any) => sum + r.rating, 0) / approvedReviews.length;
+          setReviewStats({
+            averageRating: Math.round(avgRating * 10) / 10,
+            totalReviews: approvedReviews.length
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch review stats:', error);
+      }
+    };
+
+    if (isHomePage) {
+      fetchReviewStats();
+    }
+  }, [isHomePage]);
   const pageTitle = selectedCity 
     ? `Доставка цветов в ${selectedCity} — FloRustic | Свежие букеты с доставкой`
     : 'FloRustic — Доставка свежих цветов и букетов по всей России';
@@ -58,7 +90,16 @@ const HomeSEO = ({ isHomePage, selectedCity }: HomeSEOProps) => {
               "addressCountry": "RU"
             },
             "openingHours": "Mo-Su 09:00-21:00",
-            "areaServed": ["Москва", "Санкт-Петербург", "Казань", "Екатеринбург", "Новосибирск", "Россия"]
+            "areaServed": ["Москва", "Санкт-Петербург", "Казань", "Екатеринбург", "Новосибирск", "Россия"],
+            ...(reviewStats.totalReviews > 0 && {
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": reviewStats.averageRating.toString(),
+                "bestRating": "5",
+                "worstRating": "1",
+                "reviewCount": reviewStats.totalReviews.toString()
+              }
+            })
           })}
         </script>
         
@@ -74,7 +115,16 @@ const HomeSEO = ({ isHomePage, selectedCity }: HomeSEOProps) => {
               "@type": "ContactPoint",
               "contactType": "Customer Service",
               "availableLanguage": "Russian"
-            }
+            },
+            ...(reviewStats.totalReviews > 0 && {
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": reviewStats.averageRating.toString(),
+                "bestRating": "5",
+                "worstRating": "1",
+                "ratingCount": reviewStats.totalReviews.toString()
+              }
+            })
           })}
         </script>
         
