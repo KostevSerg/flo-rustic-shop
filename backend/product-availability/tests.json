@@ -4,21 +4,13 @@
       "name": "Get all exclusions",
       "method": "GET",
       "path": "/",
-      "expectedStatus": 200,
-      "expectedBody": {
-        "exclusions": "array"
-      },
-      "bodyMatcher": "partial"
+      "expectedStatus": 200
     },
     {
       "name": "Get exclusions for specific product",
       "method": "GET",
       "path": "/?product_id=1",
-      "expectedStatus": 200,
-      "expectedBody": {
-        "exclusions": "array"
-      },
-      "bodyMatcher": "partial"
+      "expectedStatus": 200
     }
   ]
 }

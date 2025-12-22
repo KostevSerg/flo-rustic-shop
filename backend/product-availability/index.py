@@ -63,21 +63,23 @@ def get_exclusions(conn, event: Dict[str, Any]) -> Dict[str, Any]:
     cursor = conn.cursor()
     
     if product_id:
-        cursor.execute("""
+        query = f"""
             SELECT pce.id, pce.product_id, pce.city_id, c.name as city_name
             FROM t_p90017259_flo_rustic_shop.product_city_exclusions pce
             JOIN t_p90017259_flo_rustic_shop.cities c ON c.id = pce.city_id
-            WHERE pce.product_id = %s
+            WHERE pce.product_id = {int(product_id)}
             ORDER BY c.name
-        """, (product_id,))
+        """
+        cursor.execute(query)
     elif city_id:
-        cursor.execute("""
+        query = f"""
             SELECT pce.id, pce.product_id, pce.city_id, p.name as product_name
             FROM t_p90017259_flo_rustic_shop.product_city_exclusions pce
             JOIN t_p90017259_flo_rustic_shop.products p ON p.id = pce.product_id
-            WHERE pce.city_id = %s
+            WHERE pce.city_id = {int(city_id)}
             ORDER BY p.name
-        """, (city_id,))
+        """
+        cursor.execute(query)
     else:
         cursor.execute("""
             SELECT pce.id, pce.product_id, pce.city_id, 
@@ -121,13 +123,14 @@ def add_exclusion(conn, event: Dict[str, Any]) -> Dict[str, Any]:
     
     cursor = conn.cursor()
     
-    cursor.execute("""
+    query = f"""
         INSERT INTO t_p90017259_flo_rustic_shop.product_city_exclusions 
         (product_id, city_id)
-        VALUES (%s, %s)
+        VALUES ({int(product_id)}, {int(city_id)})
         ON CONFLICT (product_id, city_id) DO NOTHING
         RETURNING id
-    """, (product_id, city_id))
+    """
+    cursor.execute(query)
     
     result = cursor.fetchone()
     conn.commit()
@@ -157,10 +160,11 @@ def remove_exclusion(conn, event: Dict[str, Any]) -> Dict[str, Any]:
     
     cursor = conn.cursor()
     
-    cursor.execute("""
+    query = f"""
         DELETE FROM t_p90017259_flo_rustic_shop.product_city_exclusions
-        WHERE product_id = %s AND city_id = %s
-    """, (product_id, city_id))
+        WHERE product_id = {int(product_id)} AND city_id = {int(city_id)}
+    """
+    cursor.execute(query)
     
     conn.commit()
     deleted = cursor.rowcount
