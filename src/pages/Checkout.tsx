@@ -238,7 +238,12 @@ const Checkout = () => {
         const paymentData = await paymentResponse.json();
         console.log('Платеж создан, перенаправление на:', paymentData.payment_url);
         clearCart();
-        window.location.href = paymentData.payment_url;
+        
+        if (paymentData.payment_url) {
+          window.location.href = paymentData.payment_url;
+        } else {
+          navigate('/thank-you');
+        }
         return;
       } else {
         console.warn('Платёжная система недоступна, но заказ создан');
@@ -249,12 +254,12 @@ const Checkout = () => {
         toast({
           title: "Заказ принят!",
           description: "Проблема с платёжной системой. Заказ создан, вскоре наш специалист свяжется с вами для уточнения оплаты.",
-          duration: 5000
+          duration: 3000
         });
         
         setTimeout(() => {
-          navigate('/');
-        }, 5000);
+          navigate('/thank-you');
+        }, 3000);
         return;
       }
     } catch (error: any) {
