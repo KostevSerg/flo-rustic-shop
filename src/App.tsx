@@ -17,6 +17,7 @@ import Product from "./pages/Product";
 import City from "./pages/City";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import ThankYou from "./pages/ThankYou";
 import NotFound from "./pages/NotFound";
 
 const CityDelivery = lazy(() => import("./pages/CityDelivery"));
@@ -97,6 +98,7 @@ const App = () => (
                       <Route path="/reviews" element={<Reviews />} />
                       <Route path="/cart" element={<Cart />} />
                       <Route path="/checkout" element={<Checkout />} />
+                      <Route path="/thank-you" element={<ThankYou />} />
                       <Route path="/admin" element={<AdminDashboard />} />
                       <Route path="/admin/cities" element={<AdminCities />} />
                       <Route path="/admin/products" element={<AdminProducts />} />
