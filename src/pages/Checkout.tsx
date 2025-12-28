@@ -234,31 +234,28 @@ const Checkout = () => {
 
       console.log('Ответ создания платежа:', paymentResponse.status);
 
+      window.open('/thank-you', '_blank');
+      clearCart();
+
       if (paymentResponse.ok) {
         const paymentData = await paymentResponse.json();
         console.log('Платеж создан, перенаправление на:', paymentData.payment_url);
-        clearCart();
         
         if (paymentData.payment_url) {
           window.location.href = paymentData.payment_url;
-        } else {
-          navigate('/thank-you');
         }
         return;
       } else {
         console.warn('Платёжная система недоступна, но заказ создан');
-        clearCart();
-        
-        alert('Заказ принят! Проблема с платёжной системой. Заказ создан, вскоре наш специалист свяжется с вами для уточнения оплаты.');
         
         toast({
           title: "Заказ принят!",
-          description: "Проблема с платёжной системой. Заказ создан, вскоре наш специалист свяжется с вами для уточнения оплаты.",
+          description: "Заказ создан. Откройте новую вкладку для подтверждения.",
           duration: 3000
         });
         
         setTimeout(() => {
-          navigate('/thank-you');
+          navigate('/');
         }, 3000);
         return;
       }
