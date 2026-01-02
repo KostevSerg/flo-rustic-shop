@@ -1,14 +1,28 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Icon from '@/components/ui/icon';
 
 const ThankYou = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    
+    // Проверяем, есть ли флаг успешного заказа
+    const orderPlaced = sessionStorage.getItem('orderPlaced');
+    
+    if (!orderPlaced) {
+      // Если флага нет - редиректим на главную
+      navigate('/', { replace: true });
+      return;
+    }
+    
+    // Удаляем флаг, чтобы при повторном заходе редиректило
+    sessionStorage.removeItem('orderPlaced');
+  }, [navigate]);
 
   return (
     <>
