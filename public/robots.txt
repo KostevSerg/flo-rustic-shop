@@ -6,6 +6,16 @@ Disallow: /admin/*
 Disallow: /cart
 Disallow: /checkout
 Disallow: /*?*generating=*
+Disallow: /*?*etext=*
+Disallow: /*?*ybaip=*
+Disallow: /*?*utm_source=*
+Disallow: /*?*utm_medium=*
+Disallow: /*?*utm_campaign=*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
+Disallow: /*?*yclid=*
+Disallow: /*?*openstat=*
+Disallow: /*?*_openstat=*
 
 # Приоритетная индексация страниц городов (высокий приоритет для SEO)
 Allow: /city/*
@@ -28,6 +38,16 @@ Disallow: /admin/*
 Disallow: /cart
 Disallow: /checkout
 Disallow: /*?*generating=*
+Disallow: /*?*etext=*
+Disallow: /*?*ybaip=*
+Disallow: /*?*utm_source=*
+Disallow: /*?*utm_medium=*
+Disallow: /*?*utm_campaign=*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
+Disallow: /*?*yclid=*
+Disallow: /*?*openstat=*
+Disallow: /*?*_openstat=*
 Crawl-delay: 0
 
 # Яндекс (приоритет на страницы городов)
@@ -39,8 +59,18 @@ Disallow: /admin/*
 Disallow: /cart
 Disallow: /checkout
 Disallow: /*?*generating=*
+Disallow: /*?*etext=*
+Disallow: /*?*ybaip=*
+Disallow: /*?*utm_source=*
+Disallow: /*?*utm_medium=*
+Disallow: /*?*utm_campaign=*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
+Disallow: /*?*yclid=*
+Disallow: /*?*openstat=*
+Disallow: /*?*_openstat=*
 Crawl-delay: 0
-Clean-param: utm_source&utm_medium&utm_campaign&generating /
+Clean-param: utm_source&utm_medium&utm_campaign&etext&ybaip&fbclid&gclid&yclid&openstat&_openstat&generating /
 
 # Bing
 User-agent: Bingbot
@@ -49,6 +79,16 @@ Disallow: /admin
 Disallow: /admin/*
 Disallow: /cart
 Disallow: /checkout
+Disallow: /*?*etext=*
+Disallow: /*?*ybaip=*
+Disallow: /*?*utm_source=*
+Disallow: /*?*utm_medium=*
+Disallow: /*?*utm_campaign=*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
+Disallow: /*?*yclid=*
+Disallow: /*?*openstat=*
+Disallow: /*?*_openstat=*
 
 # Социальные сети (для превью)
 User-agent: Twitterbot
