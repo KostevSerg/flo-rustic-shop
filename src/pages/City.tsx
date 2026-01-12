@@ -156,17 +156,8 @@ const City = () => {
   };
 
   if (loading) {
-    const tempCityName = citySlug 
-      ? citySlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-      : '';
-    
     return (
       <div className="min-h-screen flex flex-col">
-        <CitySEOHelmet 
-          cityName={tempCityName} 
-          citySlug={citySlug || ''} 
-          region={undefined}
-        />
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
           <div className="text-center py-12">
@@ -180,19 +171,8 @@ const City = () => {
   }
 
   if (error || !cityName) {
-    const tempCityName = citySlug 
-      ? citySlug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-      : '';
-    
     return (
       <div className="min-h-screen flex flex-col">
-        {citySlug && (
-          <CitySEOHelmet 
-            cityName={tempCityName} 
-            citySlug={citySlug} 
-            region={undefined}
-          />
-        )}
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
           <div className="text-center py-12">
