@@ -5,8 +5,22 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Expires" content="0"/>
-    <title>FloRustic — Доставка свежих цветов по России</title>
-    <meta name="description" content="Доставка цветов по России. Свежие букеты с доставкой за 1.5 часа после оплаты. Работаем 24/7. Каталог более 500 букетов. Цены от 990₽!"/>
+    <title>Доставка цветов — FloRustic | Свежие букеты роз, тюльпанов, пионов с доставкой за 2 часа по всей России</title>
+    <meta name="description" content="Служба доставки цветов FloRustic. Свежие букеты с доставкой за 1.5 часа после оплаты. Розы, тюльпаны, пионы, хризантемы, композиции ручной работы. Работаем 24/7 без выходных."/>
+    <link rel="canonical" href="https://florustic.ru/" />
+    
+    <!-- Open Graph теги по умолчанию -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Доставка цветов — FloRustic" />
+    <meta property="og:description" content="Служба доставки цветов FloRustic. Свежие букеты с доставкой по всей России" />
+    <meta property="og:url" content="https://florustic.ru/" />
+    <meta property="og:site_name" content="FloRustic" />
+    <meta property="og:locale" content="ru_RU" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Доставка цветов — FloRustic" />
+    <meta name="twitter:description" content="Служба доставки цветов FloRustic. Свежие букеты с доставкой по всей России" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
@@ -34,6 +48,42 @@
 
 
 
+
+    <!-- SEO: Dynamic meta tags for bots -->
+    <script>
+      (function() {
+        var path = window.location.pathname;
+        var cityMatch = path.match(/\/city\/([a-z-]+)/);
+        var productMatch = path.match(/\/product\/([0-9]+)/);
+        
+        if (cityMatch) {
+          var slug = cityMatch[1];
+          var cityName = slug.split('-').map(function(w) { 
+            return w.charAt(0).toUpperCase() + w.slice(1); 
+          }).join(' ');
+          
+          document.title = 'Доставка цветов ' + cityName + ' — FloRustic | Купить розы, тюльпаны, пионы с доставкой';
+          document.querySelector('meta[name="description"]').setAttribute('content', 
+            'Заказать свежие цветы с доставкой в ' + cityName + ' от FloRustic. Букеты роз, тюльпанов, пионов за 2 часа. Круглосуточный заказ онлайн!'
+          );
+          document.querySelector('link[rel="canonical"]').setAttribute('href', 'https://florustic.ru/city/' + slug);
+          document.querySelector('meta[property="og:title"]').setAttribute('content', 'Доставка цветов ' + cityName);
+          document.querySelector('meta[property="og:url"]').setAttribute('content', 'https://florustic.ru/city/' + slug);
+        } else if (productMatch) {
+          var productId = productMatch[1];
+          document.querySelector('link[rel="canonical"]').setAttribute('href', 'https://florustic.ru/product/' + productId);
+          document.querySelector('meta[property="og:url"]').setAttribute('content', 'https://florustic.ru/product/' + productId);
+        } else if (path === '/catalog') {
+          document.title = 'Каталог букетов | FloRustic — Доставка цветов';
+          document.querySelector('meta[name="description"]').setAttribute('content', 
+            'Каталог букетов FloRustic. Более 500 букетов на любой случай. Розы, тюльпаны, пионы, композиции. Цены от 990₽!'
+          );
+          document.querySelector('link[rel="canonical"]').setAttribute('href', 'https://florustic.ru/catalog');
+          document.querySelector('meta[property="og:url"]').setAttribute('content', 'https://florustic.ru/catalog');
+        }
+      })();
+    </script>
+    <!-- /SEO -->
 
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS COMMENT! -->
 
@@ -103,8 +153,7 @@
 <body>
 <div id="loader" style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #0a0a0a; color: white; font-family: system-ui, -apple-system, sans-serif; z-index: 9999;">
   <div style="text-align: center;">
-    <div style="width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px;"></div>
-    <p style="font-size: 14px; opacity: 0.7;">Загрузка FloRustic...</p>
+    <div style="width: 48px; height: 48px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
   </div>
 </div>
 <style>
