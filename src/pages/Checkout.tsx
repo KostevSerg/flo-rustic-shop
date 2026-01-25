@@ -220,45 +220,42 @@ const Checkout = () => {
       }
 
       console.log('Создание платежа для заказа:', orderId);
-      const paymentResponse = await fetch(`${API_ENDPOINTS.orders}?action=create_payment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: finalPrice,
-          order_id: orderId,
-          return_url: window.location.origin + '/'
-        })
-      });
-
-      console.log('Ответ создания платежа:', paymentResponse.status);
-
-      window.open('/thank-you', '_blank');
+      
       clearCart();
+      sessionStorage.setItem('orderPlaced', 'true');
 
-      if (paymentResponse.ok) {
-        const paymentData = await paymentResponse.json();
-        console.log('Платеж создан, перенаправление на:', paymentData.payment_url);
-        
-        if (paymentData.payment_url) {
-          window.location.href = paymentData.payment_url;
-        }
-        return;
-      } else {
-        console.warn('Платёжная система недоступна, но заказ создан');
-        
-        toast({
-          title: "Заказ принят!",
-          description: "Заказ создан. Откройте новую вкладку для подтверждения.",
-          duration: 3000
+      if (formData.paymentMethod === 'online') {
+        const paymentResponse = await fetch(`${API_ENDPOINTS.orders}?action=create_payment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: finalPrice,
+            order_id: orderId,
+            return_url: window.location.origin + '/thank-you'
+          })
         });
-        
-        setTimeout(() => {
-          navigate('/');
-        }, 3000);
-        return;
+
+        console.log('Ответ создания платежа:', paymentResponse.status);
+
+        if (paymentResponse.ok) {
+          const paymentData = await paymentResponse.json();
+          console.log('Платеж создан, перенаправление на:', paymentData.payment_url);
+          
+          if (paymentData.payment_url) {
+            window.location.href = paymentData.payment_url;
+            return;
+          }
+        } else {
+          console.warn('Платёжная система недоступна, но заказ создан');
+          navigate('/thank-you');
+          return;
+        }
       }
+      
+      navigate('/thank-you');
+      return;
     } catch (error: any) {
       console.error('Общая ошибка отправки заказа:', error);
       toast({
