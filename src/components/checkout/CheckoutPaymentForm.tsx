@@ -33,19 +33,22 @@ const CheckoutPaymentForm = ({ paymentMethod, onChange }: CheckoutPaymentFormPro
         Оплата
       </h2>
       <div className="space-y-2">
-        <label className="flex items-center gap-2 p-2 md:p-3 border rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
+        <label className="flex items-center gap-3 p-2 md:p-3 border rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
+          <div className="relative flex items-center justify-center w-5 h-5 rounded-full border-2 border-primary bg-primary">
+            <Icon name="Check" size={14} className="text-primary-foreground" />
+          </div>
+          <div className="flex items-center gap-2">
+            <Icon name="Smartphone" size={18} />
+            <span>Онлайн на сайте</span>
+          </div>
           <input
             type="radio"
             name="paymentMethod"
             value="online"
             checked={paymentMethod === 'online'}
             onChange={onChange}
-            className="w-4 h-4"
+            className="sr-only"
           />
-          <div className="flex items-center gap-2">
-            <Icon name="Smartphone" size={18} />
-            <span>Онлайн на сайте</span>
-          </div>
         </label>
       </div>
       {paymentInfoText && (
