@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import PageSEO from '@/components/PageSEO';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import CheckoutRecipientForm from '@/components/checkout/CheckoutRecipientForm';
@@ -287,14 +286,12 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-accent/5">
-      <Helmet prioritizeSeoTags defer={false}>
-        <html lang="ru" />
-        <title>Оформление заказа — FloRustic | Доставка цветов</title>
-        <meta name="description" content="Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Оформление заказа за 2 минуты. Выбор оплаты: онлайн или при получении. Промокоды и скидки!" />
-        <meta name="robots" content="noindex, follow" />
-        <link rel="canonical" href="https://florustic.ru/checkout" />
-      </Helmet>
-
+      <PageSEO
+        title="Оформление заказа — FloRustic | Доставка цветов"
+        description="Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Оформление заказа за 2 минуты. Выбор оплаты: онлайн или при получении. Промокоды и скидки!"
+        canonical="https://florustic.ru/checkout"
+        noindex={true}
+      />
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-3 md:px-4 py-3 md:py-6">
         <div className="max-w-7xl mx-auto">

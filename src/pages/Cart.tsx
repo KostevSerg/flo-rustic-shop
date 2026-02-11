@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import PageSEO from '@/components/PageSEO';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
@@ -27,13 +26,12 @@ const Cart = () => {
   if (items.length === 0) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Helmet prioritizeSeoTags defer={false}>
-          <html lang="ru" />
-          <title>Корзина — FloRustic | Оформление заказа цветов</title>
-          <meta name="description" content="Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Корзина: оформите заказ онлайн за 2 минуты. Безопасная оплата картой или наличными!" />
-          <meta name="robots" content="noindex, follow" />
-          <link rel="canonical" href="https://florustic.ru/cart" />
-        </Helmet>
+        <PageSEO
+          title="Корзина — FloRustic | Оформление заказа цветов"
+          description="Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Корзина: оформите заказ онлайн за 2 минуты. Безопасная оплата картой или наличными!"
+          canonical="https://florustic.ru/cart"
+          noindex={true}
+        />
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
           <div className="max-w-2xl mx-auto text-center">
@@ -61,14 +59,12 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet prioritizeSeoTags defer={false}>
-        <html lang="ru" />
-        <title>{`Корзина (${itemsCount}) — FloRustic | Оформление заказа`}</title>
-        <meta name="description" content={`В корзине ${itemsCount} товаров на ${formattedPrice}₽. Оформите заказ за 2 минуты. Доставка цветов по России. Оплата картой или наличными. Гарантия свежести!`} />
-        <meta name="robots" content="noindex, follow" />
-        <link rel="canonical" href="https://florustic.ru/cart" />
-      </Helmet>
-
+      <PageSEO
+        title={`Корзина (${itemsCount}) — FloRustic | Оформление заказа`}
+        description={`В корзине ${itemsCount} товаров на ${formattedPrice}₽. Оформите заказ за 2 минуты. Доставка цветов по России. Оплата картой или наличными. Гарантия свежести!`}
+        canonical="https://florustic.ru/cart"
+        noindex={true}
+      />
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
 

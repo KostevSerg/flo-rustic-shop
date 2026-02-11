@@ -6,10 +6,10 @@ import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ReviewsSection from '@/components/ReviewsSection';
+import PageSEO from '@/components/PageSEO';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
-import CityHomePageSEO from '@/components/city-home/CityHomePageSEO';
 import CityHomePageHero from '@/components/city-home/CityHomePageHero';
 import CityHomePageProducts from '@/components/city-home/CityHomePageProducts';
 
@@ -217,15 +217,16 @@ const CityHomePage = () => {
   }
 
   const cityInPrepositional = getCityInPrepositional(cityName);
+  const pageTitle = `Доставка цветов в ${cityInPrepositional} — FloRustic | Купить розы, тюльпаны, пионы`;
+  const pageDescription = `Служба доставки цветов в ${cityInPrepositional}. Свежие букеты роз, тюльпанов, пионов за 2 часа. Заказ онлайн 24/7!`;
 
   return (
     <div className="min-h-screen flex flex-col">
-      <CityHomePageSEO 
-        cityName={cityName}
-        cityInPrepositional={cityInPrepositional}
-        citySlug={citySlug || ''}
+      <PageSEO
+        title={pageTitle}
+        description={pageDescription}
+        canonical={`https://florustic.ru/${citySlug}`}
       />
-      
       <Header cartCount={totalItems} />
       
       <main className="flex-1">

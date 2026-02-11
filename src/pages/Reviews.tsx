@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import PageSEO from '@/components/PageSEO';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
 
@@ -90,52 +89,15 @@ const Reviews = () => {
     }))
   } : null;
 
+  const pageDescription = `Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Отзывы: ${reviews.length} реальных мнений клиентов. Средний рейтинг ${averageRating}/5. Оценка качества букетов и сервиса!`;
+
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet prioritizeSeoTags defer={false}>
-        <html lang="ru" />
-        <title>Отзывы о FloRustic — Реальные мнения клиентов о доставке цветов</title>
-        <meta name="description" content={`Служба доставки цветов FloRustic. Свежие цветы — доставка в течение 1.5 часов после оплаты. Отзывы: ${reviews.length} реальных мнений клиентов. Средний рейтинг ${averageRating}/5. Оценка качества букетов и сервиса!`} />
-        <meta name="keywords" content="отзывы florustic, отзывы о доставке цветов, качество цветов отзывы, букеты отзывы, florustic мнения клиентов" />
-        <link rel="canonical" href="https://florustic.ru/reviews" />
-        
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Отзывы о FloRustic — Реальные мнения клиентов" />
-        <meta property="og:description" content="Читайте отзывы клиентов о FloRustic. Реальные мнения о качестве цветов и доставке." />
-        <meta property="og:url" content="https://florustic.ru/reviews" />
-        <meta property="og:site_name" content="FloRustic" />
-        <meta property="og:locale" content="ru_RU" />
-        <meta property="og:image" content="https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png" />
-        
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content="Отзывы о FloRustic" />
-        <meta name="twitter:description" content="Читайте отзывы клиентов о FloRustic" />
-        
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Главная",
-                "item": "https://florustic.ru/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Отзывы"
-              }
-            ]
-          })}
-        </script>
-        
-        <script type="application/ld+json">
-          {JSON.stringify(reviewsSchema)}
-        </script>
-      </Helmet>
-
+      <PageSEO
+        title="Отзывы о FloRustic — Реальные мнения клиентов о доставке цветов"
+        description={pageDescription}
+        canonical="https://florustic.ru/reviews"
+      />
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">

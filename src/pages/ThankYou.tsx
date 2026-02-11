@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PageSEO from '@/components/PageSEO';
 import Icon from '@/components/ui/icon';
 
 const ThankYou = () => {
@@ -25,13 +25,11 @@ const ThankYou = () => {
   }, [navigate]);
 
   return (
-    <>
-      <Helmet>
-        <title>Спасибо за заказ — FloRustic</title>
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
-      
-      <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background">
+      <PageSEO
+        title="Спасибо за заказ — FloRustic"
+        noindex={true}
+      />
         <Header />
         
         <main className="flex-grow flex items-center justify-center px-4 py-16">
@@ -61,8 +59,7 @@ const ThankYou = () => {
         </main>
         
         <Footer />
-      </div>
-    </>
+    </div>
   );
 };
 

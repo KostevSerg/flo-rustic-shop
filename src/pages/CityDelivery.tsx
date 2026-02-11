@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
-import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import PageSEO from '@/components/PageSEO';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
@@ -131,10 +130,7 @@ const CityDelivery = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Helmet prioritizeSeoTags defer={false}>
-          <html lang="ru" />
-          <title>Загрузка...</title>
-        </Helmet>
+        <PageSEO title="Загрузка..." />
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
           <div className="text-center py-12">
@@ -150,10 +146,7 @@ const CityDelivery = () => {
   if (error || !city) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Helmet prioritizeSeoTags defer={false}>
-          <html lang="ru" />
-          <title>Город не найден - FloRustic</title>
-        </Helmet>
+        <PageSEO title="Город не найден - FloRustic" noindex={true} />
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
           <div className="text-center py-12">
@@ -175,73 +168,11 @@ const CityDelivery = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet prioritizeSeoTags defer={false}>
-        <html lang="ru" />
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={pageKeywords} />
-        <link rel="canonical" href={canonicalUrl} />
-        
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDescription} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:site_name" content="FloRustic" />
-        <meta property="og:locale" content="ru_RU" />
-        
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Главная",
-                "item": "https://florustic.ru/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": city.name,
-                "item": `https://florustic.ru/city/${citySlug}`
-              },
-              {
-                "@type": "ListItem",
-                "position": 3,
-                "name": "Доставка"
-              }
-            ]
-          })}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Service",
-            "name": `Доставка цветов в ${city.name}`,
-            "description": pageDescription,
-            "provider": {
-              "@type": "Organization",
-              "name": "FloRustic",
-              "url": "https://florustic.ru"
-            },
-            "areaServed": settlements.map(s => ({
-              "@type": "City",
-              "name": s.name
-            })),
-            "offers": settlements.map(s => ({
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": `Доставка цветов в ${s.name}`
-              },
-              "price": s.delivery_price,
-              "priceCurrency": "RUB"
-            }))
-          })}
-        </script>
-      </Helmet>
-      
+      <PageSEO
+        title={pageTitle}
+        description={pageDescription}
+        canonical={canonicalUrl}
+      />
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
