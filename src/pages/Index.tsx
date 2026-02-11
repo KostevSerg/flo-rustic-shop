@@ -125,9 +125,13 @@ const Index = () => {
     });
   };
 
+  const pageDescription = selectedCity 
+    ? `Служба доставки цветов в городе ${selectedCity} FloRustic. Свежие букеты с доставкой за 1.5 часа после оплаты. Розы, тюльпаны, пионы, хризантемы, композиции ручной работы. Работаем 24/7 без выходных.`
+    : 'Служба доставки цветов FloRustic. Свежие букеты с доставкой за 1.5 часа после оплаты. Розы, тюльпаны, пионы, хризантемы, композиции ручной работы. Работаем 24/7 без выходных.';
+
   return (
     <div className="min-h-screen flex flex-col">
-      <PageSEO />
+      <PageSEO description={pageDescription} />
       <Header cartCount={totalItems} />
       
       <main className="flex-1">
