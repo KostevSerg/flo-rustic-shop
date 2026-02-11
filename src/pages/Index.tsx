@@ -6,7 +6,7 @@ import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ReviewsSection from '@/components/ReviewsSection';
-import HomeSEO from '@/components/home/HomeSEO';
+import PageSEO from '@/components/PageSEO';
 import HeroSection from '@/components/home/HeroSection';
 import FeaturedProductsSection from '@/components/home/FeaturedProductsSection';
 import ProductsSection from '@/components/home/ProductsSection';
@@ -127,7 +127,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <HomeSEO isHomePage={isHomePage} selectedCity={selectedCity} />
+      <PageSEO />
       <Header cartCount={totalItems} />
       
       <main className="flex-1">

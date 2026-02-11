@@ -4,11 +4,10 @@ import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import PageSEO from '@/components/PageSEO';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
-import CitySEOHelmet from '@/components/city/CitySEOHelmet';
 import CityHeader from '@/components/city/CityHeader';
 import ProductsGrid from '@/components/city/ProductsGrid';
 import CityContent from '@/components/city/CityContent';
@@ -192,14 +191,16 @@ const City = () => {
     );
   }
 
+  const pageTitle = `Доставка цветов ${cityName} — FloRustic | Купить розы, тюльпаны, пионы с доставкой`;
+  const pageDescription = `Заказать свежие цветы с доставкой в ${cityName} от FloRustic. Букеты роз, тюльпанов, пионов за 2 часа. Круглосуточный заказ онлайн!`;
+
   return (
     <div className="min-h-screen flex flex-col">
-      <CitySEOHelmet 
-        cityName={cityName} 
-        citySlug={citySlug || ''} 
-        region={cityData?.region}
+      <PageSEO
+        title={pageTitle}
+        description={pageDescription}
+        canonical={`https://florustic.ru/city/${citySlug}`}
       />
-      
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-3 md:px-4 py-4 md:py-16">
 

@@ -1,10 +1,9 @@
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
 import { useState, useEffect, useMemo } from 'react';
-import { Helmet } from 'react-helmet-async';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import PageSEO from '@/components/PageSEO';
 import API_ENDPOINTS from '@/config/api';
 import { declineCity, useCitySEO } from '@/hooks/useCitySEO';
 
@@ -81,41 +80,11 @@ const About = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet prioritizeSeoTags defer={false}>
-        <html lang="ru" />
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={content.metaKeywords} />
-        <link rel="canonical" href={canonicalUrl} />
-        
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDescription} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:site_name" content="FloRustic" />
-        <meta property="og:locale" content="ru_RU" />
-        
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Главная",
-                "item": "https://florustic.ru/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "О нас"
-              }
-            ]
-          })}
-        </script>
-      </Helmet>
-      
+      <PageSEO
+        title={pageTitle}
+        description={pageDescription}
+        canonical={canonicalUrl}
+      />
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">

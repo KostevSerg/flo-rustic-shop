@@ -27,7 +27,7 @@
     <meta name="yandex" content="index, follow" />
     <meta name="google-site-verification" content="nW2oFvEdV3rll0QD1vjjsLmoY4URrQjwzzjm_uheF3Q" />
     
-    <!-- Favicon для всех устройств и браузеров -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png">
     <link rel="shortcut icon" type="image/png" href="https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png">
     <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png">
@@ -44,46 +44,6 @@
     <link rel="preconnect" href="https://iimg.su" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
-    
-
-
-
-
-    <!-- SEO: Dynamic meta tags for bots -->
-    <script>
-      (function() {
-        var path = window.location.pathname;
-        var cityMatch = path.match(/\/city\/([a-z-]+)/);
-        var productMatch = path.match(/\/product\/([0-9]+)/);
-        
-        if (cityMatch) {
-          var slug = cityMatch[1];
-          var cityName = slug.split('-').map(function(w) { 
-            return w.charAt(0).toUpperCase() + w.slice(1); 
-          }).join(' ');
-          
-          document.title = 'Доставка цветов ' + cityName + ' — FloRustic | Купить розы, тюльпаны, пионы с доставкой';
-          document.querySelector('meta[name="description"]').setAttribute('content', 
-            'Заказать свежие цветы с доставкой в ' + cityName + ' от FloRustic. Букеты роз, тюльпанов, пионов за 2 часа. Круглосуточный заказ онлайн!'
-          );
-          document.querySelector('link[rel="canonical"]').setAttribute('href', 'https://florustic.ru/city/' + slug);
-          document.querySelector('meta[property="og:title"]').setAttribute('content', 'Доставка цветов ' + cityName);
-          document.querySelector('meta[property="og:url"]').setAttribute('content', 'https://florustic.ru/city/' + slug);
-        } else if (productMatch) {
-          var productId = productMatch[1];
-          document.querySelector('link[rel="canonical"]').setAttribute('href', 'https://florustic.ru/product/' + productId);
-          document.querySelector('meta[property="og:url"]').setAttribute('content', 'https://florustic.ru/product/' + productId);
-        } else if (path === '/catalog') {
-          document.title = 'Каталог букетов | FloRustic — Доставка цветов';
-          document.querySelector('meta[name="description"]').setAttribute('content', 
-            'Каталог букетов FloRustic. Более 500 букетов на любой случай. Розы, тюльпаны, пионы, композиции. Цены от 990₽!'
-          );
-          document.querySelector('link[rel="canonical"]').setAttribute('href', 'https://florustic.ru/catalog');
-          document.querySelector('meta[property="og:url"]').setAttribute('content', 'https://florustic.ru/catalog');
-        }
-      })();
-    </script>
-    <!-- /SEO -->
 
     <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS COMMENT! -->
 

@@ -1,11 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
 import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import PageSEO from '@/components/PageSEO';
 import ProductCard from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
@@ -90,25 +89,11 @@ const Catalog = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet prioritizeSeoTags defer={false}>
-        <html lang="ru" />
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
-        <meta name="keywords" content="каталог цветов, букеты цены, купить букет, цветочные композиции, розы, тюльпаны, лилии" />
-        <link rel="canonical" href="https://florustic.ru/catalog" />
-        
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDescription} />
-        <meta property="og:url" content="https://florustic.ru/catalog" />
-        <meta property="og:site_name" content="FloRustic" />
-        <meta property="og:locale" content="ru_RU" />
-        
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDescription} />
-      </Helmet>
-      
+      <PageSEO
+        title={pageTitle}
+        description={pageDescription}
+        canonical="https://florustic.ru/catalog"
+      />
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
 

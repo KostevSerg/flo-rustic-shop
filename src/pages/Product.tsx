@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
 import { useCartNotification } from '@/contexts/CartNotificationContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import PageSEO from '@/components/PageSEO';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
@@ -152,12 +151,11 @@ const Product = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Helmet prioritizeSeoTags defer={false}>
-          <html lang="ru" />
-          <title>{defaultTitle}</title>
-          <meta name="description" content={defaultDescription} />
-          <link rel="canonical" href={`https://florustic.ru/product/${id}`} />
-        </Helmet>
+        <PageSEO
+          title={defaultTitle}
+          description={defaultDescription}
+          canonical={`https://florustic.ru/product/${id}`}
+        />
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
           <div className="text-center py-12">
@@ -173,12 +171,11 @@ const Product = () => {
   if (error || !product) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Helmet prioritizeSeoTags defer={false}>
-          <html lang="ru" />
-          <title>{defaultTitle}</title>
-          <meta name="description" content={defaultDescription} />
-          <link rel="canonical" href={`https://florustic.ru/product/${id}`} />
-        </Helmet>
+        <PageSEO
+          title={defaultTitle}
+          description={defaultDescription}
+          canonical={`https://florustic.ru/product/${id}`}
+        />
         <Header cartCount={totalItems} />
         <main className="flex-1 container mx-auto px-4 py-16">
           <div className="text-center py-12">
@@ -265,33 +262,12 @@ const Product = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet prioritizeSeoTags defer={false}>
-        <html lang="ru" />
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={`${product.name}, купить ${product.name} ${selectedCity}, букет ${selectedCity}, цветы ${selectedCity}, florustic`} />
-        <link rel="canonical" href={canonicalUrl} />
-        
-        <meta property="og:type" content="product" />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDescription} />
-        <meta property="og:image" content={product.image_url} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:site_name" content="FloRustic" />
-        <meta property="og:locale" content="ru_RU" />
-        <meta property="product:price:amount" content={product.price.toString()} />
-        <meta property="product:price:currency" content="RUB" />
-        
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDescription} />
-        <meta name="twitter:image" content={product.image_url} />
-        
-        <script type="application/ld+json">
-          {JSON.stringify(productSchema)}
-        </script>
-      </Helmet>
-
+      <PageSEO
+        title={pageTitle}
+        description={pageDescription}
+        canonical={canonicalUrl}
+        ogImage={product.image_url}
+      />
       <Header cartCount={totalItems} />
       
       <main className="flex-1 container mx-auto px-4 py-8">

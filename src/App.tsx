@@ -11,7 +11,6 @@ import { CityProvider } from "@/contexts/CityContext";
 import { SiteTextsProvider } from "@/contexts/SiteTextsContext";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import { CityConfirmModal } from "@/components/CityConfirmModal";
-import SEOBlocker from "@/components/SEOBlocker";
 import Index from "./pages/Index";
 import Catalog from "./pages/Catalog";
 import Product from "./pages/Product";
@@ -85,7 +84,6 @@ const App = () => (
                   <CartNotificationProvider>
                     <CityConfirmModal />
                     <YandexMetrikaTracker />
-                    <SEOBlocker />
                   <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Загрузка...</div>}>
                     <Routes>
                       <Route path="/" element={<Index />} />

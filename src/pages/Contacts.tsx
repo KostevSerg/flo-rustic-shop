@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useCart } from '@/contexts/CartContext';
 import { useCity } from '@/contexts/CityContext';
 import { useSiteTexts } from '@/contexts/SiteTextsContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import PageSEO from '@/components/PageSEO';
 import Icon from '@/components/ui/icon';
 import API_ENDPOINTS from '@/config/api';
 import { Button } from '@/components/ui/button';
@@ -100,48 +99,11 @@ const Contacts = () => {
   
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet prioritizeSeoTags defer={false}>
-        <html lang="ru" />
-        <title>{pageTitle}</title>
-        <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={`контакты florustic, телефон florustic, адрес florustic ${cityForMeta}, магазин цветов контакты, доставка цветов телефон`} />
-        <link rel="canonical" href={canonicalUrl} />
-        
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDescription} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:site_name" content="FloRustic" />
-        <meta property="og:locale" content="ru_RU" />
-        <meta property="og:image" content="https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png" />
-        
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDescription} />
-        
-        {selectedContact && (
-          <script type="application/ld+json">
-            {JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "LocalBusiness",
-              "name": `FloRustic ${selectedContact.city_name}`,
-              "image": "https://cdn.poehali.dev/files/a67d7855-c81c-456d-8393-2b2ec7bfd0bd.png",
-              "telephone": selectedContact.phone,
-              "email": selectedContact.email,
-              "address": {
-                "@type": "PostalAddress",
-                "streetAddress": selectedContact.address,
-                "addressLocality": selectedContact.city_name,
-                "addressCountry": "RU"
-              },
-              "openingHours": selectedContact.working_hours || "Mo-Su 09:00-21:00",
-              "priceRange": "₽₽",
-              "url": canonicalUrl
-            })}
-          </script>
-        )}
-      </Helmet>
-
+      <PageSEO
+        title={pageTitle}
+        description={pageDescription}
+        canonical={canonicalUrl}
+      />
       <Header cartCount={totalItems} />
       <main className="flex-1 container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
