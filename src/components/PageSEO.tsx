@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 
 interface SEOProps {
   title?: string;
@@ -11,6 +10,30 @@ interface SEOProps {
   ogImage?: string;
   noindex?: boolean;
 }
+
+const setMetaTag = (attr: string, attrValue: string, content: string) => {
+  let element = document.querySelector(`meta[${attr}="${attrValue}"]`) as HTMLMetaElement | null;
+  if (element) {
+    element.setAttribute('content', content);
+  } else {
+    element = document.createElement('meta');
+    element.setAttribute(attr, attrValue);
+    element.setAttribute('content', content);
+    document.head.appendChild(element);
+  }
+};
+
+const setCanonical = (href: string) => {
+  let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  if (link) {
+    link.href = href;
+  } else {
+    link = document.createElement('link');
+    link.rel = 'canonical';
+    link.href = href;
+    document.head.appendChild(link);
+  }
+};
 
 const PageSEO = ({
   title,
@@ -33,30 +56,34 @@ const PageSEO = ({
 
   useEffect(() => {
     document.title = finalTitle;
-  }, [finalTitle]);
 
-  return (
-    <Helmet>
-      <title>{finalTitle}</title>
-      <meta name="description" content={finalDescription} />
-      <link rel="canonical" href={fullUrl} />
-      
-      {noindex && <meta name="robots" content="noindex, nofollow" />}
-      
-      <meta property="og:type" content="website" />
-      <meta property="og:title" content={finalOgTitle} />
-      <meta property="og:description" content={finalOgDescription} />
-      <meta property="og:url" content={fullUrl} />
-      <meta property="og:site_name" content="FloRustic" />
-      <meta property="og:locale" content="ru_RU" />
-      <meta property="og:image" content={finalOgImage} />
-      
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={finalOgTitle} />
-      <meta name="twitter:description" content={finalOgDescription} />
-      <meta name="twitter:image" content={finalOgImage} />
-    </Helmet>
-  );
+    setMetaTag('name', 'description', finalDescription);
+    setCanonical(fullUrl);
+
+    if (noindex) {
+      setMetaTag('name', 'robots', 'noindex, nofollow');
+    } else {
+      const robotsMeta = document.querySelector('meta[name="robots"]');
+      if (robotsMeta && robotsMeta.getAttribute('content') === 'noindex, nofollow') {
+        robotsMeta.setAttribute('content', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
+      }
+    }
+
+    setMetaTag('property', 'og:type', 'website');
+    setMetaTag('property', 'og:title', finalOgTitle);
+    setMetaTag('property', 'og:description', finalOgDescription);
+    setMetaTag('property', 'og:url', fullUrl);
+    setMetaTag('property', 'og:site_name', 'FloRustic');
+    setMetaTag('property', 'og:locale', 'ru_RU');
+    setMetaTag('property', 'og:image', finalOgImage);
+
+    setMetaTag('name', 'twitter:card', 'summary_large_image');
+    setMetaTag('name', 'twitter:title', finalOgTitle);
+    setMetaTag('name', 'twitter:description', finalOgDescription);
+    setMetaTag('name', 'twitter:image', finalOgImage);
+  }, [finalTitle, finalDescription, fullUrl, finalOgTitle, finalOgDescription, finalOgImage, noindex]);
+
+  return null;
 };
 
 export default PageSEO;
