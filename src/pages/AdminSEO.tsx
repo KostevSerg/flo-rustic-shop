@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
+import PageSEO from '@/components/PageSEO';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useCart } from '@/contexts/CartContext';
@@ -74,10 +74,7 @@ const AdminSEO = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Helmet>
-        <title>Генератор SEO страниц | FloRustic Admin</title>
-        <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      <PageSEO title="Генератор SEO страниц | FloRustic Admin" noindex />
 
       <Header cartCount={totalItems} />
 
